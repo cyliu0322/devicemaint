@@ -42,8 +42,8 @@ public class IndexController {
 	}
 	
 	// 移动端登录成功后跳转
-	@GetMapping(value = { "/main2" })
-	public String index2(Model model) {
+	@GetMapping(value = { "/mobileMain" })
+	public String mobileIndex(Model model) {
 		List<Menu> menuTreeVOS = menuService.selectCurrentUserMenuTree();
 		model.addAttribute("menus", menuTreeVOS);
 		return "404";

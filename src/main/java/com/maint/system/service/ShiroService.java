@@ -56,8 +56,8 @@ public class ShiroService {
 		filterChainDefinitionMap.put("/lib/**", "anon");
 		filterChainDefinitionMap.put("/active/**", "anon");
 		filterChainDefinitionMap.put("/login", "anon");			// 后台管理登录页面
-		filterChainDefinitionMap.put("/mobilelogin", "anon");	// 移动端登录页面
-//		filterChainDefinitionMap.put("/mobilelogin", "anon");	// 门户网站登录页面
+		filterChainDefinitionMap.put("/mobileLogin", "anon");	// 移动端登录页面
+//		filterChainDefinitionMap.put("/mobileLogin", "anon");	// 门户网站登录页面
 		filterChainDefinitionMap.put("/register", "anon");
 		filterChainDefinitionMap.put("/403", "anon");
 		filterChainDefinitionMap.put("/404", "anon");

@@ -79,7 +79,7 @@ public class RestFormAuthenticationFilter extends FormAuthenticationFilter {
 				
 				WebHelper.writeJson(ResultBean.error("未登录"), response);
 			} else {
-				saveRequestAndRedirectToLogin2(request, response);
+				saveRequestAndRedirectToLogin(request, response);
 			}
 			return false;
 		}
@@ -92,13 +92,14 @@ public class RestFormAuthenticationFilter extends FormAuthenticationFilter {
 //		return new UserPasswordToken(username, password.toCharArray(), "");
 //	}
 	
-	private void saveRequestAndRedirectToLogin2(ServletRequest request, ServletResponse response) throws IOException {
+	@Override
+	protected void saveRequestAndRedirectToLogin(ServletRequest request, ServletResponse response) throws IOException {
 		WebUtils.saveRequest(request);
 		String requestURI = this.getPathWithinApplication(request);
 		if (requestURI.contains("mobile")) { // 移动端
-			WebUtils.issueRedirect(request, response, "/mobilelogin");
+			WebUtils.issueRedirect(request, response, "/mobileLogin");
 		} else if (requestURI.contains("portal")) { // 门户
-			WebUtils.issueRedirect(request, response, "/portallogin");
+			WebUtils.issueRedirect(request, response, "/portalLogin");
 		} else { // 后台管理
 			WebUtils.issueRedirect(request, response, "/login");
 		}

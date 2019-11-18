@@ -53,8 +53,8 @@ public class LoginController {
 	}
 	
 	// 移动端登录
-	@GetMapping("/mobilelogin")
-	public String mlogin(Model model) {
+	@GetMapping("/mobileLogin")
+	public String mobileLogin(Model model) {
 		model.addAttribute("loginVerify", shiroActionProperties.getLoginVerify());
 		return "404";
 	}
@@ -98,7 +98,7 @@ public class LoginController {
 	// 移动端注销
 	@OperationLog("注销")
 	@GetMapping("/mobilelogout")
-	public String logout2() {
+	public String mobileLogout() {
 		SecurityUtils.getSubject().logout();
 		return "";
 	}
