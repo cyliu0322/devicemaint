@@ -34,6 +34,8 @@ import com.maint.common.shiro.OAuth2Helper;
 import com.maint.common.shiro.RestShiroFilterFactoryBean;
 import com.maint.common.shiro.ShiroActionProperties;
 import com.maint.common.shiro.credential.RetryLimitHashedCredentialsMatcher;
+import com.maint.common.shiro.filter.MultiLoginFilter;
+import com.maint.common.shiro.filter.MyFormAuthenticationFilter;
 import com.maint.common.shiro.filter.OAuth2AuthenticationFilter;
 import com.maint.common.shiro.filter.RestAuthorizationFilter;
 import com.maint.common.shiro.filter.RestFormAuthenticationFilter;
@@ -77,8 +79,10 @@ public class ShiroConfig {
 	public RestShiroFilterFactoryBean restShiroFilterFactoryBean(SecurityManager securityManager) {
 		RestShiroFilterFactoryBean shiroFilterFactoryBean = new RestShiroFilterFactoryBean();
 		shiroFilterFactoryBean.setSecurityManager(securityManager);
-		shiroFilterFactoryBean.setLoginUrl("/login");
+		
+//		shiroFilterFactoryBean.setLoginUrl("/login");
 		shiroFilterFactoryBean.setUnauthorizedUrl("/403");
+		
 		Map<String, Filter> filters = shiroFilterFactoryBean.getFilters();
 		filters.put("authc", new RestFormAuthenticationFilter());
 		filters.put("perms", new RestAuthorizationFilter());

@@ -5,9 +5,12 @@ import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.maint.common.shiro.token.UserPasswordToken;
 import com.maint.common.util.IPUtils;
 import com.maint.common.util.ResultBean;
 import com.maint.common.util.WebHelper;
+
+import java.io.IOException;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -35,7 +38,7 @@ public class RestFormAuthenticationFilter extends FormAuthenticationFilter {
 			// 匹配当前请求的 url 和 http method 与过滤器链中的的是否一致
 			flag = httpMethod.equals(strings[1].toUpperCase()) && this.pathsMatch(strings[0], requestURI);
 		}
-		
+
 		if (flag) {
 			log.debug("URL : [{}] matching authc filter : [{}]", requestURI, path);
 		}
@@ -76,9 +79,28 @@ public class RestFormAuthenticationFilter extends FormAuthenticationFilter {
 				
 				WebHelper.writeJson(ResultBean.error("未登录"), response);
 			} else {
-				saveRequestAndRedirectToLogin(request, response);
+				saveRequestAndRedirectToLogin2(request, response);
 			}
 			return false;
+		}
+	}
+	
+//	@Override
+//	protected UserPasswordToken createToken(ServletRequest request, ServletResponse response) {
+//		String username = getUsername(request);
+//		String password = getPassword(request);
+//		return new UserPasswordToken(username, password.toCharArray(), "");
+//	}
+	
+	private void saveRequestAndRedirectToLogin2(ServletRequest request, ServletResponse response) throws IOException {
+		WebUtils.saveRequest(request);
+		String requestURI = this.getPathWithinApplication(request);
+		if (requestURI.contains("mobile")) { // 移动端
+			WebUtils.issueRedirect(request, response, "/mobilelogin");
+		} else if (requestURI.contains("portal")) { // 门户
+			WebUtils.issueRedirect(request, response, "/portallogin");
+		} else { // 后台管理
+			WebUtils.issueRedirect(request, response, "/login");
 		}
 	}
 }
