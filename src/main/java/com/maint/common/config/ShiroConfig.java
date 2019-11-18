@@ -34,8 +34,6 @@ import com.maint.common.shiro.OAuth2Helper;
 import com.maint.common.shiro.RestShiroFilterFactoryBean;
 import com.maint.common.shiro.ShiroActionProperties;
 import com.maint.common.shiro.credential.RetryLimitHashedCredentialsMatcher;
-import com.maint.common.shiro.filter.MultiLoginFilter;
-import com.maint.common.shiro.filter.MyFormAuthenticationFilter;
 import com.maint.common.shiro.filter.OAuth2AuthenticationFilter;
 import com.maint.common.shiro.filter.RestAuthorizationFilter;
 import com.maint.common.shiro.filter.RestFormAuthenticationFilter;
