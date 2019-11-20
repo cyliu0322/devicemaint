@@ -29,304 +29,386 @@
 
 <body class="animated fadeIn">
 
-    <div class="page-loading">
-        <div class="rubik-loader"></div>
-    </div>
-
-    <div style="height: 100%">
-        <div style="height: 100%">
-            <div style="padding: 20px; background-color: #F2F2F2;height:100%;">
-                <div class="layui-row layui-col-space15">
-                    <div class="layui-col-md3">
-                        <div class="layui-card">
-                            <div class="layui-card-header">部门树</div>
-                            <div class="layui-card-body" id="toolbarDiv">
-                                <ul id="deptTree" class="dtree" data-id="0"></ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="layui-col-md9">
-                        <div class="layui-card">
-                            <div class="layui-card-header" id="card-header">部门列表</div>
-                            <div class="layui-card-body">
-                                <table class="layui-hide" id="dept-table"></table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script type="text/html" id="toolbar">
-        <shiro:hasPermission name="dept:add">
-            <button type="button" class="layui-btn layui-btn-xs layui-btn-normal" lay-event="add">
-                <i class="zadmin-icon zadmin-icon-xinzeng zadmin-oper-area"></i>
-                新增
-            </button>
-        </shiro:hasPermission>
-    </script>
-
-
-    <script type="text/html" id="column-toolbar">
-
-        <shiro:hasPermission name="dept:update">
-            <a lay-event="edit">
-                <i class="zadmin-icon zadmin-icon-edit-square zadmin-oper-area zadmin-blue" title="编辑"></i>
-            </a>
-        </shiro:hasPermission>
-
-        <shiro:hasPermission name="dept:delete">
-            <a lay-event="del">
-                <i class="zadmin-icon zadmin-icon-delete zadmin-oper-area zadmin-red" title="删除"></i>
-            </a>
-        </shiro:hasPermission>
-
-        <shiro:lacksPermission name="dept:update, dept:delete">
-            <i class="zadmin-icon zadmin-icon-wuquanxian zadmin-oper-area zadmin-red"></i>无权限
-        </shiro:lacksPermission>
-
-    </script>
-
+	<div class="page-loading">
+		<div class="rubik-loader"></div>
+	</div>
+	
+	<div style="height: 100%">
+		<div style="height: 100%">
+			<div style="padding: 20px; background-color: #F2F2F2; height: 100%;">
+				<div class="layui-row layui-col-space15">
+					<div class="layui-col-md3">
+						<div class="layui-card">
+							<div class="layui-card-header">区域维修点树</div>
+							<div class="layui-card-body" id="toolbarDiv">
+								<ul id="deptTree" class="dtree" data-id="0"></ul>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-card">
+							<div class="layui-card-header" id="dept-card-header">区域列表</div>
+							<div class="layui-card-body">
+								<table class="layui-hide" id="dept-table" lay-filter="area"></table>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md5">
+						<div class="layui-card">
+							<div class="layui-card-header" id="point-card-header">维修点列表</div>
+							<div class="layui-card-body">
+								<table class="layui-hide" id="point-table" lay-filter="point"></table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/html" id="toolbar">
+		<shiro:hasPermission name="dept:add">
+			<button type="button" class="layui-btn layui-btn-xs layui-btn-normal" lay-event="add">
+				<i class="zadmin-icon zadmin-icon-xinzeng zadmin-oper-area"></i>
+					新增
+			</button>
+		</shiro:hasPermission>
+	</script>
+	
+	<script type="text/html" id="column-toolbar">
+		<shiro:hasPermission name="dept:update">
+			<a lay-event="edit">
+				<i class="zadmin-icon zadmin-icon-edit-square zadmin-oper-area zadmin-blue" title="编辑"></i>
+			</a>
+		</shiro:hasPermission>
+		
+		<shiro:hasPermission name="dept:delete">
+			<a lay-event="del">
+				<i class="zadmin-icon zadmin-icon-delete zadmin-oper-area zadmin-red" title="删除"></i>
+			</a>
+		</shiro:hasPermission>
+		
+		<shiro:lacksPermission name="dept:update, dept:delete">
+			<i class="zadmin-icon zadmin-icon-wuquanxian zadmin-oper-area zadmin-red"></i>无权限
+		</shiro:lacksPermission>
+	</script>
+	
     <script type="text/html" id="column-toolbar-sort">
-        <i class="zadmin-icon zadmin-icon-shangyimian zadmin-oper-area zadmin-blue" lay-event="up" title="上移"></i>
-
-        <i class="zadmin-icon zadmin-icon-xiayimian zadmin-oper-area zadmin-blue" lay-event="down" title="下移"></i>
-
+		<i class="zadmin-icon zadmin-icon-shangyimian zadmin-oper-area zadmin-blue" lay-event="up" title="上移"></i>
+		<i class="zadmin-icon zadmin-icon-xiayimian zadmin-oper-area zadmin-blue" lay-event="down" title="下移"></i>
         <i class="zadmin-icon zadmin-icon-zhidingmian zadmin-oper-area zadmin-blue" lay-event="top" title="置顶"></i>
-
-        <i class="zadmin-icon zadmin-icon-zhidimian zadmin-oper-area zadmin-blue" lay-event="bottom" title="置底"></i>
-    </script>
-
-    <script th:src="@{/lib/jquery/jquery.min.js}"></script>
-    <script th:src="@{/lib/layui/layui.js}"></script>
-    <script th:src="@{/js/common.js}"></script>
-
-    <script>
-
-        var parentDeptId = 0;
-
-        // 获取有没有删除, 更新, 和新增的权限.
-        var hasDeptDelete = false;
-        var hasDeptUpdate = false;
-        var hasDeptAdd = false;
-
-        $.get('/security/hasPermission/dept:update', function (data) {
-            hasDeptUpdate = data.data;
-        });
-        $.get('/security/hasPermission/dept:delete', function (data) {
-            hasDeptDelete = data.data;
-        });
-        $.get('/security/hasPermission/dept:add', function (data) {
-            hasDeptAdd = data.data;
-        });
-
+		<i class="zadmin-icon zadmin-icon-zhidimian zadmin-oper-area zadmin-blue" lay-event="bottom" title="置底"></i>
+	</script>
+	
+	<script th:src="@{/lib/jquery/jquery.min.js}"></script>
+	<script th:src="@{/lib/layui/layui.js}"></script>
+	<script th:src="@{/js/common.js}"></script>
+	
+	<script>
+		var parentDeptId = 0;
+		
+		// 获取有没有删除, 更新, 和新增的权限.
+		var hasDeptDelete = false;
+		var hasDeptUpdate = false;
+		var hasDeptAdd = false;
+		
+		$.get('/security/hasPermission/dept:update', function (data) {
+			hasDeptUpdate = data.data;
+		});
+		$.get('/security/hasPermission/dept:delete', function (data) {
+			hasDeptDelete = data.data;
+		});
+		$.get('/security/hasPermission/dept:add', function (data) {
+			hasDeptAdd = data.data;
+		});
+		
         layui.config({
-            base: '/lib/layui/extend/'
-        }).use(['jquery', 'dtree', 'layer', 'table', 'element', 'tablePlug'], function () {
-            var dtree = layui.dtree;
-            var layer = layui.layer;
-            var table = layui.table;
-            var tablePlug = layui.tablePlug;
-
-            tablePlug.smartReload.enable(true);
-
+			base: '/lib/layui/extend/'
+		}).use(['jquery', 'dtree', 'layer', 'table', 'element', 'tablePlug'], function () {
+			var dtree = layui.dtree;
+			var layer = layui.layer;
+			var table = layui.table;
+			var tablePlug = layui.tablePlug;
+			
+			tablePlug.smartReload.enable(true);
+			
             var DTree = dtree.render({
-                elem: "#deptTree",
-                url: "/dept/tree/root",
-                dataStyle: "layuiStyle",
-                initLevel: 5,   // 初始打开节点级别
-                method: "GET",
-                dot: false,     // 圆点是否显示
-                toolbar: true,  // 右键工具栏
-                menubar: true,  // 树上方工具栏, 展开、收缩、刷新、搜索等
-                toolbarShow: [],
-                toolbarScroll: "#toolbarDiv",
-                toolbarExt: [
-                    {
-                        toolbarId: "add",
-                        icon: "dtree-icon-roundadd",
-                        title: "添加子节点",
-                        handler: function (node, $div) {
-                            add(node.nodeId);
-                        }
-                    },
-                    {
-                        toolbarId: "edit",
-                        icon: "dtree-icon-bianji",
-                        title: "编辑",
-                        handler: function (node, $div) {
-                            edit(node.nodeId);
-                        }
-                    },
-                    {
-                        toolbarId: "remove",
-                        icon: "dtree-icon-roundclose",
-                        title: "删除",
-                        handler: function (node, $div) {
-                            del(node.nodeId);
-                        }
-                    }
-                ],
-                response: {
-                    statusCode: 0,
-                    message: "msg",
-                    treeId: "id",
-                    parentId: "parentId",
-                    title: "name"
-                },
-                toolbarFun:{
-                    loadToolbarBefore: function(buttons, param, $div){
-                        if(param.level === "1"){ // 如果是顶级节点, 则取消编辑和删除功能.
-                            buttons.edit = "";
-                            buttons.remove = "";
-                        }
-                        if (!hasDeptAdd) {
-                            buttons.add = "";
-                        }
-                        if (!hasDeptDelete) {
-                            buttons.remove = "";
-                        }
-                        if (!hasDeptUpdate) {
-                            buttons.edit = "";
-                        }
-                        return buttons;
-                    }
-                }
-            });
-
-            table.render({
-                elem: '#dept-table'
-                , url: '/dept/list'
-                , where: {
-                    parentId: 0
-                }
-                , cellMinWidth: 80
-                , toolbar: '#toolbar'
-                , smartReloadModel: true
-                , cols: [
-                    [
-                        {type: 'numbers', title: '序号', width: "5%"}
-                        , {field: 'id', title: 'ID', hide: true}
-                        , {field: 'name', title: '名称'}
-                        , {title: '排序', fixed: 'right', align: 'center', toolbar: '#column-toolbar-sort'}
-                        , {title: '操作', align: 'center', toolbar: '#column-toolbar'}
-                    ]
-                ]
-            });
-
-            dtree.on("node('deptTree')", function (obj) {
-                table.reload('dept-table', {
-                    where: {
-                        parentId: obj.param.nodeId
-                    }
-                });
-                parentDeptId = obj.param.nodeId;
-                $("#card-header").html("[" + obj.param.context + "]的子部门");
-            });
-
-            table.on('toolbar', function (obj) {
-                var event = obj.event;
-                if (event === 'add') {
-                    add(parentDeptId);
-                }
-            });
-
-            table.on('tool', function (obj) {
-                var data = obj.data;
-                var swapId;
-                var currentId;
-                if (obj.event === 'edit') {
-                    edit(data.id);
-                } else if (obj.event === 'del') {
-                    del(data.id);
-                } else if (obj.event === "up") {
-                    swapId = $(obj.tr).prev().find("td[data-field='id'] div").html();
-                    currentId = data.id;
-                    if (typeof swapId == 'undefined') {
-                        layer.msg("已是第一层");
-                        return;
-                    }
-                    swapSort(currentId, swapId);
-                } else if (obj.event === "down") {
-                    swapId = $(obj.tr).next().find("td[data-field='id'] div").html();
-                    currentId = data.id;
-                    if (typeof swapId == 'undefined') {
-                        layer.msg("已是最后一层");
-                        return;
-                    }
-                    swapSort(currentId, swapId);
-                } else if (obj.event === "top") {
-                    swapId = $("tr[data-index='0']").first().parent().children().first().find("td[data-field='id'] div").html();
-                    currentId = data.id;
-                    swapSort(currentId, swapId);
-                } else if (obj.event === "bottom") {
-                    swapId = $("tr[data-index='0']").first().parent().children().last().find("td[data-field='id'] div").html();
-                    currentId = data.id;
-                    swapSort(currentId, swapId);
-                }
-            });
-
-
-            function add(parentDeptId) {
-                layer.open({
-                    content: "/dept?parentId=" + parentDeptId,
-                    title: "添加子节点",
-                    area: ['40%', '85%'],
-                    type: 2,
-                    maxmin: true,
-                    shadeClose: true,
-                    end: function () {
-                        refresh();
-                    }
-                });
-            }
-
-            function swapSort(currentId, swapId) {
-                $.post('/dept/swap', {currentId: currentId, swapId: swapId}, function (data) {
-                    layer.msg("交换成功");
-                    handlerResult(data, function () {
-                        refresh();
-                    });
-                });
-            }
-
-            function del(id) {
-                layer.confirm("你确定删除数据吗？如果存在下级节点则一并删除！", {icon: 3, title: '提示'},
-                    function (index) {
-                        $.post('/dept/' + id, {_method: "DELETE"}, function (data) {
-                            layer.close(index);
-                            handlerResult(data, function () {
-                                refresh();
-                            });
-                        });
-                    }, function (index) {
-                        layer.close(index);
-                    }
-                );
-            }
-
-            function refresh() {
-                table.reload("dept-table");
-                DTree.menubarMethod().refreshTree();
-            }
-
-
-            function edit(id) {
-                layer.open({
-                    content: '/dept/' + id,
-                    title: "编辑",
-                    area: ['40%', '85%'],
-                    type: 2,
-                    maxmin: true,
-                    shadeClose: true,
-                    end: function () {
-                        refresh();
-                    }
-                });
-            }
-        });
-    </script>
+				elem: "#deptTree",
+				url: "/dept/tree/root",
+				dataStyle: "layuiStyle",
+				initLevel: 5,   // 初始打开节点级别
+				method: "GET",
+				dot: false,     // 圆点是否显示
+				toolbar: true,  // 右键工具栏
+				menubar: true,  // 树上方工具栏, 展开、收缩、刷新、搜索等
+				toolbarShow: [],
+				toolbarScroll: "#toolbarDiv",
+				toolbarExt: [
+					{
+						toolbarId: "add",
+						icon: "dtree-icon-roundadd",
+						title: "添加子节点",
+						handler: function (node, $div) {
+							add(node.nodeId);
+						}
+					},
+					{
+						toolbarId: "edit",
+						icon: "dtree-icon-bianji",
+						title: "编辑",
+						handler: function (node, $div) {
+							edit(node.nodeId);
+						}
+					},
+					{
+						toolbarId: "remove",
+						icon: "dtree-icon-roundclose",
+						title: "删除",
+						handler: function (node, $div) {
+							del(node.nodeId);
+						}
+					}
+				],
+				response: {
+					statusCode: 0,
+					message: "msg",
+					treeId: "id",
+					parentId: "parentId",
+					title: "name",
+					level: "basicData"
+				},
+				toolbarFun:{
+					loadToolbarBefore: function(buttons, param, $div){
+						if(param.level === "1"){ // 如果是顶级节点, 则取消编辑和删除功能.
+							buttons.edit = "";
+							buttons.remove = "";
+						}
+						if (!hasDeptAdd) {
+							buttons.add = "";
+						}
+						if (!hasDeptDelete) {
+							buttons.remove = "";
+						}
+						if (!hasDeptUpdate) {
+							buttons.edit = "";
+						}
+						return buttons;
+					}
+				}
+			});
+            
+            /* table.render({
+				elem: '#dept-table',
+				url: '/dept/list',
+				where: {
+					parentId: 0
+				},
+				cellMinWidth: 80,
+				//toolbar: '#toolbar',
+				smartReloadModel: true,
+				cols: [
+					[
+						{type: 'numbers', title: '序号', width: "10%"},
+						{field: 'id', title: 'ID', hide: true},
+						{field: 'name', title: '名称'},
+						{title: '操作', align: 'center', toolbar: '#column-toolbar'}
+					]
+				]
+			}); */
+			
+			table.render({
+				elem: '#dept-table',
+				url: '/dept/area/list',
+				where: {
+					parentId: 0
+				},
+				cellMinWidth: 80,
+				toolbar: '#toolbar',
+				smartReloadModel: true,
+				cols: [
+					[
+						{type: 'numbers', title: '序号', width: "10%"},
+						{field: 'id', title: 'ID', hide: true},
+						{field: 'name', title: '名称', event: 'setSign', style: 'cursor: pointer;'},
+						{title: '操作', align: 'center', toolbar: '#column-toolbar'}
+					]
+				]
+			});
+            
+			table.render({
+				elem: '#point-table',
+				url: '/dept/point/list',
+				where: {
+					parentId: 0
+				},
+				cellMinWidth: 80,
+				toolbar: '#toolbar',
+				smartReloadModel: true,
+				cols: [
+					[
+						{type: 'numbers', title: '序号', width: "10%"},
+						{field: 'id', title: 'ID', hide: true},
+						{field: 'name', title: '名称'},
+						{title: '操作', align: 'center', toolbar: '#column-toolbar'}
+					]
+				]
+			});
+			
+			dtree.on("node('deptTree')", function (obj) {
+				console.log(3242342);
+				if(obj.param.basicData == 0) {
+					table.reload('dept-table', {
+						where: {
+							parentId: obj.param.nodeId
+						}
+					});
+					parentDeptId = obj.param.nodeId;
+					$("#dept-card-header").html("[" + obj.param.context + "]的子区域");
+					
+					table.reload('point-table', {
+						where: {
+							parentId: obj.param.nodeId
+						}
+					});
+					parentDeptId = obj.param.nodeId;
+					$("#point-card-header").html("[" + obj.param.context + "]的维修点");
+				}
+			});
+			
+			table.on('toolbar', function (obj) {
+				var event = obj.event;
+				if (event === 'add') {
+					add(parentDeptId);
+				}
+			});
+			
+			table.on('tool', function (obj) {
+				var data = obj.data;
+				var swapId;
+				var currentId;
+				if (obj.event === 'edit') {
+					edit(data.id);
+				} else if (obj.event === 'del') {
+					del(data.id);
+				} else if (obj.event === "up") {
+					swapId = $(obj.tr).prev().find("td[data-field='id'] div").html();
+					currentId = data.id;
+					if (typeof swapId == 'undefined') {
+						layer.msg("已是第一层");
+						return;
+					}
+					swapSort(currentId, swapId);
+				} else if (obj.event === "down") {
+					swapId = $(obj.tr).next().find("td[data-field='id'] div").html();
+					currentId = data.id;
+					if (typeof swapId == 'undefined') {
+						layer.msg("已是最后一层");
+						return;
+					}
+					swapSort(currentId, swapId);
+				} else if (obj.event === "top") {
+					swapId = $("tr[data-index='0']").first().parent().children().first().find("td[data-field='id'] div").html();
+					currentId = data.id;
+					swapSort(currentId, swapId);
+				} else if (obj.event === "bottom") {
+					swapId = $("tr[data-index='0']").first().parent().children().last().find("td[data-field='id'] div").html();
+					currentId = data.id;
+					swapSort(currentId, swapId);
+				}
+			});
+			
+			//监听行单击事件（双击事件为：rowDouble）
+			table.on('tool(area)', function(obj){
+				var data = obj.data;
+				if(obj.event === 'setSign'){
+				      layer.prompt({
+				        formType: 2
+				        ,title: '修改 ID 为 ['+ data.id +'] 的用户签名'
+				        ,value: data.sign
+				      }, function(value, index){
+				        layer.close(index);
+				        
+				        //这里一般是发送修改的Ajax请求
+				        
+				        //同步更新表格和缓存对应的值
+				        obj.update({
+				          sign: value
+				        });
+				      });
+				    }
+			});
+			
+			//监听行单击事件（双击事件为：rowDouble）
+			table.on('row(point)', function(obj){
+				var data = obj.data;
+				
+				layer.alert(JSON.stringify(data), {
+					title: '当前行数据2：'
+				});
+				
+			    //标注选中样式
+				obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
+			});
+			
+			function add(parentDeptId) {
+				layer.open({
+					content: "/dept?parentId=" + parentDeptId,
+					title: "添加子节点",
+					area: ['40%', '85%'],
+					type: 2,
+					maxmin: true,
+					shadeClose: true,
+					end: function () {
+						refresh();
+					}
+				});
+			}
+			
+			function swapSort(currentId, swapId) {
+				$.post('/dept/swap', {currentId: currentId, swapId: swapId}, function (data) {
+					layer.msg("交换成功");
+					handlerResult(data, function () {
+						refresh();
+					});
+				});
+			}
+			
+			function del(id) {
+				layer.confirm("你确定删除数据吗？如果存在下级节点则一并删除！", {icon: 3, title: '提示'},
+					function (index) {
+						$.post('/dept/' + id, {_method: "DELETE"}, function (data) {
+							layer.close(index);
+							handlerResult(data, function () {
+								refresh();
+							});
+						});
+					},
+					function (index) {
+						layer.close(index);
+					}
+				);
+			}
+			
+			function refresh() {
+				table.reload("dept-table");
+				DTree.menubarMethod().refreshTree();
+			}
+			
+			function edit(id) {
+				layer.open({
+					content: '/dept/' + id,
+					title: "编辑",
+					area: ['40%', '85%'],
+					type: 2,
+					maxmin: true,
+					shadeClose: true,
+					end: function () {
+						refresh();
+					}
+				});
+			}
+		});
+	</script>
 </body>
 
 </html>
