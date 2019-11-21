@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import com.maint.common.annotation.OperationLog;
 import com.maint.common.util.ResultBean;
 import com.maint.system.model.Dept;
+import com.maint.system.model.PointDetail;
 import com.maint.system.service.DeptService;
 
 import javax.annotation.Resource;
@@ -52,18 +53,45 @@ public class DeptController {
 		return ResultBean.success(deptService.selectAllDeptTreeAndRoot());
 	}
 	
+	/**
+	 * 区域树
+	 * @return
+	 */
+	@GetMapping("/tree/area")
+	@ResponseBody
+	public ResultBean areaTree() {
+		ResultBean rb = ResultBean.success(deptService.selectAllAreaTreeAndRoot());
+		return ResultBean.success(deptService.selectAllAreaTreeAndRoot());
+	}
+	
 	@GetMapping("/tree")
 	@ResponseBody
 	public ResultBean tree() {
 		return ResultBean.success(deptService.selectAllDeptTree());
 	}
 	
-	@GetMapping
-	public String add() {
+//	@GetMapping
+//	public String add() {
+//		return "dept/dept-add";
+//	}
+	@GetMapping("/area")
+	public String addArea() {
 		return "dept/dept-add";
 	}
 	
-	@OperationLog("新增部门")
+	@GetMapping("/point")
+	public String addPoint() {
+		return "dept/point-add";
+	}
+	
+	@GetMapping("/detail/{deptId}")
+	public String detail(@PathVariable("deptId") Integer deptId, Model model) {
+		PointDetail detail = deptService.selectDetailByDeptId(deptId);
+		model.addAttribute("detail", detail);
+		return "dept/dept-detail";
+	}
+	
+	@OperationLog("新增区域")
 	@PostMapping
 	@ResponseBody
 	public ResultBean add(Dept dept) {

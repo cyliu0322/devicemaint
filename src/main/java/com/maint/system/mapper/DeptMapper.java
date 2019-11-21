@@ -24,6 +24,8 @@ public interface DeptMapper {
 	
 	List<Dept> selectAllTree();
 	
+	List<Dept> selectAllArea();
+	
 	List<Integer> selectChildrenIDByPrimaryKey(@Param("deptId") Integer deptId);
 	
 	int selectMaxOrderNum();

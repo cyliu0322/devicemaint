@@ -106,27 +106,27 @@ public class LoginController {
 	//门户网站注销
 	
 	
-	@PostMapping("/register")
-	@ResponseBody
-	public ResultBean register(User user) {
-		userService.checkUserNameExistOnCreate(user.getUsername());
-		String activeCode = IdUtil.fastSimpleUUID();
-		user.setActiveCode(activeCode);
-		user.setStatus("0");
-		
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-				.getRequest();
-		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/active/"
-				+ activeCode;
-		Context context = new Context();
-		context.setVariable("url", url);
-		String mailContent = templateEngine.process("mail/registerTemplate", context);
-		new Thread(() -> mailService.sendHTMLMail(user.getEmail(), "Shiro-Action 激活邮件", mailContent)).start();
-		
-		// 注册后默认的角色, 根据自己数据库的角色表 ID 设置
-		Integer[] initRoleIds = { 2 };
-		return ResultBean.success(userService.add(user, initRoleIds));
-	}
+//	@PostMapping("/register")
+//	@ResponseBody
+//	public ResultBean register(User user) {
+//		userService.checkUserNameExistOnCreate(user.getUsername());
+//		String activeCode = IdUtil.fastSimpleUUID();
+//		user.setActiveCode(activeCode);
+//		user.setStatus("0");
+//		
+//		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+//				.getRequest();
+//		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/active/"
+//				+ activeCode;
+//		Context context = new Context();
+//		context.setVariable("url", url);
+//		String mailContent = templateEngine.process("mail/registerTemplate", context);
+//		new Thread(() -> mailService.sendHTMLMail(user.getEmail(), "Shiro-Action 激活邮件", mailContent)).start();
+//		
+//		// 注册后默认的角色, 根据自己数据库的角色表 ID 设置
+//		Integer[] initRoleIds = { 2 };
+//		return ResultBean.success(userService.add(user, initRoleIds));
+//	}
 	
 	@GetMapping("/captcha")
 	public void captcha(HttpServletResponse response) throws IOException {

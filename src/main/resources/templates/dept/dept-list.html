@@ -49,7 +49,7 @@
 						<div class="layui-card">
 							<div class="layui-card-header" id="dept-card-header">区域列表</div>
 							<div class="layui-card-body">
-								<table class="layui-hide" id="dept-table" lay-filter="area"></table>
+								<table class="layui-hide" id="dept-table" lay-filter="areaFilter"></table>
 							</div>
 						</div>
 					</div>
@@ -57,7 +57,7 @@
 						<div class="layui-card">
 							<div class="layui-card-header" id="point-card-header">维修点列表</div>
 							<div class="layui-card-body">
-								<table class="layui-hide" id="point-table" lay-filter="point"></table>
+								<table class="layui-hide" id="point-table" lay-filter="pointFilter"></table>
 							</div>
 						</div>
 					</div>
@@ -139,7 +139,7 @@
 				initLevel: 5,   // 初始打开节点级别
 				method: "GET",
 				dot: false,     // 圆点是否显示
-				toolbar: true,  // 右键工具栏
+				toolbar: false,  // 右键工具栏
 				menubar: true,  // 树上方工具栏, 展开、收缩、刷新、搜索等
 				toolbarShow: [],
 				toolbarScroll: "#toolbarDiv",
@@ -224,12 +224,13 @@
 				},
 				cellMinWidth: 80,
 				toolbar: '#toolbar',
+				defaultToolbar: null,
 				smartReloadModel: true,
 				cols: [
 					[
 						{type: 'numbers', title: '序号', width: "10%"},
 						{field: 'id', title: 'ID', hide: true},
-						{field: 'name', title: '名称', event: 'setSign', style: 'cursor: pointer;'},
+						{field: 'name', title: '名称', event: 'setAreaSign', style: 'cursor: pointer;'},
 						{title: '操作', align: 'center', toolbar: '#column-toolbar'}
 					]
 				]
@@ -243,19 +244,19 @@
 				},
 				cellMinWidth: 80,
 				toolbar: '#toolbar',
+				defaultToolbar: null,
 				smartReloadModel: true,
 				cols: [
 					[
 						{type: 'numbers', title: '序号', width: "10%"},
 						{field: 'id', title: 'ID', hide: true},
-						{field: 'name', title: '名称'},
+						{field: 'name', title: '名称', event: 'setPointSign', style: 'cursor: pointer;'},
 						{title: '操作', align: 'center', toolbar: '#column-toolbar'}
 					]
 				]
 			});
 			
 			dtree.on("node('deptTree')", function (obj) {
-				console.log(3242342);
 				if(obj.param.basicData == 0) {
 					table.reload('dept-table', {
 						where: {
@@ -275,10 +276,19 @@
 				}
 			});
 			
-			table.on('toolbar', function (obj) {
+			table.on('toolbar(areaFilter)', function (obj) {
+				console.log(obj);
 				var event = obj.event;
 				if (event === 'add') {
-					add(parentDeptId);
+					addArea(parentDeptId);
+				}
+			});
+			
+			table.on('toolbar(pointFilter)', function (obj) {
+				console.log(obj);
+				var event = obj.event;
+				if (event === 'add') {
+					addPoint(parentDeptId);
 				}
 			});
 			
@@ -317,43 +327,63 @@
 				}
 			});
 			
-			//监听行单击事件（双击事件为：rowDouble）
-			table.on('tool(area)', function(obj){
+			//监听区域单元格单击事件
+			table.on('tool(areaFilter)', function(obj){
 				var data = obj.data;
-				if(obj.event === 'setSign'){
-				      layer.prompt({
-				        formType: 2
-				        ,title: '修改 ID 为 ['+ data.id +'] 的用户签名'
-				        ,value: data.sign
-				      }, function(value, index){
-				        layer.close(index);
-				        
-				        //这里一般是发送修改的Ajax请求
-				        
-				        //同步更新表格和缓存对应的值
-				        obj.update({
-				          sign: value
-				        });
-				      });
-				    }
+				/* layer.alert(JSON.stringify(data), {
+			      title: '当前行数据：'
+			    }); */
+				if(obj.event === 'setAreaSign'){
+					table.reload('point-table', {
+						where: {
+							parentId: data.id
+						}
+					});
+					$("#point-card-header").html("[" + data.name + "]的维修点");
+				}
 			});
 			
-			//监听行单击事件（双击事件为：rowDouble）
-			table.on('row(point)', function(obj){
+			//监听维修点单元格单击事件
+			table.on('tool(pointFilter)', function(obj){
 				var data = obj.data;
 				
-				layer.alert(JSON.stringify(data), {
+				/* layer.alert(JSON.stringify(data), {
 					title: '当前行数据2：'
-				});
+				}); */
+				
+				if(obj.event === 'setPointSign'){
+					layer.open({
+						content: "/dept/detail/" + data.id,
+						title: "详细信息",
+						area: ['40%', '85%'],
+						type: 2,
+						maxmin: true,
+						shadeClose: true
+					});
+				}
 				
 			    //标注选中样式
 				obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
 			});
 			
-			function add(parentDeptId) {
+			function addArea(parentDeptId) {
 				layer.open({
-					content: "/dept?parentId=" + parentDeptId,
-					title: "添加子节点",
+					content: "/dept/area?parentId=" + parentDeptId,
+					title: "添加子区域",
+					area: ['40%', '85%'],
+					type: 2,
+					maxmin: true,
+					shadeClose: true,
+					end: function () {
+						refresh();
+					}
+				});
+			}
+			
+			function addPoint(parentDeptId) {
+				layer.open({
+					content: "/dept/point?parentId=" + parentDeptId,
+					title: "添加维修点",
 					area: ['40%', '85%'],
 					type: 2,
 					maxmin: true,

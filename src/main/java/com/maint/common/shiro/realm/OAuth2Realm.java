@@ -109,7 +109,7 @@ public abstract class OAuth2Realm extends AuthenticatingRealm {
                 String encryptPassword = new Md5Hash(password, salt).toString();
                 user.setPassword(encryptPassword);
                 user.setSalt(salt);
-                user.setEmail(oauthUser.getEmail());
+                user.setTel(oauthUser.getEmail());
                 user.setStatus("1");
                 userService.add(user, initRoleIds);
 

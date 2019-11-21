@@ -24,8 +24,7 @@ public class User implements Serializable {
     @JsonIgnore
     private String salt;
 
-    @Email(message = "邮箱格式不正确")
-    private String email;
+    private String tel;
 
     private String status;
 
@@ -75,12 +74,12 @@ public class User implements Serializable {
         this.salt = salt;
     }
 
-    public String getEmail() {
-        return email;
+    public String getTel() {
+        return tel;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setTel(String tel) {
+        this.tel = tel;
     }
 
     public String getStatus() {
@@ -146,7 +145,7 @@ public class User implements Serializable {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", salt='" + salt + '\'' +
-                ", email='" + email + '\'' +
+                ", tel='" + tel + '\'' +
                 ", status='" + status + '\'' +
                 ", lastLoginTime=" + lastLoginTime +
                 ", createTime=" + createTime +

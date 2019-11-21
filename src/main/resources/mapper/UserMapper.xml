@@ -7,7 +7,7 @@
         <result column="username" jdbcType="VARCHAR" property="username"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
         <result column="salt" jdbcType="VARCHAR" property="salt"/>
-        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="tel" jdbcType="VARCHAR" property="tel"/>
         <result column="status" jdbcType="CHAR" property="status"/>
         <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
@@ -20,7 +20,7 @@
             username,
             password,
             salt,
-            email,
+            tel,
             status,
             last_login_time,
             create_time,
@@ -45,9 +45,9 @@
     <insert id="insert" keyColumn="user_id" keyProperty="userId" parameterType="com.maint.system.model.User"
             useGeneratedKeys="true">
         insert into user (username, password, salt,
-                          email, status, last_login_time, active_code, dept_id)
+                          tel, status, last_login_time, active_code, dept_id)
         values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR},
-                #{email,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, #{lastLoginTime,jdbcType=TIMESTAMP},
+                #{tel,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, #{lastLoginTime,jdbcType=TIMESTAMP},
                 #{activeCode,jdbcType=VARCHAR}, #{deptId,jdbcType=INTEGER})
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.maint.system.model.User">
@@ -62,8 +62,8 @@
             <if test="salt != null">
                 salt = #{salt,jdbcType=VARCHAR},
             </if>
-            <if test="email != null">
-                email = #{email,jdbcType=VARCHAR},
+            <if test="tel != null">
+                tel = #{tel,jdbcType=VARCHAR},
             </if>
             <if test="status != null">
                 status = #{status,jdbcType=CHAR},
@@ -82,7 +82,7 @@
         set username        = #{username,jdbcType=VARCHAR},
             password        = #{password,jdbcType=VARCHAR},
             salt            = #{salt,jdbcType=VARCHAR},
-            email           = #{email,jdbcType=VARCHAR},
+            tel           = #{tel,jdbcType=VARCHAR},
             status          = #{status,jdbcType=CHAR},
             last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
             dept_id         = #{deptId,jdbcType=INTEGER}
@@ -196,7 +196,7 @@
                u.username,
                u.password,
                u.salt,
-               u.email,
+               u.tel,
                u.status,
                u.last_login_time,
                u.create_time,
@@ -210,8 +210,8 @@
             <if test="username != null and username != ''">
                 AND u.username = #{username}
             </if>
-            <if test="email != null and email != ''">
-                AND u.email = #{email}
+            <if test="tel != null and tel != ''">
+                AND u.tel = #{tel}
             </if>
             <if test="status != null and status != ''">
                 AND u.status = #{status}

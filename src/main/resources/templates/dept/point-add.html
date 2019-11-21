@@ -19,7 +19,7 @@
         <form action="" method="post" class="layui-form layui-form-pane">
             <div class="layui-form-item">
                 <label for="deptName" class="layui-form-label">
-                    区域名称
+                    维修点名称
                 </label>
                 <div class="layui-input-block">
                     <input type="text" id="deptName" name="deptName" th:value="${dept?.deptName}"
@@ -29,7 +29,7 @@
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">
-                    上级区域
+                    所属区域
                 </label>
                 <div class="layui-input-block">
                     <div class="layui-unselect layui-form-select" id="parentNameDiv">
@@ -75,7 +75,7 @@
 
             var deptDTree = dtree.render({
                 elem: "#parentTree",
-                url: "/dept/tree/area",
+                url: "/dept/tree/root",
                 dataStyle: "layuiStyle",
                 method: "GET",
                 dot: false,     // 圆点是否显示
