@@ -66,7 +66,7 @@
 		</div>
 	</div>
 	
-	<script type="text/html" id="toolbar">
+	<script type="text/html" id="areaToolbar">
 		<shiro:hasPermission name="dept:add">
 			<button type="button" class="layui-btn layui-btn-xs layui-btn-normal" lay-event="add">
 				<i class="zadmin-icon zadmin-icon-xinzeng zadmin-oper-area"></i>
@@ -75,7 +75,34 @@
 		</shiro:hasPermission>
 	</script>
 	
-	<script type="text/html" id="column-toolbar">
+	<script type="text/html" id="pointToolbar">
+		<shiro:hasPermission name="point:add">
+			<button type="button" class="layui-btn layui-btn-xs layui-btn-normal" lay-event="add">
+				<i class="zadmin-icon zadmin-icon-xinzeng zadmin-oper-area"></i>
+					新增
+			</button>
+		</shiro:hasPermission>
+	</script>
+	
+	<script type="text/html" id="area-column-toolbar">
+		<shiro:hasPermission name="dept:update">
+			<a lay-event="edit">
+				<i class="zadmin-icon zadmin-icon-edit-square zadmin-oper-area zadmin-blue" title="编辑"></i>
+			</a>
+		</shiro:hasPermission>
+		
+		<shiro:hasPermission name="dept:delete">
+			<a lay-event="del">
+				<i class="zadmin-icon zadmin-icon-delete zadmin-oper-area zadmin-red" title="删除"></i>
+			</a>
+		</shiro:hasPermission>
+		
+		<shiro:lacksPermission name="dept:update, dept:delete">
+			<i class="zadmin-icon zadmin-icon-wuquanxian zadmin-oper-area zadmin-red"></i>无权限
+		</shiro:lacksPermission>
+	</script>
+	
+	<script type="text/html" id="point-column-toolbar">
 		<shiro:hasPermission name="dept:update">
 			<a lay-event="edit">
 				<i class="zadmin-icon zadmin-icon-edit-square zadmin-oper-area zadmin-blue" title="编辑"></i>
@@ -106,6 +133,7 @@
 	
 	<script>
 		var parentDeptId = 0;
+		var parentPointId = 0;
 		
 		// 获取有没有删除, 更新, 和新增的权限.
 		var hasDeptDelete = false;
@@ -223,7 +251,7 @@
 					parentId: 0
 				},
 				cellMinWidth: 80,
-				toolbar: '#toolbar',
+				toolbar: '#areaToolbar',
 				defaultToolbar: null,
 				smartReloadModel: true,
 				cols: [
@@ -231,7 +259,7 @@
 						{type: 'numbers', title: '序号', width: "10%"},
 						{field: 'id', title: 'ID', hide: true},
 						{field: 'name', title: '名称', event: 'setAreaSign', style: 'cursor: pointer;'},
-						{title: '操作', align: 'center', toolbar: '#column-toolbar'}
+						{title: '操作', align: 'center', toolbar: '#area-column-toolbar'}
 					]
 				]
 			});
@@ -243,7 +271,7 @@
 					parentId: 0
 				},
 				cellMinWidth: 80,
-				toolbar: '#toolbar',
+				toolbar: '#pointToolbar',
 				defaultToolbar: null,
 				smartReloadModel: true,
 				cols: [
@@ -251,7 +279,7 @@
 						{type: 'numbers', title: '序号', width: "10%"},
 						{field: 'id', title: 'ID', hide: true},
 						{field: 'name', title: '名称', event: 'setPointSign', style: 'cursor: pointer;'},
-						{title: '操作', align: 'center', toolbar: '#column-toolbar'}
+						{title: '操作', align: 'center', toolbar: '#point-column-toolbar'}
 					]
 				]
 			});
@@ -271,7 +299,7 @@
 							parentId: obj.param.nodeId
 						}
 					});
-					parentDeptId = obj.param.nodeId;
+					parentPointId = obj.param.nodeId;
 					$("#point-card-header").html("[" + obj.param.context + "]的维修点");
 				}
 			});
@@ -285,6 +313,7 @@
 			});
 			
 			table.on('toolbar(pointFilter)', function (obj) {
+				console.log(21321312);
 				console.log(obj);
 				var event = obj.event;
 				if (event === 'add') {
@@ -292,66 +321,34 @@
 				}
 			});
 			
-			table.on('tool', function (obj) {
+			table.on('tool(areaFilter)', function (obj) {
 				var data = obj.data;
 				var swapId;
 				var currentId;
-				if (obj.event === 'edit') {
-					edit(data.id);
-				} else if (obj.event === 'del') {
-					del(data.id);
-				} else if (obj.event === "up") {
-					swapId = $(obj.tr).prev().find("td[data-field='id'] div").html();
-					currentId = data.id;
-					if (typeof swapId == 'undefined') {
-						layer.msg("已是第一层");
-						return;
-					}
-					swapSort(currentId, swapId);
-				} else if (obj.event === "down") {
-					swapId = $(obj.tr).next().find("td[data-field='id'] div").html();
-					currentId = data.id;
-					if (typeof swapId == 'undefined') {
-						layer.msg("已是最后一层");
-						return;
-					}
-					swapSort(currentId, swapId);
-				} else if (obj.event === "top") {
-					swapId = $("tr[data-index='0']").first().parent().children().first().find("td[data-field='id'] div").html();
-					currentId = data.id;
-					swapSort(currentId, swapId);
-				} else if (obj.event === "bottom") {
-					swapId = $("tr[data-index='0']").first().parent().children().last().find("td[data-field='id'] div").html();
-					currentId = data.id;
-					swapSort(currentId, swapId);
-				}
-			});
-			
-			//监听区域单元格单击事件
-			table.on('tool(areaFilter)', function(obj){
-				var data = obj.data;
-				/* layer.alert(JSON.stringify(data), {
-			      title: '当前行数据：'
-			    }); */
-				if(obj.event === 'setAreaSign'){
+				if(obj.event === 'setAreaSign') {	//监听区域单元格单击事件
 					table.reload('point-table', {
 						where: {
 							parentId: data.id
 						}
 					});
+					parentPointId = data.id;
 					$("#point-card-header").html("[" + data.name + "]的维修点");
+				} else if (obj.event === 'edit') {
+					edit(data.id);
+				} else if (obj.event === 'del') {
+					del(data.id);
 				}
+				
+				//标注选中样式
+				obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
 			});
 			
-			//监听维修点单元格单击事件
 			table.on('tool(pointFilter)', function(obj){
 				var data = obj.data;
+				var swapId;
+				var currentId;
 				
-				/* layer.alert(JSON.stringify(data), {
-					title: '当前行数据2：'
-				}); */
-				
-				if(obj.event === 'setPointSign'){
+				if(obj.event === 'setPointSign') {	//监听维修点单元格单击事件
 					layer.open({
 						content: "/dept/detail/" + data.id,
 						title: "详细信息",
@@ -360,9 +357,13 @@
 						maxmin: true,
 						shadeClose: true
 					});
+				} else if (obj.event === 'edit') {
+					editPoint(data.id);
+				} else if (obj.event === 'del') {
+					delPoint(data.id);
 				}
 				
-			    //标注选中样式
+				//标注选中样式
 				obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
 			});
 			
@@ -382,14 +383,14 @@
 			
 			function addPoint(parentDeptId) {
 				layer.open({
-					content: "/dept/point?parentId=" + parentDeptId,
+					content: "/dept/point?parentId=" + parentPointId,
 					title: "添加维修点",
 					area: ['40%', '85%'],
 					type: 2,
 					maxmin: true,
 					shadeClose: true,
 					end: function () {
-						refresh();
+						refreshPoint();
 					}
 				});
 			}
@@ -404,12 +405,28 @@
 			}
 			
 			function del(id) {
-				layer.confirm("你确定删除数据吗？如果存在下级节点则一并删除！", {icon: 3, title: '提示'},
+				layer.confirm("你确定删除该区域吗？如果存在子区域及维修点则一并删除！", {icon: 3, title: '提示'},
 					function (index) {
 						$.post('/dept/' + id, {_method: "DELETE"}, function (data) {
 							layer.close(index);
 							handlerResult(data, function () {
-								refresh();
+								refreshAll();
+							});
+						});
+					},
+					function (index) {
+						layer.close(index);
+					}
+				);
+			}
+			
+			function delPoint(id) {
+				layer.confirm("你确定删除该维修点吗？", {icon: 3, title: '提示'},
+					function (index) {
+						$.post('/dept/' + id, {_method: "DELETE"}, function (data) {
+							layer.close(index);
+							handlerResult(data, function () {
+								refreshPoint();
 							});
 						});
 					},
@@ -424,6 +441,17 @@
 				DTree.menubarMethod().refreshTree();
 			}
 			
+			function refreshPoint() {
+				table.reload("point-table");
+				DTree.menubarMethod().refreshTree();
+			}
+			
+			function refreshAll() {
+				table.reload("point-table");
+				table.reload("dept-table");
+				DTree.menubarMethod().refreshTree();
+			}
+			
 			function edit(id) {
 				layer.open({
 					content: '/dept/' + id,
@@ -434,6 +462,20 @@
 					shadeClose: true,
 					end: function () {
 						refresh();
+					}
+				});
+			}
+			
+			function editPoint(id) {
+				layer.open({
+					content: '/dept/point/' + id,
+					title: "编辑",
+					area: ['40%', '85%'],
+					type: 2,
+					maxmin: true,
+					shadeClose: true,
+					end: function () {
+						refreshPoint();
 					}
 				});
 			}

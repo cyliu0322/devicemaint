@@ -27,6 +27,11 @@ public class DeptService {
 		int maxOrderNum = deptMapper.selectMaxOrderNum();
 		dept.setOrderNum(maxOrderNum + 1);
 		deptMapper.insert(dept);
+		
+		if (dept.getDeptType() == 1 && dept.getUserId() != null) {
+			bunding(dept.getDeptId(), dept.getUserId());
+		}
+		
 		return dept;
 	}
 	
@@ -35,6 +40,16 @@ public class DeptService {
 	}
 	
 	public Dept updateByPrimaryKey(Dept dept) {
+		if (dept.getDeptType() == 1 && dept.getUserId() != null) {	//负责人关联维修点
+			Dept dept_old = deptMapper.selectByPrimaryKey(dept.getDeptId());	//更新前的维修点
+			if (dept_old.getUserId() != null && dept_old.getUserId() != dept.getUserId()) {
+				unbunding(dept_old.getUserId());
+				bunding(dept.getDeptId(), dept.getUserId());
+			} else if (dept_old.getUserId() == null) {
+				bunding(dept.getDeptId(), dept.getUserId());
+			}
+		}
+		
 		deptMapper.updateByPrimaryKey(dept);
 		return dept;
 	}
@@ -63,12 +78,16 @@ public class DeptService {
 	}
 	
 	/**
-	 * 删除当前部门及子部门
+	 * 删除当前区域及下级节点
 	 */
 	public void deleteCascadeByID(Integer deptId) {
 		List<Integer> childIDList = deptMapper.selectChildrenIDByPrimaryKey(deptId);
 		for (Integer childId : childIDList) {
 			deleteCascadeByID(childId);
+		}
+		Dept dept = deptMapper.selectByPrimaryKey(deptId);
+		if (dept.getUserId() != null) {
+			unbunding(dept.getUserId());
 		}
 		deleteByPrimaryKey(deptId);
 	}
@@ -140,5 +159,21 @@ public class DeptService {
 	
 	public void swapSort(Integer currentId, Integer swapId) {
 		deptMapper.swapSort(currentId, swapId);
+	}
+	
+	/**
+	 * 区域绑定负责人
+	 * @param deptId
+	 */
+	private void bunding(int deptId, int userId) {
+		userMapper.bunding(deptId, userId);
+	}
+	
+	/**
+	 * 区域解绑负责人
+	 * @param deptId
+	 */
+	private void unbunding(int userId) {
+		userMapper.unbunding(userId);
 	}
 }

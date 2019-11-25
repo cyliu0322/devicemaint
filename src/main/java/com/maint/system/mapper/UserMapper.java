@@ -20,7 +20,21 @@ public interface UserMapper {
 
     int updateByPrimaryKey(User user);
 
-
+    /**
+     * 区域绑定负责人
+     * @param userId
+     * @param deptId
+     * @return
+     */
+    int bunding(@Param("deptId") Integer deptId, @Param("userId") Integer userId);
+    
+    /**
+     * 区域解绑负责人
+     * @param userId
+     * @return
+     */
+    int unbunding(@Param("userId") Integer userId);
+    
     /**
      * 获取用户所拥有的所有权限
      */
@@ -45,6 +59,12 @@ public interface UserMapper {
      * 获取所有用户
      */
     List<User> selectAllWithDept(User userQuery);
+    
+    /**
+     * 获取未分配的负责人
+     * @return
+     */
+    List<User> selectUnassignCharger(@Param("deptId") Integer deptId);
 
     /**
      * 更改用户的状态为某项值

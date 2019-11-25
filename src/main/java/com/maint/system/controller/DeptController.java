@@ -8,7 +8,9 @@ import com.maint.common.annotation.OperationLog;
 import com.maint.common.util.ResultBean;
 import com.maint.system.model.Dept;
 import com.maint.system.model.PointDetail;
+import com.maint.system.model.User;
 import com.maint.system.service.DeptService;
+import com.maint.system.service.UserService;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -19,6 +21,9 @@ public class DeptController {
 
 	@Resource
 	private DeptService deptService;
+	
+	@Resource
+	private UserService userService;
 	
 	@GetMapping("/index")
 	public String index() {
@@ -60,7 +65,6 @@ public class DeptController {
 	@GetMapping("/tree/area")
 	@ResponseBody
 	public ResultBean areaTree() {
-		ResultBean rb = ResultBean.success(deptService.selectAllAreaTreeAndRoot());
 		return ResultBean.success(deptService.selectAllAreaTreeAndRoot());
 	}
 	
@@ -80,7 +84,10 @@ public class DeptController {
 	}
 	
 	@GetMapping("/point")
-	public String addPoint() {
+	public String addPoint(Model model) {
+		//-1024表示新增
+		List<User> users = userService.selectUnassignCharger(-1024);
+		model.addAttribute("users", users);
 		return "dept/point-add";
 	}
 	
@@ -91,14 +98,14 @@ public class DeptController {
 		return "dept/dept-detail";
 	}
 	
-	@OperationLog("新增区域")
+	@OperationLog("新增区域/维修点")
 	@PostMapping
 	@ResponseBody
 	public ResultBean add(Dept dept) {
 		return ResultBean.success(deptService.insert(dept));
 	}
 	
-	@OperationLog("删除部门")
+	@OperationLog("删除区域")
 	@DeleteMapping("/{deptId}")
 	@ResponseBody
 	public ResultBean delete(@PathVariable("deptId") Integer deptId) {
@@ -106,7 +113,7 @@ public class DeptController {
 		return ResultBean.success();
 	}
 	
-	@OperationLog("修改部门")
+	@OperationLog("修改区域/维修点")
 	@PutMapping
 	@ResponseBody
 	public ResultBean update(Dept dept) {
@@ -119,6 +126,16 @@ public class DeptController {
 		Dept dept = deptService.selectByPrimaryKey(deptId);
 		model.addAttribute("dept", dept);
 		return "dept/dept-add";
+	}
+	
+	@GetMapping("/point/{deptId}")
+	public String updatePoint(@PathVariable("deptId") Integer deptId, Model model) {
+		Dept dept = deptService.selectByPrimaryKey(deptId);
+		List<User> users = userService.selectUnassignCharger(deptId);
+		model.addAttribute("dept", dept);
+		model.addAttribute("users", users);
+		
+		return "dept/point-add";
 	}
 	
 	@OperationLog("调整部门排序")
