@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maint.system.mapper.MaintenanceTraceMapper" >
+  <resultMap id="BaseResultMap" type="com.maint.system.model.MaintenanceTrace" >
+    <id column="maintenance_trace_id" property="maintenanceTraceId" jdbcType="VARCHAR" />
+    <result column="maintenance_order_id" property="maintenanceOrderId" jdbcType="VARCHAR" />
+    <result column="fault_cause" property="faultCause" jdbcType="VARCHAR" />
+    <result column="video" property="video" jdbcType="VARCHAR" />
+    <result column="image" property="image" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="maintenance_date" property="maintenanceDate" jdbcType="TIMESTAMP" />
+    <result column="order_status" property="orderStatus" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    maintenance_trace_id, maintenance_order_id, fault_cause, video, image, user_id, maintenance_date, 
+    order_status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_maintenance_trace
+    where maintenance_trace_id = #{maintenanceTraceId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from tbl_maintenance_trace
+    where maintenance_trace_id = #{maintenanceTraceId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maint.system.model.MaintenanceTrace" >
+    insert into tbl_maintenance_trace (maintenance_trace_id, maintenance_order_id, 
+      fault_cause, video, image, 
+      user_id, maintenance_date, order_status
+      )
+    values (#{maintenanceTraceId,jdbcType=VARCHAR}, #{maintenanceOrderId,jdbcType=VARCHAR}, 
+      #{faultCause,jdbcType=VARCHAR}, #{video,jdbcType=VARCHAR}, #{image,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=INTEGER}, #{maintenanceDate,jdbcType=TIMESTAMP}, #{orderStatus,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.maint.system.model.MaintenanceTrace" >
+    insert into tbl_maintenance_trace
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="maintenanceTraceId != null" >
+        maintenance_trace_id,
+      </if>
+      <if test="maintenanceOrderId != null" >
+        maintenance_order_id,
+      </if>
+      <if test="faultCause != null" >
+        fault_cause,
+      </if>
+      <if test="video != null" >
+        video,
+      </if>
+      <if test="image != null" >
+        image,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="maintenanceDate != null" >
+        maintenance_date,
+      </if>
+      <if test="orderStatus != null" >
+        order_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="maintenanceTraceId != null" >
+        #{maintenanceTraceId,jdbcType=VARCHAR},
+      </if>
+      <if test="maintenanceOrderId != null" >
+        #{maintenanceOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="faultCause != null" >
+        #{faultCause,jdbcType=VARCHAR},
+      </if>
+      <if test="video != null" >
+        #{video,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null" >
+        #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="maintenanceDate != null" >
+        #{maintenanceDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderStatus != null" >
+        #{orderStatus,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maint.system.model.MaintenanceTrace" >
+    update tbl_maintenance_trace
+    <set >
+      <if test="maintenanceOrderId != null" >
+        maintenance_order_id = #{maintenanceOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="faultCause != null" >
+        fault_cause = #{faultCause,jdbcType=VARCHAR},
+      </if>
+      <if test="video != null" >
+        video = #{video,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null" >
+        image = #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="maintenanceDate != null" >
+        maintenance_date = #{maintenanceDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderStatus != null" >
+        order_status = #{orderStatus,jdbcType=CHAR},
+      </if>
+    </set>
+    where maintenance_trace_id = #{maintenanceTraceId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maint.system.model.MaintenanceTrace" >
+    update tbl_maintenance_trace
+    set maintenance_order_id = #{maintenanceOrderId,jdbcType=VARCHAR},
+      fault_cause = #{faultCause,jdbcType=VARCHAR},
+      video = #{video,jdbcType=VARCHAR},
+      image = #{image,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      maintenance_date = #{maintenanceDate,jdbcType=TIMESTAMP},
+      order_status = #{orderStatus,jdbcType=CHAR}
+    where maintenance_trace_id = #{maintenanceTraceId,jdbcType=VARCHAR}
+  </update>
+</mapper>

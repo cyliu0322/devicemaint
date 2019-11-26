@@ -3,7 +3,6 @@ package com.maint.system.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.maint.common.validate.groups.Create;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;

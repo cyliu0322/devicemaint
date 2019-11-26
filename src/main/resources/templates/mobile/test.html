@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>video upload test</title>
+    <!-- zui -->
+    <link th:href="@{/lib/zui/css/zui.min.css}" rel="stylesheet">
+    <link th:href="@{/lib/zui/lib/uploader/zui.uploader.min.css}" rel="stylesheet">
+  </head>
+  <body>
+    <h1>Hello, world!</h1>
+
+    <div id='uploader' class="uploader">
+	  <div class="uploader-message text-center">
+	    <div class="content"></div>
+	    <button type="button" class="close">×</button>
+	  </div>
+	  <div class="uploader-files file-list file-list-grid"></div>
+	  <div>
+	    <hr class="divider">
+	    <!-- <div class="uploader-status pull-right text-muted"></div> -->
+	    <button type="button" class="btn btn-link uploader-btn-browse"><i class="icon icon-plus"></i> 选择文件</button>
+	    <button type="button" class="btn btn-link uploader-btn-start"><i class="icon icon-cloud-upload"></i> 开始上传</button>
+	  </div>
+	</div>
+
+    <!-- jQuery (ZUI中的Javascript组件依赖于jQuery) -->
+    <script th:src="@{/lib/zui/lib/jquery/jquery.js}"></script>
+    <!-- ZUI Javascript组件 -->
+    <script th:src="@{/lib/zui/js/zui.min.js}"></script>
+    <script th:src="@{/lib/zui/lib/uploader/zui.uploader.min.js}"></script>
+    <script type="text/javascript">
+      $('#uploader').uploader({
+    	  	autoUpload: false,             // 当选择文件后立即自动进行上传操作
+			url: '/mobile/uploadPicture',  // 文件上传提交地址
+			limitFilesCount:1,            //限定文件上传的数目
+			dropPlaceholder:false,
+			uploadedMessage:true,
+			sendFileName:true,       //发送文件名称
+			chunk_size:0,		  //不启动分片上传
+			removeUploaded:false,          //移除已上传的文件
+			unique_names:true,        //为文件分配唯一文件名
+			max_retries:2,         //当上传失败时的最大尝试次数
+			multi_selection:false,        //是否可用一次选取多个文件
+			filters:{
+			    // 只允许上传图片或图标（.ico）
+			    mime_types: [
+			        {title: '图片', extensions: 'jpg,gif,png,jpeg,bmp'},
+			        {title: '视频', extensions: 'mp4'}
+			    ],
+			    max_file_size: '5mb',     // 最大上传文件为 5MB
+			    prevent_duplicates: true  // 不允许上传重复文件
+			},
+			onFileUploaded:function(file, responseObject){
+				if(responseObject.status==200){
+					console.log("msg:"+responseObject.response)
+					//写个上传成功标志，只有当上传成功之后才可以提交
+					uploadSuccesFlag = "SUCCESS";
+				}
+				console.log("fileId:"+file.id+",fileName:"+file.name);
+			},
+			onError:function(error){
+				console.log("code="+error.code+",msg:"+error.message);
+			},
+			deleteActionOnDone:function(file, doRemoveFile){
+				alert("已上传的文件不可删除");
+				console.log("fileId:"+file.id+",fileName:"+file.name);
+				
+			}
+      });
+    </script>
+  </body>
+</html>

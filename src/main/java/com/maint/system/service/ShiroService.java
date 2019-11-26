@@ -56,8 +56,10 @@ public class ShiroService {
 		filterChainDefinitionMap.put("/lib/**", "anon");
 		filterChainDefinitionMap.put("/active/**", "anon");
 		filterChainDefinitionMap.put("/login", "anon");			// 后台管理登录页面
-		filterChainDefinitionMap.put("/mobileLogin", "anon");	// 移动端登录页面
-//		filterChainDefinitionMap.put("/mobileLogin", "anon");	// 门户网站登录页面
+		filterChainDefinitionMap.put("/mobile/toLogin", "anon");	// 移动端登录页面
+		filterChainDefinitionMap.put("/mobile/login", "anon");	// 移动端登录认证路径
+		filterChainDefinitionMap.put("/web/toLogin", "anon");	// 门户网站登录页面
+		filterChainDefinitionMap.put("/web/login", "anon");	// 门户网站登录认证路径
 		filterChainDefinitionMap.put("/register", "anon");
 		filterChainDefinitionMap.put("/403", "anon");
 		filterChainDefinitionMap.put("/404", "anon");
@@ -67,6 +69,7 @@ public class ShiroService {
 		filterChainDefinitionMap.put("/oauth2/render/*", "anon");
 		filterChainDefinitionMap.put("/oauth2/error", "anon");
 		filterChainDefinitionMap.put("/captcha", "anon");
+		filterChainDefinitionMap.put("/mobile/*", "anon");
 		
 		List<Menu> menuList = menuService.getLeafNodeMenu();
 		for (Menu menu : menuList) {

@@ -52,16 +52,6 @@ public class LoginController {
 		return "login";
 	}
 	
-	// 移动端登录
-	@GetMapping("/mobileLogin")
-	public String mobileLogin(Model model) {
-		model.addAttribute("loginVerify", shiroActionProperties.getLoginVerify());
-		return "404";
-	}
-	
-	//门户网站登录
-	
-	
 	@GetMapping("/register")
 	public String register() {
 		return "register";

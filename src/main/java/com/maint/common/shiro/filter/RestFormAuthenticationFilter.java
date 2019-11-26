@@ -5,7 +5,6 @@ import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.maint.common.shiro.token.UserPasswordToken;
 import com.maint.common.util.IPUtils;
 import com.maint.common.util.ResultBean;
 import com.maint.common.util.WebHelper;
@@ -97,9 +96,9 @@ public class RestFormAuthenticationFilter extends FormAuthenticationFilter {
 		WebUtils.saveRequest(request);
 		String requestURI = this.getPathWithinApplication(request);
 		if (requestURI.contains("mobile")) { // 移动端
-			WebUtils.issueRedirect(request, response, "/mobileLogin");
-		} else if (requestURI.contains("portal")) { // 门户
-			WebUtils.issueRedirect(request, response, "/portalLogin");
+			WebUtils.issueRedirect(request, response, "/mobile/toLogin");
+		} else if (requestURI.contains("web")) { // 门户
+			WebUtils.issueRedirect(request, response, "/web/toLogin");
 		} else { // 后台管理
 			WebUtils.issueRedirect(request, response, "/login");
 		}
