@@ -40,6 +40,9 @@ public class Dept implements Serializable {
 	@JsonProperty("basicData")
 	private Integer deptType;
 	
+	@JsonProperty("forbidden")
+	private boolean disabled = false;
+	
 	/**
 	 * 负责人
 	 */
@@ -103,6 +106,9 @@ public class Dept implements Serializable {
 	
 	public void setDeptType(Integer deptType) {
 		this.deptType = deptType;
+		if (deptType == 0) {
+			disabled = true;
+		}
 	}
 	
 	public Integer getUserId() {

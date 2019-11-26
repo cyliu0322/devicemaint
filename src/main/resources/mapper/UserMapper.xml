@@ -48,10 +48,10 @@
         <where>
         	<choose>
         		<when test="deptId == -1024">
-                    and r.role_id = 3 and r.role_id = ur.role_id and ur.user_id = u.user_id and u.status = 1 and u.dept_id is null
+                    and r.role_id = 2 and r.role_id = ur.role_id and ur.user_id = u.user_id and u.status = 1 and u.dept_id is null
                 </when>
         		<otherwise>
-        			and r.role_id = 3 and r.role_id = ur.role_id and ur.user_id = u.user_id and u.status = 1 and (u.dept_id is null or u.dept_id = #{deptId})
+        			and r.role_id = 2 and r.role_id = ur.role_id and ur.user_id = u.user_id and u.status = 1 and (u.dept_id is null or u.dept_id = #{deptId})
         		</otherwise>
         	</choose>
         </where>

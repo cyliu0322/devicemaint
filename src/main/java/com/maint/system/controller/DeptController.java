@@ -59,13 +59,23 @@ public class DeptController {
 	}
 	
 	/**
-	 * 区域树
+	 * 区域树（包含根区域）
+	 * @return
+	 */
+	@GetMapping("/tree/root/area")
+	@ResponseBody
+	public ResultBean areaTree() {
+		return ResultBean.success(deptService.selectAllAreaTreeAndRoot());
+	}
+	
+	/**
+	 * 区域树（不包含根区域）
 	 * @return
 	 */
 	@GetMapping("/tree/area")
 	@ResponseBody
-	public ResultBean areaTree() {
-		return ResultBean.success(deptService.selectAllAreaTreeAndRoot());
+	public ResultBean pointTree() {
+		return ResultBean.success(deptService.selectAllAreaTree());
 	}
 	
 	@GetMapping("/tree")

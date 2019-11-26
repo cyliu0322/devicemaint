@@ -47,11 +47,21 @@ public class UserService {
 	private SessionDAO sessionDAO;
 	
 	@Resource
+	private RoleService roleService;
+	
+	@Resource
 	private ShiroActionProperties shiroActionProperties;
 	
 	public List<User> selectAllWithDept(int page, int rows, User userQuery) {
 		PageHelper.startPage(page, rows);
-		return userMapper.selectAllWithDept(userQuery);
+		List<User> users = userMapper.selectAllWithDept(userQuery);
+		
+		for (User user : users) {
+			List<String> roleNames = roleService.getRoleNameByUserId(user.getUserId());
+			user.setRoleNames(roleNames);
+		}
+		
+		return users;
 	}
 	
 	public List<User> selectUnassignCharger(int deptId) {
