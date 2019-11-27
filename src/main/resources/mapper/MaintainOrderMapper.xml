@@ -33,6 +33,11 @@
     from tbl_maintain_order
     where maintain_order_id = #{maintainOrderId,jdbcType=VARCHAR}
   </select>
+  <select id="selectAllMaint" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_maintain_order
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from tbl_maintain_order
     where maintain_order_id = #{maintainOrderId,jdbcType=VARCHAR}

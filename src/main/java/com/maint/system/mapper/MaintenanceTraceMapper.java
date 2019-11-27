@@ -18,6 +18,8 @@ public interface MaintenanceTraceMapper {
     int insertSelective(MaintenanceTrace record);
 
     MaintenanceTrace selectByPrimaryKey(String maintenanceTraceId);
+    
+    List<MaintenanceTrace> selectByUpkeepId(@Param("upkeepId") String upkeepId);
 
     int updateByPrimaryKeySelective(MaintenanceTrace record);
 

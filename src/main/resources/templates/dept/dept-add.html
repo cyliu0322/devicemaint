@@ -112,7 +112,6 @@
 			});
 			
 			dtree.on("node(parentTree)", function(obj){
-				console.log(obj);
 				$("#parentName").val(obj.param.context);
 				$("#parentId").val(obj.param.nodeId);
 				$("#parentNameDiv").toggleClass("layui-form-selected");

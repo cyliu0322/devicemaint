@@ -21,6 +21,12 @@
     from tbl_maintenance_trace
     where maintenance_trace_id = #{maintenanceTraceId,jdbcType=VARCHAR}
   </select>
+  <select id="selectByUpkeepId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_maintenance_trace
+    where maintenance_order_id = #{upkeepId,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from tbl_maintenance_trace
     where maintenance_trace_id = #{maintenanceTraceId,jdbcType=VARCHAR}

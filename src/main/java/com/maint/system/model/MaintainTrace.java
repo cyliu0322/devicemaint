@@ -2,7 +2,11 @@ package com.maint.system.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.maint.system.enums.MaintainOrderStatusEnum;
+
 public class MaintainTrace {
+	
     private String maintainTraceId;
 
     private String maintainOrderId;
@@ -18,6 +22,9 @@ public class MaintainTrace {
     private Date maintainDate;
 
     private String orderStatus;
+    
+    @JsonProperty("statusDesc")
+    private String statusDesc;
 
     public String getMaintainTraceId() {
         return maintainTraceId;
@@ -80,6 +87,7 @@ public class MaintainTrace {
     }
 
     public void setOrderStatus(String orderStatus) {
+        this.statusDesc = MaintainOrderStatusEnum.getvalueOf(orderStatus).getTxt();
         this.orderStatus = orderStatus == null ? null : orderStatus.trim();
     }
 }
