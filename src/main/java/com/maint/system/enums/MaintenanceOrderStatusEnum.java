@@ -1,11 +1,12 @@
 package com.maint.system.enums;
 
 public enum MaintenanceOrderStatusEnum {
-
-	CJDD("1","创建订单"),//包括创建分配
+	BYDSC("0","保养单生成"),
+	DBY("1","待保养"),
 	BYZ("2","保养中"),
 	BYWC("3","保养完成"),
-	YHF("4","已回访");
+	DHF("4","待回访"),
+	YHF("5","已回访");
 	
 	private String value;
 	private String txt;

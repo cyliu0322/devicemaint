@@ -17,6 +17,8 @@ public class MaintenanceOrder {
 
     private String deviceAddr;
 
+    private Integer deviceYears;
+
     private String companyPhone;
 
     private String companyEmail;
@@ -28,6 +30,8 @@ public class MaintenanceOrder {
     private Date createDate;
 
     private Double score;
+
+    private Integer userId;
 
     public String getMaintenanceOrderId() {
         return maintenanceOrderId;
@@ -85,6 +89,14 @@ public class MaintenanceOrder {
         this.deviceAddr = deviceAddr == null ? null : deviceAddr.trim();
     }
 
+    public Integer getDeviceYears() {
+        return deviceYears;
+    }
+
+    public void setDeviceYears(Integer deviceYears) {
+        this.deviceYears = deviceYears;
+    }
+
     public String getCompanyPhone() {
         return companyPhone;
     }
@@ -131,5 +143,13 @@ public class MaintenanceOrder {
 
     public void setScore(Double score) {
         this.score = score;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }

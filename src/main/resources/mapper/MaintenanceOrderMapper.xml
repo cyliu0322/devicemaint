@@ -9,16 +9,19 @@
     <result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
     <result column="device_brand" property="deviceBrand" jdbcType="VARCHAR" />
     <result column="device_addr" property="deviceAddr" jdbcType="VARCHAR" />
+    <result column="device_years" property="deviceYears" jdbcType="INTEGER" />
     <result column="company_phone" property="companyPhone" jdbcType="VARCHAR" />
     <result column="company_email" property="companyEmail" jdbcType="VARCHAR" />
     <result column="state" property="state" jdbcType="CHAR" />
     <result column="dept_id" property="deptId" jdbcType="INTEGER" />
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
     <result column="score" property="score" jdbcType="DOUBLE" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     maintenance_order_id, company_id, company_name, device_name, device_code, device_brand, 
-    device_addr, company_phone, company_email, state, dept_id, create_date, score
+    device_addr, device_years, company_phone, company_email, state, dept_id, create_date, 
+    score, user_id
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -33,14 +36,16 @@
   <insert id="insert" parameterType="com.maint.system.model.MaintenanceOrder" >
     insert into tbl_maintenance_order (maintenance_order_id, company_id, company_name, 
       device_name, device_code, device_brand, 
-      device_addr, company_phone, company_email, 
-      state, dept_id, create_date, 
-      score)
+      device_addr, device_years, company_phone, 
+      company_email, state, dept_id, 
+      create_date, score, user_id
+      )
     values (#{maintenanceOrderId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
       #{deviceName,jdbcType=VARCHAR}, #{deviceCode,jdbcType=VARCHAR}, #{deviceBrand,jdbcType=VARCHAR}, 
-      #{deviceAddr,jdbcType=VARCHAR}, #{companyPhone,jdbcType=VARCHAR}, #{companyEmail,jdbcType=VARCHAR}, 
-      #{state,jdbcType=CHAR}, #{deptId,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
-      #{score,jdbcType=DOUBLE})
+      #{deviceAddr,jdbcType=VARCHAR}, #{deviceYears,jdbcType=INTEGER}, #{companyPhone,jdbcType=VARCHAR}, 
+      #{companyEmail,jdbcType=VARCHAR}, #{state,jdbcType=CHAR}, #{deptId,jdbcType=INTEGER}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{score,jdbcType=DOUBLE}, #{userId,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.maint.system.model.MaintenanceOrder" >
     insert into tbl_maintenance_order
@@ -66,6 +71,9 @@
       <if test="deviceAddr != null" >
         device_addr,
       </if>
+      <if test="deviceYears != null" >
+        device_years,
+      </if>
       <if test="companyPhone != null" >
         company_phone,
       </if>
@@ -83,6 +91,9 @@
       </if>
       <if test="score != null" >
         score,
+      </if>
+      <if test="userId != null" >
+        user_id,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -107,6 +118,9 @@
       <if test="deviceAddr != null" >
         #{deviceAddr,jdbcType=VARCHAR},
       </if>
+      <if test="deviceYears != null" >
+        #{deviceYears,jdbcType=INTEGER},
+      </if>
       <if test="companyPhone != null" >
         #{companyPhone,jdbcType=VARCHAR},
       </if>
@@ -124,6 +138,9 @@
       </if>
       <if test="score != null" >
         #{score,jdbcType=DOUBLE},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -148,6 +165,9 @@
       <if test="deviceAddr != null" >
         device_addr = #{deviceAddr,jdbcType=VARCHAR},
       </if>
+      <if test="deviceYears != null" >
+        device_years = #{deviceYears,jdbcType=INTEGER},
+      </if>
       <if test="companyPhone != null" >
         company_phone = #{companyPhone,jdbcType=VARCHAR},
       </if>
@@ -166,6 +186,9 @@
       <if test="score != null" >
         score = #{score,jdbcType=DOUBLE},
       </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
     </set>
     where maintenance_order_id = #{maintenanceOrderId,jdbcType=VARCHAR}
   </update>
@@ -177,12 +200,14 @@
       device_code = #{deviceCode,jdbcType=VARCHAR},
       device_brand = #{deviceBrand,jdbcType=VARCHAR},
       device_addr = #{deviceAddr,jdbcType=VARCHAR},
+      device_years = #{deviceYears,jdbcType=INTEGER},
       company_phone = #{companyPhone,jdbcType=VARCHAR},
       company_email = #{companyEmail,jdbcType=VARCHAR},
       state = #{state,jdbcType=CHAR},
       dept_id = #{deptId,jdbcType=INTEGER},
       create_date = #{createDate,jdbcType=TIMESTAMP},
-      score = #{score,jdbcType=DOUBLE}
+      score = #{score,jdbcType=DOUBLE},
+      user_id = #{userId,jdbcType=INTEGER}
     where maintenance_order_id = #{maintenanceOrderId,jdbcType=VARCHAR}
   </update>
 </mapper>

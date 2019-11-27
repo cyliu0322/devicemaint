@@ -2,12 +2,14 @@ package com.maint.system.enums;
 
 public enum MaintainOrderStatusEnum {
 
-	CJDD("0","创建订单"),//或待受理
-	YSL("1","已受理"),
+	WXSQ("0","维修申请"),
+	DSJ("1","待首检"),
 	YSJ("2","已首检"),
-	WXZ("3","维修中"),
-	WXWC("4","维修完成"),
-	YHF("5","已回访");
+	DWX("3","待维修"),
+	WXZ("4","维修中"),
+	WXWC("5","维修完成"),
+	DHF("6","待回访"),
+	YHF("7","已回访");
 	
 	private String value;
 	private String txt;

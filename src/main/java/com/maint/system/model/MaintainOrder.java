@@ -39,6 +39,8 @@ public class MaintainOrder {
 
     private Double score;
 
+    private Integer userId;
+
     public String getMaintainOrderId() {
         return maintainOrderId;
     }
@@ -181,5 +183,13 @@ public class MaintainOrder {
 
     public void setScore(Double score) {
         this.score = score;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }

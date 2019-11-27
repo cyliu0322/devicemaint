@@ -20,11 +20,12 @@
     <result column="web_user_id" property="webUserId" jdbcType="INTEGER" />
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
     <result column="score" property="score" jdbcType="DOUBLE" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     maintain_order_id, company_name, company_id, company_address, company_contact, company_phone, 
     company_email, device_name, device_code, device_brand, device_addr, device_years, 
-    state, dept_id, fault_description, web_user_id, create_date, score
+    state, dept_id, fault_description, web_user_id, create_date, score, user_id
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -42,15 +43,15 @@
       company_email, device_name, device_code, 
       device_brand, device_addr, device_years, 
       state, dept_id, fault_description, 
-      web_user_id, create_date, score
-      )
+      web_user_id, create_date, score, 
+      user_id)
     values (#{maintainOrderId,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, 
       #{companyAddress,jdbcType=VARCHAR}, #{companyContact,jdbcType=VARCHAR}, #{companyPhone,jdbcType=VARCHAR}, 
       #{companyEmail,jdbcType=VARCHAR}, #{deviceName,jdbcType=VARCHAR}, #{deviceCode,jdbcType=VARCHAR}, 
       #{deviceBrand,jdbcType=VARCHAR}, #{deviceAddr,jdbcType=VARCHAR}, #{deviceYears,jdbcType=INTEGER}, 
       #{state,jdbcType=CHAR}, #{deptId,jdbcType=INTEGER}, #{faultDescription,jdbcType=VARCHAR}, 
-      #{webUserId,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{score,jdbcType=DOUBLE}
-      )
+      #{webUserId,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{score,jdbcType=DOUBLE}, 
+      #{userId,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.maint.system.model.MaintainOrder" >
     insert into tbl_maintain_order
@@ -109,6 +110,9 @@
       <if test="score != null" >
         score,
       </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="maintainOrderId != null" >
@@ -164,6 +168,9 @@
       </if>
       <if test="score != null" >
         #{score,jdbcType=DOUBLE},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -221,6 +228,9 @@
       <if test="score != null" >
         score = #{score,jdbcType=DOUBLE},
       </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
     </set>
     where maintain_order_id = #{maintainOrderId,jdbcType=VARCHAR}
   </update>
@@ -242,7 +252,8 @@
       fault_description = #{faultDescription,jdbcType=VARCHAR},
       web_user_id = #{webUserId,jdbcType=INTEGER},
       create_date = #{createDate,jdbcType=TIMESTAMP},
-      score = #{score,jdbcType=DOUBLE}
+      score = #{score,jdbcType=DOUBLE},
+      user_id = #{userId,jdbcType=INTEGER}
     where maintain_order_id = #{maintainOrderId,jdbcType=VARCHAR}
   </update>
 </mapper>
