@@ -29,7 +29,6 @@ import com.maint.common.util.ResultBean;
 import com.maint.system.enums.OrderTypeEnum;
 import com.maint.system.model.MaintainOrder;
 import com.maint.system.model.MaintenanceOrder;
-import com.maint.system.model.OrderAssign;
 import com.maint.system.model.OrderStatusBean;
 import com.maint.system.service.MobileLoginService;
 
@@ -55,43 +54,42 @@ public class MobileLoginController {
 		return "mobile/search-order";
 	}
 	
-	@GetMapping(value = "toOrderDetail1")
-	public String toOrderDetail(Model model,
-			@RequestParam(value = "orderType", required = true) String orderType) {
-		model.addAttribute("orderType", orderType);
+	/*
+	 * @GetMapping(value = "toOrderDetail1") public String toOrderDetail(Model
+	 * model,
+	 * 
+	 * @RequestParam(value = "orderType", required = true) String orderType) {
+	 * model.addAttribute("orderType", orderType);
+	 * 
+	 * List<OrderStatusBean> orderStatusBeans = new ArrayList<OrderStatusBean>();
+	 * //首检bean OrderStatusBean sjBean = new OrderStatusBean();
+	 * sjBean.setOrderStatusDescription("已首检"); sjBean.setFaultCause("首检故障原因");
+	 * sjBean.setDate("2019/11/24 14:08"); orderStatusBeans.add(sjBean);
+	 * 
+	 * //维修bean1 OrderStatusBean wxBean1 = new OrderStatusBean();
+	 * wxBean1.setOrderStatusDescription("维修中"); wxBean1.setFaultCause("维修故障原因1");
+	 * wxBean1.setDate("2019/11/25 14:08"); orderStatusBeans.add(wxBean1);
+	 * 
+	 * //维修bean2 OrderStatusBean wxBean2 = new OrderStatusBean();
+	 * wxBean2.setOrderStatusDescription("维修中"); wxBean2.setFaultCause("维修故障原因2");
+	 * wxBean2.setDate("2019/11/25 14:08"); orderStatusBeans.add(wxBean2);
+	 * 
+	 * //维修bean OrderStatusBean wcBean = new OrderStatusBean();
+	 * wcBean.setOrderStatusDescription("已完成"); wcBean.setFaultCause("");
+	 * wcBean.setDate("2019/11/26 14:08"); orderStatusBeans.add(wcBean);
+	 * 
+	 * model.addAttribute("orderStatuss",orderStatusBeans);
+	 * 
+	 * return "mobile/order-detail"; }
+	 */
+	
+	@GetMapping(value = "goMaintain")
+	public String goMaintain(Model model,
+			@RequestParam(value = "orderId", required = true) String orderId,
+			@RequestParam(value = "orderType", required = true) String orderType,
+			@RequestParam(value = "deviceBrand", required = true) String deviceBrand) {
 		
-		List<OrderStatusBean> orderStatusBeans = new ArrayList<OrderStatusBean>();
-		//首检bean
-		OrderStatusBean sjBean = new OrderStatusBean();
-		sjBean.setOrderStatusDescription("已首检");
-		sjBean.setFaultCause("首检故障原因");
-		sjBean.setDate("2019/11/24 14:08");
-		orderStatusBeans.add(sjBean);
-		
-		//维修bean1
-		OrderStatusBean wxBean1 = new OrderStatusBean();
-		wxBean1.setOrderStatusDescription("维修中");
-		wxBean1.setFaultCause("维修故障原因1");
-		wxBean1.setDate("2019/11/25 14:08");
-		orderStatusBeans.add(wxBean1);
-		
-		//维修bean2
-		OrderStatusBean wxBean2 = new OrderStatusBean();
-		wxBean2.setOrderStatusDescription("维修中");
-		wxBean2.setFaultCause("维修故障原因2");
-		wxBean2.setDate("2019/11/25 14:08");
-		orderStatusBeans.add(wxBean2);
-		
-		//维修bean
-		OrderStatusBean wcBean = new OrderStatusBean();
-		wcBean.setOrderStatusDescription("已完成");
-		wcBean.setFaultCause("");
-		wcBean.setDate("2019/11/26 14:08");
-		orderStatusBeans.add(wcBean);
-		
-		model.addAttribute("orderStatuss",orderStatusBeans);
-		
-		return "mobile/order-detail";
+		return null;
 	}
 	
 	@GetMapping(value = "toOrderDetail")
@@ -124,15 +122,12 @@ public class MobileLoginController {
 	@PostMapping(value = "searchOrder")
 	@ResponseBody
 	public String searchOrder(
-			@RequestParam(value = "order_id", required = false) String order_id,
-			@RequestParam(value = "flag", required = true) String flag) {
-		
-		//flag查询标志，为0则代表通过订单号查询，为1则代表通过用户id查询前5条订单
+			@RequestParam(value = "order_id", required = false) String order_id) {
 		
 		ResultBean resultBean = null;
 		try {
-			List<OrderAssign> orderAssigns = mobileService.<OrderAssign>searchOrderService(order_id, flag);
-			resultBean = ResultBean.successData(orderAssigns);
+//			List<OrderAssign> orderAssigns = mobileService.<OrderAssign>searchOrderService(order_id, flag);
+//			resultBean = ResultBean.successData(orderAssigns);
 		} catch (Exception e) {
 			resultBean = ResultBean.error(e.getMessage());
 		}

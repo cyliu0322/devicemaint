@@ -15,7 +15,6 @@ import com.maint.system.mapper.MaintainOrderMapper;
 import com.maint.system.mapper.MaintainTraceMapper;
 import com.maint.system.mapper.MaintenanceOrderMapper;
 import com.maint.system.mapper.MaintenanceTraceMapper;
-import com.maint.system.mapper.OrderAssignMapper;
 import com.maint.system.model.MaintainTrace;
 import com.maint.system.model.MaintenanceTrace;
 import com.maint.system.model.OrderStatusBean;
@@ -23,8 +22,6 @@ import com.maint.system.model.OrderStatusBean;
 @Service
 public class MobileLoginService {
 	
-	@Autowired
-	private OrderAssignMapper orderAssignMapper;
 	@Autowired
 	private MaintainTraceMapper miantainTraceMapper;
 	@Autowired
@@ -102,9 +99,9 @@ public class MobileLoginService {
 		List<E> orderAssigns = null;
 		
 		if("0".equals(flag)) {
-			orderAssigns = (List<E>) orderAssignMapper.selectOrderAssignsByOrderId(order_id, ShiroUtil.getCurrentUser().getUserId());
+			//orderAssigns = (List<E>) orderAssignMapper.selectOrderAssignsByOrderId(order_id, ShiroUtil.getCurrentUser().getUserId());
 		}else {
-			orderAssigns = (List<E>) orderAssignMapper.selectOrderAssignsByUserId(ShiroUtil.getCurrentUser().getUserId());
+			//orderAssigns = (List<E>) orderAssignMapper.selectOrderAssignsByUserId(ShiroUtil.getCurrentUser().getUserId());
 		}
 		
 		return orderAssigns;
