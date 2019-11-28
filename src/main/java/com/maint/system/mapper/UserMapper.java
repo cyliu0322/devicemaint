@@ -67,6 +67,12 @@ public interface UserMapper {
     List<User> selectUnassignCharger(@Param("deptId") Integer deptId);
 
     /**
+     * 获取首检人
+     * @return
+     */
+    List<User> selectPoiorers();
+    
+    /**
      * 更改用户的状态为某项值
      */
     int updateStatusByPrimaryKey(@Param("id") Integer id, @Param("status") int status);

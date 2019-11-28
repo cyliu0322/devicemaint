@@ -8,6 +8,7 @@ import com.github.pagehelper.PageInfo;
 import com.maint.common.annotation.OperationLog;
 import com.maint.common.util.PageResultBean;
 import com.maint.common.util.ResultBean;
+import com.maint.system.enums.MaintainOrderStatusEnum;
 import com.maint.system.model.Dept;
 import com.maint.system.model.MaintainOrder;
 import com.maint.system.model.MaintainTrace;
@@ -32,6 +33,9 @@ public class MaintController {
 	@Resource
 	private MaintService maintService;
 	
+	@Resource
+	private UserService userService;
+	
 	@GetMapping("/index")
 	public String index() {
 		return "maint/maint-list";
@@ -52,4 +56,31 @@ public class MaintController {
 	public ResultBean getTraceList(@PathVariable("maintId") String maintId) {
 		return ResultBean.success(maintService.selectTracesByMaintId(maintId));
 	}
+	
+	@GetMapping("/prior/{maintId}")
+	public String appointPrior(@PathVariable("maintId") String maintId, Model model) {
+		List<User> users = userService.selectPriorers();
+		model.addAttribute("users", users);
+		MaintainOrder maint = maintService.selectMaintById(maintId);
+		maint.setState(MaintainOrderStatusEnum.DSJ.getValue());
+		model.addAttribute("maint", maint);
+		return "maint/maint-prior";
+	}
+	
+	@GetMapping("/mp/{maintId}")
+	public String appointMp(@PathVariable("maintId") String maintId, Model model) {
+		List<User> users = userService.selectPriorers();
+		model.addAttribute("users", users);
+		model.addAttribute("maintId", maintId);
+		model.addAttribute("appoint", MaintainOrderStatusEnum.DWX.getValue());
+		return "maint/maint-mp";
+	}
+	
+	@PutMapping("/appoint")
+	@ResponseBody
+	public ResultBean update(MaintainOrder maint) {
+		maintService.appoint(maint);
+		return ResultBean.success();
+	}
+	
 }

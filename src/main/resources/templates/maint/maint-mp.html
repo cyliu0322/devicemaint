@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>派单</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/favicon.ico}"/>
+    <link rel="stylesheet" th:href="@{/lib/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/animate.min.css}">
+    <link rel="stylesheet" th:href="@{/lib/layui/extend/formSelects-v4.css}" />
+</head>
+
+<body>
+	<div class="z-body animated fadeIn">
+		<form action="" method="post" class="layui-form layui-form-pane">
+			<div class="layui-form-item">
+				<label class="layui-form-label">维修点</label>
+				<div class="layui-input-block">
+					<ul id="deptTree" class="dtree" data-id="0" data-value="请选择维修点"></ul>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block" style="margin-left: 0; text-align: center;">
+					<button class="layui-btn layui-btn-normal btn-w100" lay-submit=""
+						data-th-lay-filter="appoint">派单</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<script th:src="@{/lib/jquery/jquery.min.js}"></script>
+    <script th:src="@{/lib/layui/layui.js}"></script>
+    <script th:src="@{/js/common.js}"></script>
+
+    <script>
+        layui.config({
+            base: '/lib/layui/extend/'
+        }).extend({
+            formSelects: 'formSelects-v4'
+        }).use(['form', 'layer', 'formSelects', 'dtree'], function () {
+            $ = layui.jquery;
+            var form = layui.form
+                , layer = layui.layer
+                , formSelects = layui.formSelects
+                , dtree = layui.dtree;
+
+            dtree.renderSelect({
+                elem: "#deptTree",
+                url: "/dept/tree",
+                dataStyle: "layuiStyle",
+                width: "100%",
+                method: "GET",
+                dot: false,
+                accordion: true,
+                menubar: true,
+                response: {
+                	statusCode: 0,
+                    message: "msg",
+                    treeId: "id",
+                    parentId: "parentId",
+                    title: "name",
+                    disabled: "forbidden"
+                },
+                done: function() {
+                    var deptId = [[${user?.deptId + ''}]] ;
+                    dtree.dataInit("deptTree", deptId);
+                    dtree.setSelectValue("deptTree");
+                }
+            });
+
+            dtree.on("node('deptTree')" ,function(obj){
+                $("#deptId").val(obj.param.nodeId);
+            });
+
+            form.on('submit(add)', function (form) {
+                form.field.role = formSelects.value('role-select', 'val');
+                $.post('/user', form.field, function (result) {
+                    handlerResult(result, addDone);
+                });
+                return false;
+            });
+
+            //监听提交
+            form.on('submit(edit)', function (form) {
+                form.field._method = 'PUT';
+                form.field.role = formSelects.value('role-select', 'val');
+                $.post('/user', form.field, function (result) {
+                    handlerResult(result, editDone);
+                });
+                return false;
+            });
+
+            function addDone(data) {
+                layer.msg("添加成功", {icon: 6});
+            }
+
+            function editDone(data) {
+                layer.msg("修改成功", {icon: 6});
+            }
+        });
+    </script>
+</body>
+
+</html>

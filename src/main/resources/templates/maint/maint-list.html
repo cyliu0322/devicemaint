@@ -47,20 +47,15 @@
 	</div>
 	
 	<script type="text/html" id="column-toolbar">
-		<shiro:hasPermission name="user:update">
-			<a lay-event="edit">
-				<i class="zadmin-icon zadmin-icon-edit-square zadmin-oper-area zadmin-blue" title="编辑"></i>
-			</a>
-		</shiro:hasPermission>
-		<shiro:hasPermission name="user:delete">
-			<a lay-event="del">
-				<i class="zadmin-icon zadmin-icon-delete zadmin-oper-area zadmin-red" title="删除"></i>
+		<shiro:hasPermission name="maint:appoint">
+			<a lay-event="appoint">
+				<i class="zadmin-icon zadmin-icon-edit-square zadmin-oper-area zadmin-blue" title="派单"></i>
 			</a>
 		</shiro:hasPermission>
 		
-		<shiro:lacksPermission  name="user:update,user:delete">
-			<i class="zadmin-icon zadmin-icon-wuquanxian zadmin-oper-area zadmin-red"></i>无权限
-			</shiro:lacksPermission>
+		<shiro:lacksPermission name="maint:appoint">
+			<i class="zadmin-icon zadmin-icon-wuquanxian zadmin-oper-area zadmin-red" title="无权限"></i>
+		</shiro:lacksPermission>
 	</script>
 	
 	<script type="text/html" id="statusTpl">
@@ -97,33 +92,24 @@
 				smartReloadModel: true,
 				cols: [
 					[
-						{type: 'numbers', title: '序号', width: "10%"},
-						{field: 'companyName', title: '用户名', width: "30%", event: 'collapse',
+						{type: 'numbers', title: '序号', width: "5%"},
+						{field: 'companyName', title: '公司', width: "20%", event: 'collapse',
 							templet: function(d) {
 								return '<div style="position: relative;\n' + ' padding: 0 10px 0 20px;">' + d.companyName + '<i style="left: 0px;" lay-tips="展开" class="layui-icon layui-colla-icon layui-icon-right"></i></div>'
 							}
 						},
-						{field: 'deviceName', title: '手机', width: "30%"},
+						{field: 'deviceName', title: '设备', width: "20%"},
+						{field: 'faultDescription', title: '故障描述', width: "40%"},
+						{field: 'stateDesc', title: '维修单状态', width: "10%"},
 						{title: '操作', fixed: 'right', align: 'center', toolbar: '#column-toolbar'}
 					]
 				]
-			});
-			
-			// 工具条点击事件
-			table.on('toolbar', function (obj) {
-				var data = obj.data;
-				var event = obj.event;
-				
-				if (event === 'add') {
-					add();
-				}
 			});
 			
 			// 单元格点击事件
 			table.on('tool(maintTable)', function (obj) {
 				var data = obj.data;
 				var event = obj.event;
-				console.log(32);
 				if (event === 'collapse') {
 					var trObj = layui.$(this).parent('tr'); //当前行
 					var accordion = true //开启手风琴，那么在进行折叠操作时，始终只会展现当前展开的表格。
@@ -144,14 +130,20 @@
 								cellMinWidth: 80,
 								cols: [
 		                        	[
-		                        		{type: 'numbers', title: '序号', width: "10%"},
-										{field: 'faultCause', title: '手机', width: "30%"},
-										{field: 'statusDesc', title: '状态'}
+										{field: 'faultCause', title: '故障描述', width: "30%"},
+										{field: 'statusDesc', title: '状态'},
+										{field: 'maintainDate', title: '时间', width: "30%"}
 									]
 								]
 		                    });
 		                }
 		            });
+				} else if(event === 'appoint') {
+					if(data.state == '0') {
+						appointPrior(data.maintainOrderId);
+					} else if(data.state == '2') {
+						appointMp(data.maintainOrderId);
+					}
 				}
 			});
 			
@@ -198,6 +190,34 @@
 				heightChildren = trObjChildren.height(); //展开高度固定
 				rightTrChildren.height(heightChildren + 115).toggle(); //左固定
 				leftTrChildren.height(heightChildren + 115).toggle(); //右固定
+			}
+			
+			function appointPrior(maintid) {
+				layer.open({
+                    content: '/maint/prior/' + maintid,
+                    title: "编辑",
+                    area: ['40%', '85%'],
+                    type: 2,
+                    maxmin: true,
+                    shadeClose: true,
+                    end: function () {
+                        table.reload('maint-table');
+                    }
+                });
+			}
+			
+			function appointMp(maintid) {
+				layer.open({
+                    content: '/maint/mp/' + maintid,
+                    title: "编辑",
+                    area: ['40%', '85%'],
+                    type: 2,
+                    maxmin: true,
+                    shadeClose: true,
+                    end: function () {
+                        table.reload('maint-table');
+                    }
+                });
 			}
 		});
 	</script>

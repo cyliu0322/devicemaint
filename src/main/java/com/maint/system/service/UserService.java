@@ -68,6 +68,10 @@ public class UserService {
 		return userMapper.selectUnassignCharger(deptId);
 	}
 	
+	public List<User> selectPriorers() {
+		return userMapper.selectPoiorers();
+	}
+	
 	public Integer[] selectRoleIdsById(Integer userId) {
 		return userMapper.selectRoleIdsByUserId(userId);
 	}

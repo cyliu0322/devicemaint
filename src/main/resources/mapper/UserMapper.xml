@@ -56,6 +56,12 @@
         	</choose>
         </where>
     </select>
+    <select id="selectPoiorers" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        u.user_id, u.username, u.tel
+        from user u, user_role ur
+        where u.user_id = ur.user_id and ur.role_id = 3 and u.status = 1
+    </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete

@@ -2,6 +2,9 @@ package com.maint.system.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.maint.system.enums.MaintainOrderStatusEnum;
+
 public class MaintainOrder {
     private String maintainOrderId;
 
@@ -28,6 +31,9 @@ public class MaintainOrder {
     private Integer deviceYears;
 
     private String state;
+    
+    @JsonProperty("stateDesc")
+    private String stateDesc;
 
     private Integer deptId;
 
@@ -142,6 +148,7 @@ public class MaintainOrder {
     }
 
     public void setState(String state) {
+    	this.stateDesc = MaintainOrderStatusEnum.getvalueOf(state).getTxt();
         this.state = state == null ? null : state.trim();
     }
 
