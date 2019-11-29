@@ -8,15 +8,18 @@ import org.springframework.stereotype.Service;
 
 import com.maint.common.util.DateUtils;
 import com.maint.common.util.ShiroUtil;
-import com.maint.common.util.StringUtil;
 import com.maint.system.enums.MaintainOrderStatusEnum;
+import com.maint.system.enums.MaintenanceOrderStatusEnum;
 import com.maint.system.enums.OrderTypeEnum;
 import com.maint.system.mapper.MaintainOrderMapper;
 import com.maint.system.mapper.MaintainTraceMapper;
 import com.maint.system.mapper.MaintenanceOrderMapper;
 import com.maint.system.mapper.MaintenanceTraceMapper;
+import com.maint.system.model.MaintainOrder;
 import com.maint.system.model.MaintainTrace;
+import com.maint.system.model.MaintenanceOrder;
 import com.maint.system.model.MaintenanceTrace;
+import com.maint.system.model.OrderAidBean;
 import com.maint.system.model.OrderStatusBean;
 
 @Service
@@ -90,21 +93,62 @@ public class MobileLoginService {
 	 * 搜索订单信息
 	 * @param <E>
 	 * @param order_id 订单号
-	 * @param flag 查询标志，为0则代表通过订单号查询，为1则代表通过用户id查询前5条订单
+	 * @param orderType 查询标志，为0则代表查询维修订单表，为1则代表查询保养订单表
 	 * @return
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public <E> List<E> searchOrderService(String order_id, String flag) throws Exception{
-		List<E> orderAssigns = null;
+	public <E> List<E> searchOrderService(String orderId, String orderType) throws Exception{
+		List<E> orders = new ArrayList<E>();
 		
-		if("0".equals(flag)) {
-			//orderAssigns = (List<E>) orderAssignMapper.selectOrderAssignsByOrderId(order_id, ShiroUtil.getCurrentUser().getUserId());
+		if(OrderTypeEnum.WX.getValue().equals(orderType)) {
+			//维修单
+			List<MaintainOrder> maintainOrders = maintainOrderMapper.selectOrder(orderId, ShiroUtil.getCurrentUser().getUserId());
+			
+			maintainOrders.stream().forEach(maintainOrder -> {
+				OrderAidBean orderAidBean = new OrderAidBean();
+				orderAidBean.setOrderId(orderId);
+				orderAidBean.setOrderStatus(MaintainOrderStatusEnum.getvalueOf(maintainOrder.getState()).getTxt());
+				orderAidBean.setOrderType(OrderTypeEnum.WX.getTxt());
+				orderAidBean.setDeviceName(maintainOrder.getDeviceName());
+				orderAidBean.setDeviceAddr(maintainOrder.getDeviceAddr());
+				orders.add((E) orderAidBean);
+			});
 		}else {
-			//orderAssigns = (List<E>) orderAssignMapper.selectOrderAssignsByUserId(ShiroUtil.getCurrentUser().getUserId());
+			//保养单
+			List<MaintenanceOrder> maintenanceOrders = maintenanceOrderMapper.selectOrder(orderId, ShiroUtil.getCurrentUser().getUserId());
+			
+			maintenanceOrders.stream().forEach(maintenanceOrder -> {
+				OrderAidBean orderAidBean = new OrderAidBean();
+				orderAidBean.setOrderId(orderId);
+				orderAidBean.setOrderStatus(MaintenanceOrderStatusEnum.getvalueOf(maintenanceOrder.getState()).getTxt());
+				orderAidBean.setOrderType(OrderTypeEnum.BY.getTxt());
+				orderAidBean.setDeviceName(maintenanceOrder.getDeviceName());
+				orderAidBean.setDeviceAddr(maintenanceOrder.getDeviceAddr());
+				orders.add((E) orderAidBean);
+			});
 		}
 		
-		return orderAssigns;
+		return orders;
+	}
+	
+	/**
+	 * 通过订单号获取订单类型，订单前两位为订单类型标志（“BY”：代表保养单，“WX”：代表维修单）
+	 * @param orderId 订单号
+	 * @return
+	 * @throws Exception 
+	 */
+	public OrderTypeEnum getOrderTypeByOrderId(String orderId) throws Exception {
+		try {
+			String orderTypeFlag = orderId.substring(0, 2);
+			if("BY".equals(orderTypeFlag)) {
+				return OrderTypeEnum.BY;
+			}else {
+				return OrderTypeEnum.WX;
+			}
+		} catch (Exception e) {
+			throw new Exception("解析订单号时出错，"+e.getMessage());
+		}
 	}
 
 }

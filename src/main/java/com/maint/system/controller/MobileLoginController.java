@@ -14,6 +14,8 @@ import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,15 +28,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.maint.common.util.ResultBean;
+import com.maint.common.util.StringUtil;
+import com.maint.system.enums.MaintainOrderStatusEnum;
 import com.maint.system.enums.OrderTypeEnum;
 import com.maint.system.model.MaintainOrder;
 import com.maint.system.model.MaintenanceOrder;
+import com.maint.system.model.OrderAidBean;
 import com.maint.system.model.OrderStatusBean;
 import com.maint.system.service.MobileLoginService;
 
 @Controller
 @RequestMapping(value = "mobile")
 public class MobileLoginController {
+	private static final Logger log = LoggerFactory.getLogger(MobileLoginController.class);
 	
 	@Resource
 	MobileLoginService mobileService;
@@ -54,50 +60,27 @@ public class MobileLoginController {
 		return "mobile/search-order";
 	}
 	
-	/*
-	 * @GetMapping(value = "toOrderDetail1") public String toOrderDetail(Model
-	 * model,
-	 * 
-	 * @RequestParam(value = "orderType", required = true) String orderType) {
-	 * model.addAttribute("orderType", orderType);
-	 * 
-	 * List<OrderStatusBean> orderStatusBeans = new ArrayList<OrderStatusBean>();
-	 * //首检bean OrderStatusBean sjBean = new OrderStatusBean();
-	 * sjBean.setOrderStatusDescription("已首检"); sjBean.setFaultCause("首检故障原因");
-	 * sjBean.setDate("2019/11/24 14:08"); orderStatusBeans.add(sjBean);
-	 * 
-	 * //维修bean1 OrderStatusBean wxBean1 = new OrderStatusBean();
-	 * wxBean1.setOrderStatusDescription("维修中"); wxBean1.setFaultCause("维修故障原因1");
-	 * wxBean1.setDate("2019/11/25 14:08"); orderStatusBeans.add(wxBean1);
-	 * 
-	 * //维修bean2 OrderStatusBean wxBean2 = new OrderStatusBean();
-	 * wxBean2.setOrderStatusDescription("维修中"); wxBean2.setFaultCause("维修故障原因2");
-	 * wxBean2.setDate("2019/11/25 14:08"); orderStatusBeans.add(wxBean2);
-	 * 
-	 * //维修bean OrderStatusBean wcBean = new OrderStatusBean();
-	 * wcBean.setOrderStatusDescription("已完成"); wcBean.setFaultCause("");
-	 * wcBean.setDate("2019/11/26 14:08"); orderStatusBeans.add(wcBean);
-	 * 
-	 * model.addAttribute("orderStatuss",orderStatusBeans);
-	 * 
-	 * return "mobile/order-detail"; }
-	 */
-	
 	@GetMapping(value = "goMaintain")
 	public String goMaintain(Model model,
 			@RequestParam(value = "orderId", required = true) String orderId,
-			@RequestParam(value = "orderType", required = true) String orderType,
-			@RequestParam(value = "deviceBrand", required = true) String deviceBrand) {
+			@RequestParam(value = "deviceBrand", required = true) String deviceBrand,
+			@RequestParam(value = "state", required = false) String state) {
 		
-		return null;
+		System.out.println("orderId:"+orderId+", deviceBrand:"+deviceBrand+",state:"+state);
+		
+		if (StringUtil.isNotEmpty(state) && MaintainOrderStatusEnum.DSJ.getValue().equals(state)) {
+			return "mobile/first-inspection";
+		}
+		
+		return "mobile/operate-order";
 	}
 	
 	@GetMapping(value = "toOrderDetail")
 	public String toOrderDetail(Model model,
-			@RequestParam(value = "orderId", required = true) String orderId,
-			@RequestParam(value = "orderType", required = true) String orderType) {
+			@RequestParam(value = "orderId", required = true) String orderId) {
 		
 		try {
+			String orderType = mobileService.getOrderTypeByOrderId(orderId).getValue();
 			List<OrderStatusBean> orderStatusBeans = mobileService.getOrderTraceInfo(orderId, orderType);
 			
 			//获取订单详情
@@ -113,6 +96,7 @@ public class MobileLoginController {
 			model.addAttribute("orderStatuss", orderStatusBeans);
 			
 		} catch (Exception e) {
+			log.error("订单号："+orderId+"Error :"+e.getMessage());
 			e.getStackTrace();
 		}
 		
@@ -122,13 +106,17 @@ public class MobileLoginController {
 	@PostMapping(value = "searchOrder")
 	@ResponseBody
 	public String searchOrder(
-			@RequestParam(value = "order_id", required = false) String order_id) {
+			@RequestParam(value = "order_id", required = false) String orderId) {
 		
 		ResultBean resultBean = null;
 		try {
-//			List<OrderAssign> orderAssigns = mobileService.<OrderAssign>searchOrderService(order_id, flag);
-//			resultBean = ResultBean.successData(orderAssigns);
+			List<OrderAidBean> orders = mobileService.<OrderAidBean>searchOrderService(
+					orderId, 
+					mobileService.getOrderTypeByOrderId(orderId).getValue());
+			
+			resultBean = ResultBean.successData(orders);
 		} catch (Exception e) {
+			log.error("订单号："+orderId+"Error :"+e.getMessage());
 			resultBean = ResultBean.error(e.getMessage());
 		}
 		
@@ -172,7 +160,7 @@ public class MobileLoginController {
 		Map<String, String[]> resquestMap = resquest.getParameterMap();
 		
 		if(file.isEmpty()) {
-			System.out.println("文件上传失败，文件为空。");
+			log.error("文件上传失败，文件为空。");
 		}
 		try {
 			file.transferTo(new File("E:\\个人\\项目\\维修系统\\测试图片上传"
@@ -190,7 +178,8 @@ public class MobileLoginController {
 			System.out.println("key : "+k+",value : "+v);
 		});
 		System.out.println("----uploadPicture-------");
-		return "";
+		return resquestMap.get("uuid")[0]+
+				file.getOriginalFilename().substring(file.getOriginalFilename().indexOf("."));
 	}
 	
 

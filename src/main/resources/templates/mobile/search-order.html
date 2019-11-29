@@ -16,7 +16,7 @@
 	    	<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
 	    		<div class="input-group">
 				  <div class="input-control search-box has-icon-left has-icon-right search-example" id="searchbox">
-				    <input id="inputSearch" type="search" class="form-control search-input" placeholder="订单搜索">
+				    <input id="inputSearch" type="search" class="form-control search-input" placeholder="订单号">
 				    <label for="inputSearch" class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
 				  </div>
 				  <span class="input-group-btn">
@@ -28,21 +28,7 @@
     	</div>
 	</header>
     <article>
-      <div id="ordersShowArea" style="margin-top:30px;">
-      	<div class="orderDetail" style="margin:10px;border: 0px solid #ddd;background-color:#fff;">
-      		<div style="height:30px;line-height:30px;">
-      			<div class="pull-left"><p style="margin-left:4px;margin-bottom:0px;">订单类型</p></div>
-      			<div class="pull-right"><p style="margin-right:4px;margin-bottom:0px;">订单状态</p></div>
-      		</div>
-	        <hr class="divider">
-	        <div style="height:50px;">
-	        	<div style="margin-left:4px;height:25px;line-height:25px;">设备名：金税盘</div>
-	        	<div style="margin-left:4px;height:25px;line-height:25px;">地址：钦州北路1198号</div>
-	        </div>
-	        <hr class="divider">
-	        <div style="height:40px;line-height:40px;"><p style="margin-left:4px;margin-bottom:0px;">订单号：111111111</p></div>
-      	</div>
-      </div>
+      <div id="ordersShowArea" style="margin-top:30px;"></div>
     </article>
 
     <script th:src="@{/lib/zui/lib/jquery/jquery.js}"></script>
@@ -50,81 +36,39 @@
     <script th:src="@{/js/jquery.serializejson.min.js}"></script>
     <script th:src="@{/js/bootstrapValidator.min.js}"></script>
     <script type="text/javascript">
-	    $(document).ready(function(){
-	    	$.ajax({
-		        type: "POST",
-			    data: "flag=1",
-			    dataType: "json",
-		        url: "/mobile/searchOrder",
-		        async: false,
-		        //contentType: "application/json",
-		        success:function(responseData){
-		        	if(responseData.code == 0){
-		        		if(responseData.data != null){
-		        			var orderDetailHtml = "";
-			        		for(var i = 0; i < responseData.data.length; i++){
-				        		var order = responseData.data[i];
-				        		orderDetailHtml = orderDetailHtml+"<div class='orderDetail' onclick='getOrderDetail("+order.orderId+","+order.orderType+");' style='margin:10px;border: 0px solid #ddd;background-color:#fff;'>" +
-						        		"   <div style='height:30px;line-height:30px;''>" +
-				        				"   	<div class='pull-left'><p style='margin-left:4px;margin-bottom:0px;'>"+translateOrderType(order.orderType)+"</p></div>" +
-			       						"    	<div class='pull-right'><p style='margin-right:4px;margin-bottom:0px;''>"+translateOrderStatus(order.orderType,order.orderStatus)+"</p></div>" +
-			    						"   </div>" +
-						        		"   <hr class='divider'>" +
-						        		"	<div style='height:50px;'>" +
-						        		"   	<div style='margin-left:4px;height:25px;line-height:25px;'>设备名："+beautySub(order.deviceName, 18)+"</div>" +
-						        		"		<div style='margin-left:4px;height:25px;line-height:25px;'>地址："+beautySub(order.deviceAddr, 18)+"</div>" +
-						        		"	</div>"	+
-						        		"   <hr class='divider'>" +
-						        		"	<div style='height:40px;line-height:40px;'><p style='margin-left:4px;margin-bottom:0px;'>订单号："+order.orderId+"</p></div>" +
-						        		"</div>";
-			        		}
-			        		console.log(orderDetailHtml);
-			        		$("#ordersShowArea").html(orderDetailHtml);
-			        	}else{
-			        		$("#ordersShowArea").html("未查到响应的订单信息");
-			        	}
-		        	}else{
-		        		alert(responseData.msg);
-		        	}
-		     	},
-		     	error: function () {
-		     		alert("获取订单信息失败！");
-			 	}
-		    });
-	    });
+	    $(document).ready(function(){});
 	    
 	    function searchOrder(){
 	    	$.ajax({
 		        type: "POST",
-			    data: "order_id="+$("#inputSearch").val()+"&flag=0",
+			    data: "order_id="+$("#inputSearch").val(),
 			    dataType: "json",
 		        url: "/mobile/searchOrder",
 		        async: false,
-		        //contentType: "application/json",
 		        success:function(responseData){
 		        	if(responseData.code == 0){
 		        		if(responseData.data != null){
 		        			var orderDetailHtml = "";
 			        		for(var i = 0; i < responseData.data.length; i++){
 				        		var order = responseData.data[i];
-				        		orderDetailHtml = orderDetailHtml+"<div class='orderDetail' style='margin:10px;border: 0px solid #ddd;background-color:#fff;'>" +
-						        		"   <div style='height:30px;line-height:30px;''>" +
-				        				"   	<div class='pull-left'><p style='margin-left:4px;margin-bottom:0px;'>"+translateOrderType(order.orderType)+"</p></div>" +
-			       						"    	<div class='pull-right'><p style='margin-right:4px;margin-bottom:0px;''>"+translateOrderStatus(order.orderType,order.orderStatus)+"</p></div>" +
-			    						"   </div>" +
-						        		"   <hr class='divider'>" +
-						        		"	<div style='height:50px;'>" +
-						        		"   	<div style='margin-left:4px;height:25px;line-height:25px;'>设备名："+beautySub(order.deviceName, 18)+"</div>" +
-						        		"		<div style='margin-left:4px;height:25px;line-height:25px;'>地址："+beautySub(order.deviceAddr, 18)+"</div>" +
-						        		"	</div>"	+
-						        		"   <hr class='divider'>" +
-						        		"	<div style='height:40px;line-height:40px;'><p style='margin-left:4px;margin-bottom:0px;'>订单号："+order.orderId+"</p></div>" +
-						        		"</div>";
+				        		orderDetailHtml = orderDetailHtml+"<div class='orderDetail' onclick='getOrderDetail(\""+order.orderId+"\");' style='margin:10px;border: 0px solid #ddd;background-color:#fff;'>" +
+				        		"   <div style='height:30px;line-height:30px;''>" +
+		        				"   	<div class='pull-left'><p style='margin-left:4px;margin-bottom:0px;'>"+order.orderType+"</p></div>" +
+	       						"    	<div class='pull-right'><p style='margin-right:4px;margin-bottom:0px;''>"+order.orderStatus+"</p></div>" +
+	    						"   </div>" +
+				        		"   <hr class='divider'>" +
+				        		"	<div style='height:50px;'>" +
+				        		"   	<div style='margin-left:4px;height:25px;line-height:25px;'>设备名："+beautySub(order.deviceName, 18)+"</div>" +
+				        		"		<div style='margin-left:4px;height:25px;line-height:25px;'>地址："+beautySub(order.deviceAddr, 18)+"</div>" +
+				        		"	</div>"	+
+				        		"   <hr class='divider'>" +
+				        		"	<div style='height:40px;line-height:40px;'><p style='margin-left:4px;margin-bottom:0px;'>订单号："+order.orderId+"</p></div>" +
+				        		"</div>";
 			        		}
 			        		console.log(orderDetailHtml);
 			        		$("#ordersShowArea").html(orderDetailHtml);
 			        	}else{
-			        		$("#ordersShowArea").html("未查到响应的订单信息");
+			        		$("#ordersShowArea").html("未查到相应的订单信息");
 			        	}
 		        	}else{
 		        		alert(responseData.msg);
@@ -137,49 +81,11 @@
 	    }
 	    
 	    /*获取订单明细*/
-	    function getOrderDetail(orderId, orderType){
-	    	console.log("orderId:"+orderId+"orderType:"+orderType);
-	    	window.location.href="/mobile/toOrderDetail?orderId="+orderId+"&orderType="+orderType;
+	    function getOrderDetail(orderId){
+	    	console.log("orderId:"+orderId);
+	    	window.location.href="/mobile/toOrderDetail?orderId="+orderId;
 	    }
 	    
-	 	/*订单类型转义*/
-	    function translateOrderType(orderType){
-	    	if(orderType == '0'){
-	    		return "维修单";
-	    	}else if(orderType == '1'){
-	    		return "保养单";
-	    	}
-	    }
-	    /*订单状态转义*/
-	    function translateOrderStatus(orderType, orderStatus){
-	    	if(orderType == '0'){
-	    		//维修单
-	    		if(orderStatus == '0'){
-		    		return "待受理";
-		    	}else if(orderStatus == '1'){
-		    		return "已分配";
-		    	}else if(orderStatus == '2'){
-		    		return "已首检";
-		    	}else if(orderStatus == '3'){
-		    		return "维修中";
-		    	}else if(orderStatus == '4'){
-		    		return "维修完成";
-		    	}else if(orderStatus == '5'){
-		    		return "已回访";
-		    	}
-	    	}else{
-	    		//保养单
-	    		if(orderStatus == '1'){
-		    		return "已分配";
-		    	}else if(orderStatus == '2'){
-		    		return "保养中";
-		    	}else if(orderStatus == '3'){
-		    		return "保养完成";
-		    	}else if(orderStatus == '4'){
-		    		return "已回访";
-		    	}
-	    	}
-	    }
 	    /* * 
 	    用途：js中字符串超长作固定长度加省略号（...）处理
 	    参数说明：

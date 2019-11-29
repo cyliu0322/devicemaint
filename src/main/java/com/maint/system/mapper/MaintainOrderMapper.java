@@ -12,6 +12,9 @@ public interface MaintainOrderMapper {
 	@Select(value = "SELECT * FROM tbl_maintain_order WHERE maintain_order_id = #{orderId} limit 1")
 	MaintainOrder selectOrderByOrderId(@Param("orderId") String orderId);
 	
+	@Select(value = "SELECT * FROM tbl_maintain_order WHERE maintain_order_id = #{orderId} AND user_id = #{userId} limit 1")
+	List<MaintainOrder> selectOrder(@Param("orderId") String orderId, @Param("userId") int userId);
+	
     int deleteByPrimaryKey(String maintainOrderId);
 
     int insert(MaintainOrder record);

@@ -182,7 +182,7 @@
 		      		<hr class="divider">
 		      		<p th:text="'订单号：' + *{maintainOrderId}"/>
 		      		<p th:text="'订单类型：设备维修'"/>
-		      		<p th:text="'下单时间：' + *{createDate}"/>
+		      		<p th:text="'下单时间：' + *{#dates.format(createDate, 'yyyy/MM/dd HH:mm:ss')}"/>
 		      		<p th:text="'联系人：' + *{companyContact}"/>
 		      		<p th:text="'联系电话：' + *{companyPhone}"/>
 		      		<p th:text="'服务地址：' + *{deviceAddr}"/>
@@ -211,7 +211,7 @@
 	      		<hr class="divider" style="height:15px;background-color:#eee;margin-right:-10px;">
 	      		
 	      		<div id="goMaintainDiv">
-	      			<button id="goMaintainBtn" class="btn btn-primary btn-block " type="button" th:onclick="'goMaintain('+${orderType}+', '+*{maintainOrderId}+','+*{deviceBrand}+');'">去维修</button>
+	      			<button id="goMaintainBtn" class="btn btn-primary btn-block " type="button" th:onclick="'goMaintain(\''+*{maintainOrderId}+'\',\''+*{deviceBrand}+'\',\''+*{state}+'\');'">去维修</button>
 	      		</div>
       		</div>
       		<!-- 保养单 -->
@@ -224,7 +224,7 @@
 		      		<hr class="divider">
 		      		<p th:text="'订单号：' + *{maintenanceOrderId}"/>
 		      		<p th:text="'订单类型：设备保养'"/>
-		      		<p th:text="'下单时间：' + *{createDate}"/>
+		      		<p th:text="'下单时间：' + *{#dates.format(createDate, 'yyyy/MM/dd HH:mm:ss')}"/>
 		      		<p th:text="'联系人：' + *{companyContact}"/>
 		      		<p th:text="'联系电话：' + *{companyPhone}"/>
 		      		<p th:text="'服务地址：' + *{deviceAddr}"/>
@@ -238,7 +238,7 @@
 		      		<p th:text="'设备名：' + *{deviceName}"/>
 		      		<p th:text="'设备编码：' + *{deviceCode}"/>
 		      		<!-- <p>设备品牌：</p> -->
-		      		<!-- <p th:text="'设备使用年限：' + *{deviceYears}"/> -->
+		      		<p th:text="'设备使用年限：' + *{deviceYears}"/>
 	      		</div>
 	      		
 	      		<hr class="divider" style="height:15px;background-color:#eee;margin-right:-10px;">
@@ -252,9 +252,14 @@
 	      		<hr class="divider" style="height:15px;background-color:#eee;margin-right:-10px;">
 	      		
 	      		<div id="goMaintenanceDiv">
-	      			<button id="goMaintenanceBtn" class="btn btn-primary btn-block " type="button" th:onclick="'goMaintain('+${orderType}+', '+*{maintenanceOrderId}+');'">去保养</button>
+	      			<button id="goMaintenanceBtn" class="btn btn-primary btn-block " type="button" th:onclick="'goMaintenance(\''+*{maintenanceOrderId}+'\',\''+*{deviceBrand}+'\');'">去保养</button>
 	      		</div>
       		</div>
+      		<div id="goBackDiv" style="margin-top:10px;">
+	      		<a href="javascript:history.back();">
+					<button id="goBackBtn" class="btn btn-primary btn-block " type="button">返回</button>
+				</a> 
+	      	</div>
       	</div>
       </div>
     </article>
@@ -265,11 +270,15 @@
     <script th:src="@{/js/bootstrapValidator.min.js}"></script>
     <script  th:inline="javascript">
     
-    	/*进入维修（或保养）信息提交页*/
-    	function goMaintain(orderType, orderId, deviceBrand){
-    		console.log("orderType :"+orderType+" , orderId :"+orderId+" , deviceBrand :"+deviceBrand);
+    	/*进入维修信息提交页*/
+    	function goMaintain(orderId, deviceBrand, state){
+    		console.log("orderId :"+orderId+" , deviceBrand :"+deviceBrand+", state :"+state);
     		
-    		//window.location.href="/mobile/goMaintain?orderId="+orderId+"&orderType="+orderType+"&deviceBrand="+deviceBrand;
+    		window.location.href="/mobile/goMaintain?orderId="+orderId+"&deviceBrand="+deviceBrand+"&state="+state;
+    	}
+    	
+    	function goMaintenance(orderId, deviceBrand){
+    		window.location.href="/mobile/goMaintain?orderId="+orderId+"&deviceBrand="+deviceBrand;
     	}
     
     	/*实现“订单状态”和“订单详情”切换*/

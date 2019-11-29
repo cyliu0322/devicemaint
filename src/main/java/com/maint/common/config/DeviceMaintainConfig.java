@@ -13,9 +13,9 @@ public class DeviceMaintainConfig {
     public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
         //单个文件最大
-        factory.setMaxFileSize("5MB"); //KB,MB
+        factory.setMaxFileSize("10MB"); //KB,MB
         /// 设置总上传数据总大小
-        factory.setMaxRequestSize("5MB");
+        factory.setMaxRequestSize("10MB");
         return factory.createMultipartConfig();
     }
 
