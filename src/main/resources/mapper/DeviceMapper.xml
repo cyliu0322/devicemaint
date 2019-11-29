@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maint.system.mapper.DeviceMapper" >
+  <resultMap id="BaseResultMap" type="com.maint.system.model.Device" >
+    <id column="device_id" property="deviceId" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="brand_id" property="brandId" jdbcType="VARCHAR" />
+    <result column="first_time" property="firstTime" jdbcType="TIMESTAMP" />
+    <result column="years" property="years" jdbcType="INTEGER" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="last_maintenance_time" property="lastMaintenanceTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    device_id, company_id, code, brand_id, first_time, years, address, last_maintenance_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_device
+    where device_id = #{deviceId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from tbl_device
+    where device_id = #{deviceId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maint.system.model.Device" >
+    insert into tbl_device (device_id, company_id, code, 
+      brand_id, first_time, years, 
+      address, last_maintenance_time)
+    values (#{deviceId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+      #{brandId,jdbcType=VARCHAR}, #{firstTime,jdbcType=TIMESTAMP}, #{years,jdbcType=INTEGER}, 
+      #{address,jdbcType=VARCHAR}, #{lastMaintenanceTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maint.system.model.Device" >
+    insert into tbl_device
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="deviceId != null" >
+        device_id,
+      </if>
+      <if test="companyId != null" >
+        company_id,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="brandId != null" >
+        brand_id,
+      </if>
+      <if test="firstTime != null" >
+        first_time,
+      </if>
+      <if test="years != null" >
+        years,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="lastMaintenanceTime != null" >
+        last_maintenance_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="deviceId != null" >
+        #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null" >
+        #{brandId,jdbcType=VARCHAR},
+      </if>
+      <if test="firstTime != null" >
+        #{firstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="years != null" >
+        #{years,jdbcType=INTEGER},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="lastMaintenanceTime != null" >
+        #{lastMaintenanceTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maint.system.model.Device" >
+    update tbl_device
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null" >
+        brand_id = #{brandId,jdbcType=VARCHAR},
+      </if>
+      <if test="firstTime != null" >
+        first_time = #{firstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="years != null" >
+        years = #{years,jdbcType=INTEGER},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="lastMaintenanceTime != null" >
+        last_maintenance_time = #{lastMaintenanceTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where device_id = #{deviceId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maint.system.model.Device" >
+    update tbl_device
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      brand_id = #{brandId,jdbcType=VARCHAR},
+      first_time = #{firstTime,jdbcType=TIMESTAMP},
+      years = #{years,jdbcType=INTEGER},
+      address = #{address,jdbcType=VARCHAR},
+      last_maintenance_time = #{lastMaintenanceTime,jdbcType=TIMESTAMP}
+    where device_id = #{deviceId,jdbcType=VARCHAR}
+  </update>
+</mapper>
