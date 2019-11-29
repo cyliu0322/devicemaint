@@ -38,7 +38,6 @@ public class MaintService {
 	
 	@Transactional
 	public boolean appoint(MaintainOrder maint) {
-		
 		MaintainTrace trace = new MaintainTrace();
 		trace.setMaintainTraceId(generateCode());
 		trace.setMaintainOrderId(maint.getMaintainOrderId());
@@ -46,7 +45,11 @@ public class MaintService {
 		
 		traceMapper.insert(trace);
 		
-		return maintMapper.updateByPrimaryKey(maint) == 1 ? true : false;
+		MaintainOrder maintNew = maintMapper.selectByPrimaryKey(maint.getMaintainOrderId());
+		maintNew.setState(maint.getState());
+		maintNew.setUserId(maint.getUserId());
+		
+		return maintMapper.updateByPrimaryKey(maintNew) == 1 ? true : false;
 	}
 	
 	private String generateCode() {

@@ -61,9 +61,8 @@ public class MaintController {
 	public String appointPrior(@PathVariable("maintId") String maintId, Model model) {
 		List<User> users = userService.selectPriorers();
 		model.addAttribute("users", users);
-		MaintainOrder maint = maintService.selectMaintById(maintId);
-		maint.setState(MaintainOrderStatusEnum.DSJ.getValue());
-		model.addAttribute("maint", maint);
+		model.addAttribute("maintId", maintId);
+		model.addAttribute("appoint", MaintainOrderStatusEnum.DSJ.getValue());
 		return "maint/maint-prior";
 	}
 	
