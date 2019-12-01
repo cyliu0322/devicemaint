@@ -5,10 +5,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.maint.common.util.StringUtil;
 import com.maint.system.mapper.MaintainOrderMapper;
 import com.maint.system.mapper.MaintainTraceMapper;
 import com.maint.system.model.MaintainOrder;
 import com.maint.system.model.MaintainTrace;
+import com.maint.system.model.User;
 
 import javax.annotation.Resource;
 
@@ -39,33 +41,27 @@ public class MaintService {
 	@Transactional
 	public boolean appoint(MaintainOrder maint) {
 		MaintainTrace trace = new MaintainTrace();
-		trace.setMaintainTraceId(generateCode());
+		//当前用户
+		User currentUser = (User) SecurityUtils.getSubject().getPrincipal();
+		trace.setMaintainTraceId(generateCode(10));
 		trace.setMaintainOrderId(maint.getMaintainOrderId());
 		trace.setOrderStatus(maint.getState());
+		trace.setUserId(currentUser.getUserId());
 		
 		traceMapper.insert(trace);
 		
-		MaintainOrder maintNew = maintMapper.selectByPrimaryKey(maint.getMaintainOrderId());
-		maintNew.setState(maint.getState());
-		maintNew.setUserId(maint.getUserId());
+		return maintMapper.updateByPrimaryKeySelective(maint) == 1 ? true : false;
 		
-		return maintMapper.updateByPrimaryKey(maintNew) == 1 ? true : false;
+		//TODO
+		//短信发送服务
 	}
 	
-	private String generateCode() {
-		String str = "ABCDEFGHJKLMNPQRTVWY0123456789";
-		Random random = new Random();
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < 12; i++) {
-			int number = random.nextInt(str.length());
-			sb.append(str.charAt(number));
-		}
-		
-		String code = sb.toString();
+	private String generateCode(int length) {
+		String code = StringUtil.generateCode(length);
 		//校验是否重复
 		MaintainTrace trace = traceMapper.selectByPrimaryKey(code);
 		if (trace != null) {
-			generateCode();
+			code = generateCode(length);
 		}
 		return code;
 	}

@@ -34,11 +34,11 @@
   <insert id="insert" parameterType="com.maint.system.model.MaintainTrace" >
     insert into tbl_maintain_trace (maintain_trace_id, maintain_order_id, 
       fault_cause, video, image, 
-      user_id, maintain_date, order_status
+      user_id, order_status
       )
     values (#{maintainTraceId,jdbcType=VARCHAR}, #{maintainOrderId,jdbcType=VARCHAR}, 
       #{faultCause,jdbcType=VARCHAR}, #{video,jdbcType=VARCHAR}, #{image,jdbcType=VARCHAR}, 
-      #{userId,jdbcType=INTEGER}, #{maintainDate,jdbcType=TIMESTAMP}, #{orderStatus,jdbcType=CHAR}
+      #{userId,jdbcType=INTEGER}, #{orderStatus,jdbcType=CHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.maint.system.model.MaintainTrace" >

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<head>
+    <meta charset="UTF-8">
+    <title>大客户管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/favicon.ico}"/>
+    <link rel="stylesheet" th:href="@{/lib/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/animate.min.css}">
+    <link rel="stylesheet" th:href="@{/iconfont/iconfont.css}">
+</head>
+
+<body>
+	<div class="page-loading">
+		<div class="rubik-loader"></div>
+	</div>
+	
+	<div class="z-body animated fadeIn">
+		<form class="layui-form zadmin-search-area input">
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label for="companyName" class="layui-form-label">名称</label>
+					<div class="layui-input-inline">
+						<input type="text" name="companyName" autocomplete="off"
+							id="companyName" class="layui-input">
+					</div>
+					
+					<button lay-submit="" lay-filter="search"
+						class="layui-btn layui-btn-sm layui-btn-primary table-action">
+						<i class="zadmin-icon zadmin-icon-search"></i>
+					</button>
+				</div>
+			</div>
+		</form>
+		
+		<table class="layui-hide" id="vip-table" lay-filter="vipTable"></table>
+	</div>
+	
+	<script type="text/html" id="toolbar">
+		<shiro:hasPermission name="user:add">
+			<button type="button" class="layui-btn layui-btn-xs layui-btn-normal" lay-event="add">
+				<i class="zadmin-icon zadmin-icon-xinzeng zadmin-oper-area"></i>
+					新增
+			</button>
+		</shiro:hasPermission>
+	</script>
+	
+	<script type="text/html" id="column-toolbar">
+		<shiro:hasPermission name="user:update">
+			<a lay-event="addDevice">
+				<i class="zadmin-icon zadmin-icon-plus zadmin-oper-area zadmin-blue" title="设备录入"></i>
+			</a>
+		</shiro:hasPermission>
+		<shiro:hasPermission name="user:update">
+			<a lay-event="edit">
+				<i class="zadmin-icon zadmin-icon-edit-square zadmin-oper-area zadmin-blue" title="编辑"></i>
+			</a>
+		</shiro:hasPermission>
+		<shiro:hasPermission name="user:delete">
+			<a lay-event="del">
+				<i class="zadmin-icon zadmin-icon-delete zadmin-oper-area zadmin-red" title="删除"></i>
+			</a>
+		</shiro:hasPermission>
+		
+		<shiro:lacksPermission  name="user:update,user:delete">
+			<i class="zadmin-icon zadmin-icon-wuquanxian zadmin-oper-area zadmin-red"></i>无权限
+			</shiro:lacksPermission>
+	</script>
+	
+	<script type="text/html" id="children-column-toolbar">
+		<shiro:hasPermission name="user:update">
+			<a lay-event="generate">
+				<i class="zadmin-icon zadmin-icon-setting zadmin-oper-area zadmin-blue" title="保养单"></i>
+			</a>
+		</shiro:hasPermission>
+		<shiro:hasPermission name="user:update">
+			<a lay-event="editDevice">
+				<i class="zadmin-icon zadmin-icon-edit-square zadmin-oper-area zadmin-blue" title="编辑"></i>
+			</a>
+		</shiro:hasPermission>
+		<shiro:hasPermission name="user:delete">
+			<a lay-event="delDevice">
+				<i class="zadmin-icon zadmin-icon-delete zadmin-oper-area zadmin-red" title="删除"></i>
+			</a>
+		</shiro:hasPermission>
+		
+		<shiro:lacksPermission  name="user:update,user:delete">
+			<i class="zadmin-icon zadmin-icon-wuquanxian zadmin-oper-area zadmin-red"></i>无权限
+			</shiro:lacksPermission>
+	</script>
+	
+	<script th:src="@{/lib/jquery/jquery.min.js}"></script>
+	<script th:src="@{/lib/layui/layui.js}"></script>
+	<script th:src="@{/js/common.js}"></script>
+	
+    <script>
+		layui.config({
+			base: '/lib/layui/extend/'
+		}).use(['table', 'element', 'form', 'tablePlug'], function () {
+			var table = layui.table;
+			var $ = layui.$;
+			var form = layui.form;
+			var dtree = layui.dtree;
+			var tablePlug = layui.tablePlug;
+			
+            tablePlug.smartReload.enable(true);
+			
+			table.render({
+				elem: '#vip-table',
+				url: '/vip/list',
+				page: true,
+				toolbar: '#toolbar',
+				smartReloadModel: true,
+				cols: [
+					[
+						{type: 'numbers', title: '序号', width: "5%"},
+						{field: 'companyId', title: 'ID', width: "20%", hide: true},
+						{field: 'companyName', title: '用户名', width: "25%", event: 'collapse',
+							templet: function(d) {
+								return '<div style="position: relative;\n' + ' padding: 0 10px 0 20px;">' + d.companyName + '<i style="left: 0px;" lay-tips="展开" class="layui-icon layui-colla-icon layui-icon-right"></i></div>'
+							}
+						},
+						{field: 'companyAddress', title: '地址', width: "35%"},
+						{title: '操作', fixed: 'right', align: 'center', toolbar: '#column-toolbar'}
+					]
+				]
+			});
+			
+			// 工具条点击事件
+			table.on('toolbar', function (obj) {
+				var data = obj.data;
+				var event = obj.event;
+				
+				if (event === 'add') {
+					add();
+				}
+			});
+			
+			table.on('tool(vipTable)', function (obj) {
+				var data = obj.data;
+				var event = obj.event;
+				if (event === 'edit') {
+					edit(data.companyId);
+				} else if (event === 'del') {
+					del(obj);
+				} else if (event === 'addDevice') {
+					addDevice(data.companyId);
+				} else if (event === 'collapse') {
+					var trObj = layui.$(this).parent('tr'); //当前行
+					var accordion = true //开启手风琴，那么在进行折叠操作时，始终只会展现当前展开的表格。
+					var content = '<table lay-filter="deviceTable"></table>' //内容
+					//表格行折叠方法
+					collapseTable({
+						elem: trObj,
+						accordion: accordion,
+						content: content,
+						success: function(trObjChildren, index) { //成功回调函数
+							//trObjChildren 展开tr层DOM
+							//index 当前层索引
+							trObjChildren.find('table').attr("id", index);
+							table.render({
+								elem: "#" + index,
+								url: '/device/list/' + data.companyId,
+								limit: 3,
+								cellMinWidth: 80,
+								cols: [
+		                        	[
+										{field: 'code', title: '型号', width: "30%"},
+										{field: 'address', title: '地址'},
+										{title: '操作', fixed: 'right', align: 'center', toolbar: '#children-column-toolbar'}
+									]
+								]
+		                    });
+		                }
+		            });
+				}
+			});
+			
+			// 单元格点击事件
+			table.on('tool(deviceTable)', function (obj) {
+				var data = obj.data;
+				var event = obj.event;
+				if (event === 'generate') {
+					alert(2342);
+				} else if (event === 'editDevice') {
+					editDevice(data.deviceId);
+				} else if (event === 'delDevice') {
+					
+				}
+			});
+			
+			function add() {
+				layer.open({
+					content: "/vip",
+					title: "新增大客户",
+					area: ['40%', '85%'],
+					type: 2,
+					maxmin: true,
+					shadeClose: true,
+					end: function () {
+						table.reload('vip-table');
+					}
+				});
+			}
+			
+			function edit(id) {
+				layer.open({
+					content: "/vip/" + id,
+					title: "编辑大客户",
+					area: ['40%', '85%'],
+					type: 2,
+					maxmin: true,
+					shadeClose: true,
+					end: function () {
+						table.reload('vip-table');
+					}
+				});
+			}
+			
+			function del(obj) {
+				layer.confirm("确定删除大客户吗？其设备信息则一并删除！", {icon: 3, title: '提示'},
+					function (index) {//确定回调
+						var id = obj.data.companyId;
+						$.post('/vip/' + id, {_method: "DELETE"}, function (data) {
+							layer.close(index);
+							handlerResult(data, deleteDone);
+						});
+					}, function (index) {//取消回调
+						layer.close(index);
+					}
+				);
+			}
+			
+			function addDevice(companyId) {
+				layer.open({
+					content: "/device?vvv=" + companyId,
+					title: "新增设备",
+					area: ['40%', '85%'],
+					type: 2,
+					maxmin: true,
+					shadeClose: true,
+					end: function () {
+						table.reload('vip-table');
+					}
+				});
+			}
+			
+			function editDevice(id) {
+				layer.open({
+					content: "/device/" + id,
+					title: "编辑设备",
+					area: ['40%', '85%'],
+					type: 2,
+					maxmin: true,
+					shadeClose: true,
+					end: function () {
+						table.reload('vip-table');
+					}
+				});
+			}
+			
+			function deleteDone(data) {
+				parent.layer.msg("删除成功", {icon: 6});
+				table.reload('vip-table');
+			}
+			
+			function collapseTable(options) {
+				var trObj = options.elem;
+				if (!trObj)
+					return;
+				var accordion = options.accordion,
+				success = options.success,
+				content = options.content || '';
+				var tableView = trObj.parents('.layui-table-view'); //当前表格视图
+				var id = tableView.attr('lay-id'); //当前表格标识
+				var index = trObj.data('index'); //当前行索引
+				var leftTr = tableView.find('.layui-table-fixed.layui-table-fixed-l tr[data-index="' + index + '"]'); //左侧当前固定行
+				var rightTr = tableView.find('.layui-table-fixed.layui-table-fixed-r tr[data-index="' + index + '"]'); //右侧当前固定行
+				var colspan = trObj.find('td').length; //获取合并长度
+				var trObjChildren = trObj.next(); //展开行Dom
+				var indexChildren = id + '-' + index + '-children'; //展开行索引
+				var leftTrChildren = tableView.find('.layui-table-fixed.layui-table-fixed-l tr[data-index="' + indexChildren + '"]'); //左侧展开固定行
+				var rightTrChildren = tableView.find('.layui-table-fixed.layui-table-fixed-r tr[data-index="' + indexChildren + '"]'); //右侧展开固定行
+				console.log(3242343242);
+				var lw = leftTr.width() + 15; //左宽
+				var rw = rightTr.width() + 15; //右宽
+				//不存在就创建展开行
+				if (trObjChildren.data('index') != indexChildren) {
+					//装载HTML元素
+					var tr = '<tr data-index="' + indexChildren + '"><td colspan="' + colspan + '"><div style="height: auto;padding-left:' + 0 + 'px;padding-right:' + 0 + 'px" class="layui-table-cell">' + content + '</div></td></tr>';
+					trObjChildren = trObj.after(tr).next().hide(); //隐藏展开行
+					var fixTr = '<tr data-index="' + indexChildren + '"></tr>';//固定行
+					//leftTrChildren = leftTr.after(fixTr).next().hide(); //左固定
+					//rightTrChildren = rightTr.after(fixTr).next().hide(); //右固定
+				}
+				//展开|折叠箭头图标
+		        trObj.find('td[lay-event="collapse"] i.layui-colla-icon').toggleClass("layui-icon-right layui-icon-down");
+		        //显示|隐藏展开行
+				trObjChildren.toggle();
+				//开启手风琴折叠和折叠箭头
+				if (accordion) {
+					trObj.siblings().find('td[lay-event="collapse"] i.layui-colla-icon').removeClass("layui-icon-down").addClass("layui-icon-right");
+					trObjChildren.siblings('[data-index$="-children"]').hide(); //展开
+					//rightTrChildren.siblings('[data-index$="-children"]').hide(); //左固定
+					//leftTrChildren.siblings('[data-index$="-children"]').hide(); //右固定
+				}
+				success(trObjChildren, indexChildren); //回调函数
+				heightChildren = trObjChildren.height(); //展开高度固定
+				//rightTrChildren.height(heightChildren + 115).toggle(); //左固定
+				//leftTrChildren.height(heightChildren + 115).toggle(); //右固定
+			}
+		});
+	</script>
+</body>
+
+</html>

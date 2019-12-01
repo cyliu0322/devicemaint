@@ -68,8 +68,6 @@ public class MaintController {
 	
 	@GetMapping("/mp/{maintId}")
 	public String appointMp(@PathVariable("maintId") String maintId, Model model) {
-		List<User> users = userService.selectPriorers();
-		model.addAttribute("users", users);
 		model.addAttribute("maintId", maintId);
 		model.addAttribute("appoint", MaintainOrderStatusEnum.DWX.getValue());
 		return "maint/maint-mp";

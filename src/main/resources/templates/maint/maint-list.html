@@ -48,9 +48,11 @@
 	
 	<script type="text/html" id="column-toolbar">
 		<shiro:hasPermission name="maint:appoint">
-			<a lay-event="appoint">
-				<i class="zadmin-icon zadmin-icon-edit-square zadmin-oper-area zadmin-blue" title="派单"></i>
-			</a>
+			{{# if(d.state == 0 || d.state == 2) { }}
+				<a lay-event="appoint">
+					<i class="zadmin-icon zadmin-icon-edit-square zadmin-oper-area zadmin-blue" title="派单"></i>
+				</a>
+			{{# } }}
 		</shiro:hasPermission>
 		
 		<shiro:lacksPermission name="maint:appoint">

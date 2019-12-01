@@ -1,5 +1,9 @@
 package com.maint.system.mapper;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.maint.system.model.Device;
 
 public interface DeviceMapper {
@@ -10,6 +14,10 @@ public interface DeviceMapper {
     int insertSelective(Device record);
 
     Device selectByPrimaryKey(String deviceId);
+    
+    List<Device> selectDeviceByCompanyId(@Param("companyId") String companyId);
+    
+    int delByCompanyId(@Param("companyId") String companyId);
 
     int updateByPrimaryKeySelective(Device record);
 

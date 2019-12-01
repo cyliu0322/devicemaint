@@ -44,7 +44,7 @@ public class DeptController {
 		List<Dept> deptList = deptService.selectAreaByParentId(parentId);
 		return ResultBean.success(deptList);
 	}
-	@OperationLog("获取区域列表")
+	@OperationLog("获取维修点列表")
 	@GetMapping("/point/list")
 	@ResponseBody
 	public ResultBean getPointList(@RequestParam(required = false) Integer parentId) {

@@ -18,6 +18,20 @@
 <body>
 	<div class="z-body animated fadeIn">
 		<form action="" method="post" class="layui-form layui-form-pane">
+			<div class="layui-form-item" style="display: none;">
+				<label for="" class="layui-form-label">维修单id</label>
+				<div class="layui-input-block">
+					<input type="text" id="maintainOrderId" name="maintainOrderId"
+						th:value="${maintId}" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item" style="display: none;">
+				<label for="" class="layui-form-label">维修单状态</label>
+				<div class="layui-input-block">
+					<input type="text" id="state" name="state"
+						th:value="${appoint}" class="layui-input">
+				</div>
+			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label">维修点</label>
 				<div class="layui-input-block">
@@ -25,7 +39,9 @@
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<div class="layui-input-block" style="margin-left: 0; text-align: center;">
+				<div class="layui-input-block"
+					style="margin-left: 0; text-align: center;">
+					<input type="hidden" id="userId" name="userId">
 					<button class="layui-btn layui-btn-normal btn-w100" lay-submit=""
 						data-th-lay-filter="appoint">派单</button>
 				</div>
@@ -65,43 +81,26 @@
                     parentId: "parentId",
                     title: "name",
                     disabled: "forbidden"
-                },
-                done: function() {
-                    var deptId = [[${user?.deptId + ''}]] ;
-                    dtree.dataInit("deptTree", deptId);
-                    dtree.setSelectValue("deptTree");
                 }
             });
 
             dtree.on("node('deptTree')" ,function(obj){
-                $("#deptId").val(obj.param.nodeId);
+                $("#userId").val(obj.param.nodeId);
             });
 
-            form.on('submit(add)', function (form) {
-                form.field.role = formSelects.value('role-select', 'val');
-                $.post('/user', form.field, function (result) {
-                    handlerResult(result, addDone);
-                });
-                return false;
-            });
-
-            //监听提交
-            form.on('submit(edit)', function (form) {
-                form.field._method = 'PUT';
-                form.field.role = formSelects.value('role-select', 'val');
-                $.post('/user', form.field, function (result) {
-                    handlerResult(result, editDone);
-                });
-                return false;
-            });
-
-            function addDone(data) {
-                layer.msg("添加成功", {icon: 6});
-            }
-
-            function editDone(data) {
-                layer.msg("修改成功", {icon: 6});
-            }
+			//监听提交
+			form.on('submit(appoint)', function (form) {
+				form.field._method = 'PUT';
+				$.post('/maint/appoint', form.field, function (result) {
+					handlerResult(result, addDone);
+				});
+				return false;
+			});
+			
+			function addDone(data) {
+				console.log("add result id : ", data);
+				layer.msg("派单成功", {icon: 6});
+			}
         });
     </script>
 </body>
