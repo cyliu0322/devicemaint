@@ -98,6 +98,7 @@
 	<script th:src="@{/js/common.js}"></script>
 	
     <script>
+    	var childTableId;
 		layui.config({
 			base: '/lib/layui/extend/'
 		}).use(['table', 'element', 'form', 'tablePlug'], function () {
@@ -159,6 +160,7 @@
 						accordion: accordion,
 						content: content,
 						success: function(trObjChildren, index) { //成功回调函数
+							childTableId = index;
 							//trObjChildren 展开tr层DOM
 							//index 当前层索引
 							trObjChildren.find('table').attr("id", index);
@@ -189,7 +191,7 @@
 				} else if (event === 'editDevice') {
 					editDevice(data.deviceId);
 				} else if (event === 'delDevice') {
-					
+					delDevice(obj);
 				}
 			});
 			
@@ -237,7 +239,7 @@
 			
 			function addDevice(companyId) {
 				layer.open({
-					content: "/device?vvv=" + companyId,
+					content: "/device?company=" + companyId,
 					title: "新增设备",
 					area: ['40%', '85%'],
 					type: 2,
@@ -258,14 +260,33 @@
 					maxmin: true,
 					shadeClose: true,
 					end: function () {
-						table.reload('vip-table');
+						table.reload(childTableId);
 					}
 				});
+			}
+			
+			function delDevice(obj) {
+				layer.confirm("确定删除设备信息吗？", {icon: 3, title: '提示'},
+					function (index) {//确定回调
+						var id = obj.data.deviceId;
+						$.post('/device/' + id, {_method: "DELETE"}, function (data) {
+							layer.close(index);
+							handlerResult(data, delDeviceDone);
+						});
+					}, function (index) {//取消回调
+						layer.close(index);
+					}
+				);
 			}
 			
 			function deleteDone(data) {
 				parent.layer.msg("删除成功", {icon: 6});
 				table.reload('vip-table');
+			}
+			
+			function delDeviceDone(data) {
+				parent.layer.msg("删除成功", {icon: 6});
+				table.reload(childTableId);
 			}
 			
 			function collapseTable(options) {

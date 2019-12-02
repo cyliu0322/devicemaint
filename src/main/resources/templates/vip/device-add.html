@@ -56,7 +56,7 @@
 				dtree = layui.dtree;
         	
             form.on('submit(add)', function (form) {
-            	form.field.companyId = getQueryString('vvv');
+            	form.field.companyId = getQueryString('company');
                 $.post('/device', form.field, function (result) {
                     handlerResult(result, addDone);
                 });
@@ -66,7 +66,7 @@
             //监听提交
             form.on('submit(edit)', function (form) {
                 form.field._method = 'PUT';
-                $.post('/vip', form.field, function (result) {
+                $.post('/device', form.field, function (result) {
                     handlerResult(result, editDone);
                 });
                 return false;
