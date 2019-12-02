@@ -19,6 +19,8 @@ public class MaintenanceOrder {
 
     private Integer deviceYears;
 
+    private String companyContact;
+
     private String companyPhone;
 
     private String companyEmail;
@@ -33,7 +35,7 @@ public class MaintenanceOrder {
 
     private Integer userId;
 
-    private Date maintenanceTime;
+    private String maintenanceTime;
 
     private String bz;
 
@@ -101,6 +103,14 @@ public class MaintenanceOrder {
         this.deviceYears = deviceYears;
     }
 
+    public String getCompanyContact() {
+        return companyContact;
+    }
+
+    public void setCompanyContact(String companyContact) {
+        this.companyContact = companyContact == null ? null : companyContact.trim();
+    }
+
     public String getCompanyPhone() {
         return companyPhone;
     }
@@ -157,12 +167,12 @@ public class MaintenanceOrder {
         this.userId = userId;
     }
 
-    public Date getMaintenanceTime() {
+    public String getMaintenanceTime() {
         return maintenanceTime;
     }
 
-    public void setMaintenanceTime(Date maintenanceTime) {
-        this.maintenanceTime = maintenanceTime;
+    public void setMaintenanceTime(String maintenanceTime) {
+        this.maintenanceTime = maintenanceTime == null ? null : maintenanceTime.trim();
     }
 
     public String getBz() {
