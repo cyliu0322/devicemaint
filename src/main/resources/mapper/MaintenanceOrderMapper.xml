@@ -6,6 +6,7 @@
     <result column="company_id" property="companyId" jdbcType="VARCHAR" />
     <result column="company_name" property="companyName" jdbcType="VARCHAR" />
     <result column="device_name" property="deviceName" jdbcType="VARCHAR" />
+    <result column="device_id" property="deviceId" jdbcType="VARCHAR" />
     <result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
     <result column="device_brand" property="deviceBrand" jdbcType="VARCHAR" />
     <result column="device_addr" property="deviceAddr" jdbcType="VARCHAR" />
@@ -22,9 +23,9 @@
     <result column="bz" property="bz" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    maintenance_order_id, company_id, company_name, device_name, device_code, device_brand, 
-    device_addr, device_years, company_contact, company_phone, company_email, state, 
-    dept_id, create_date, score, user_id, maintenance_time, bz
+    maintenance_order_id, company_id, company_name, device_name, device_id, device_code, 
+    device_brand, device_addr, device_years, company_contact, company_phone, company_email, 
+    state, dept_id, create_date, score, user_id, maintenance_time, bz
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -38,19 +39,19 @@
   </delete>
   <insert id="insert" parameterType="com.maint.system.model.MaintenanceOrder" >
     insert into tbl_maintenance_order (maintenance_order_id, company_id, company_name, 
-      device_name, device_code, device_brand, 
-      device_addr, device_years, company_contact, 
-      company_phone, company_email, state, 
-      dept_id, create_date, score, 
-      user_id, maintenance_time, bz
-      )
+      device_name, device_id, device_code, 
+      device_brand, device_addr, device_years, 
+      company_contact, company_phone, company_email, 
+      state, dept_id, create_date, 
+      score, user_id, maintenance_time, 
+      bz)
     values (#{maintenanceOrderId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
-      #{deviceName,jdbcType=VARCHAR}, #{deviceCode,jdbcType=VARCHAR}, #{deviceBrand,jdbcType=VARCHAR}, 
-      #{deviceAddr,jdbcType=VARCHAR}, #{deviceYears,jdbcType=INTEGER}, #{companyContact,jdbcType=VARCHAR}, 
-      #{companyPhone,jdbcType=VARCHAR}, #{companyEmail,jdbcType=VARCHAR}, #{state,jdbcType=CHAR}, 
-      #{deptId,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{score,jdbcType=DOUBLE}, 
-      #{userId,jdbcType=INTEGER}, #{maintenanceTime,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR}
-      )
+      #{deviceName,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, #{deviceCode,jdbcType=VARCHAR}, 
+      #{deviceBrand,jdbcType=VARCHAR}, #{deviceAddr,jdbcType=VARCHAR}, #{deviceYears,jdbcType=INTEGER}, 
+      #{companyContact,jdbcType=VARCHAR}, #{companyPhone,jdbcType=VARCHAR}, #{companyEmail,jdbcType=VARCHAR}, 
+      #{state,jdbcType=CHAR}, #{deptId,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{score,jdbcType=DOUBLE}, #{userId,jdbcType=INTEGER}, #{maintenanceTime,jdbcType=VARCHAR}, 
+      #{bz,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.maint.system.model.MaintenanceOrder" >
     insert into tbl_maintenance_order
@@ -66,6 +67,9 @@
       </if>
       <if test="deviceName != null" >
         device_name,
+      </if>
+      <if test="deviceId != null" >
+        device_id,
       </if>
       <if test="deviceCode != null" >
         device_code,
@@ -123,6 +127,9 @@
       <if test="deviceName != null" >
         #{deviceName,jdbcType=VARCHAR},
       </if>
+      <if test="deviceId != null" >
+        #{deviceId,jdbcType=VARCHAR},
+      </if>
       <if test="deviceCode != null" >
         #{deviceCode,jdbcType=VARCHAR},
       </if>
@@ -179,6 +186,9 @@
       <if test="deviceName != null" >
         device_name = #{deviceName,jdbcType=VARCHAR},
       </if>
+      <if test="deviceId != null" >
+        device_id = #{deviceId,jdbcType=VARCHAR},
+      </if>
       <if test="deviceCode != null" >
         device_code = #{deviceCode,jdbcType=VARCHAR},
       </if>
@@ -229,6 +239,7 @@
     set company_id = #{companyId,jdbcType=VARCHAR},
       company_name = #{companyName,jdbcType=VARCHAR},
       device_name = #{deviceName,jdbcType=VARCHAR},
+      device_id = #{deviceId,jdbcType=VARCHAR},
       device_code = #{deviceCode,jdbcType=VARCHAR},
       device_brand = #{deviceBrand,jdbcType=VARCHAR},
       device_addr = #{deviceAddr,jdbcType=VARCHAR},

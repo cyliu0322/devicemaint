@@ -11,6 +11,8 @@ public class MaintenanceOrder {
 
     private String deviceName;
 
+    private String deviceId;
+
     private String deviceCode;
 
     private String deviceBrand;
@@ -69,6 +71,14 @@ public class MaintenanceOrder {
 
     public void setDeviceName(String deviceName) {
         this.deviceName = deviceName == null ? null : deviceName.trim();
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId == null ? null : deviceId.trim();
     }
 
     public String getDeviceCode() {
