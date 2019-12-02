@@ -33,6 +33,10 @@ public class MaintenanceOrder {
 
     private Integer userId;
 
+    private Date maintenanceTime;
+
+    private String bz;
+
     public String getMaintenanceOrderId() {
         return maintenanceOrderId;
     }
@@ -151,5 +155,21 @@ public class MaintenanceOrder {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Date getMaintenanceTime() {
+        return maintenanceTime;
+    }
+
+    public void setMaintenanceTime(Date maintenanceTime) {
+        this.maintenanceTime = maintenanceTime;
+    }
+
+    public String getBz() {
+        return bz;
+    }
+
+    public void setBz(String bz) {
+        this.bz = bz == null ? null : bz.trim();
     }
 }

@@ -17,11 +17,13 @@
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
     <result column="score" property="score" jdbcType="DOUBLE" />
     <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="maintenance_time" property="maintenanceTime" jdbcType="TIMESTAMP" />
+    <result column="bz" property="bz" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     maintenance_order_id, company_id, company_name, device_name, device_code, device_brand, 
     device_addr, device_years, company_phone, company_email, state, dept_id, create_date, 
-    score, user_id
+    score, user_id, maintenance_time, bz
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -38,14 +40,14 @@
       device_name, device_code, device_brand, 
       device_addr, device_years, company_phone, 
       company_email, state, dept_id, 
-      create_date, score, user_id
-      )
+      create_date, score, user_id, 
+      maintenance_time, bz)
     values (#{maintenanceOrderId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
       #{deviceName,jdbcType=VARCHAR}, #{deviceCode,jdbcType=VARCHAR}, #{deviceBrand,jdbcType=VARCHAR}, 
       #{deviceAddr,jdbcType=VARCHAR}, #{deviceYears,jdbcType=INTEGER}, #{companyPhone,jdbcType=VARCHAR}, 
       #{companyEmail,jdbcType=VARCHAR}, #{state,jdbcType=CHAR}, #{deptId,jdbcType=INTEGER}, 
-      #{createDate,jdbcType=TIMESTAMP}, #{score,jdbcType=DOUBLE}, #{userId,jdbcType=INTEGER}
-      )
+      #{createDate,jdbcType=TIMESTAMP}, #{score,jdbcType=DOUBLE}, #{userId,jdbcType=INTEGER}, 
+      #{maintenanceTime,jdbcType=TIMESTAMP}, #{bz,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.maint.system.model.MaintenanceOrder" >
     insert into tbl_maintenance_order
@@ -95,6 +97,12 @@
       <if test="userId != null" >
         user_id,
       </if>
+      <if test="maintenanceTime != null" >
+        maintenance_time,
+      </if>
+      <if test="bz != null" >
+        bz,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="maintenanceOrderId != null" >
@@ -141,6 +149,12 @@
       </if>
       <if test="userId != null" >
         #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="maintenanceTime != null" >
+        #{maintenanceTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -189,6 +203,12 @@
       <if test="userId != null" >
         user_id = #{userId,jdbcType=INTEGER},
       </if>
+      <if test="maintenanceTime != null" >
+        maintenance_time = #{maintenanceTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bz != null" >
+        bz = #{bz,jdbcType=VARCHAR},
+      </if>
     </set>
     where maintenance_order_id = #{maintenanceOrderId,jdbcType=VARCHAR}
   </update>
@@ -207,7 +227,9 @@
       dept_id = #{deptId,jdbcType=INTEGER},
       create_date = #{createDate,jdbcType=TIMESTAMP},
       score = #{score,jdbcType=DOUBLE},
-      user_id = #{userId,jdbcType=INTEGER}
+      user_id = #{userId,jdbcType=INTEGER},
+      maintenance_time = #{maintenanceTime,jdbcType=TIMESTAMP},
+      bz = #{bz,jdbcType=VARCHAR}
     where maintenance_order_id = #{maintenanceOrderId,jdbcType=VARCHAR}
   </update>
 </mapper>
