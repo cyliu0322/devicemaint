@@ -1,24 +1,40 @@
 package com.maint.system.service;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.maint.common.util.DateUtils;
+import com.maint.common.util.FileUtil;
 import com.maint.common.util.ShiroUtil;
+import com.maint.common.util.StringUtil;
+import com.maint.common.util.UUID19;
 import com.maint.system.enums.MaintainOrderStatusEnum;
 import com.maint.system.enums.MaintenanceOrderStatusEnum;
 import com.maint.system.enums.OrderTypeEnum;
+import com.maint.system.mapper.MaintainMaterialMapper;
 import com.maint.system.mapper.MaintainOrderMapper;
 import com.maint.system.mapper.MaintainTraceMapper;
 import com.maint.system.mapper.MaintenanceOrderMapper;
 import com.maint.system.mapper.MaintenanceTraceMapper;
+import com.maint.system.mapper.MaterialMapper;
+import com.maint.system.model.MaintainMaterial;
 import com.maint.system.model.MaintainOrder;
 import com.maint.system.model.MaintainTrace;
 import com.maint.system.model.MaintenanceOrder;
 import com.maint.system.model.MaintenanceTrace;
+import com.maint.system.model.Material;
+import com.maint.system.model.MaterialAidBean;
 import com.maint.system.model.OrderAidBean;
 import com.maint.system.model.OrderStatusBean;
 
@@ -26,13 +42,112 @@ import com.maint.system.model.OrderStatusBean;
 public class MobileLoginService {
 	
 	@Autowired
-	private MaintainTraceMapper miantainTraceMapper;
+	private MaintainTraceMapper maintainTraceMapper;
 	@Autowired
 	private MaintenanceTraceMapper maintenanceTraceMapper;
 	@Autowired
 	private MaintenanceOrderMapper maintenanceOrderMapper;
 	@Autowired
 	private MaintainOrderMapper maintainOrderMapper;
+	@Autowired
+	private MaterialMapper materialMapper;
+	@Autowired
+	private MaintainMaterialMapper maintainMaterialMapper;
+	
+	@Value("${file.picture.save-url}")
+	private String pictureSaveUrl;
+	@Value("${file.video.save-url}")
+	private String videoSaveUrl;
+	
+	@Transactional(rollbackFor=Exception.class)
+	public void saveFirstInspection(Map<String, String[]> dataMap) throws Exception {
+		//1、建立事物
+		//2、保存数据到追踪表
+		MaintainTrace maintainTrace = new MaintainTrace();
+		String maintainTraceId = UUID19.uuid();
+		maintainTrace.setMaintainTraceId(maintainTraceId);
+		maintainTrace.setMaintainOrderId(dataMap.get("orderId")[0]);
+		maintainTrace.setUserId(ShiroUtil.getCurrentUser().getUserId());
+		maintainTrace.setFaultCause(dataMap.get("faultDescription")[0]);
+		maintainTrace.setImage(dataMap.get("uploadedPictureName")[0]);
+		maintainTrace.setVideo(dataMap.get("uploadedVideoName")[0]);
+		maintainTrace.setMaintainDate(new Date());
+		maintainTrace.setOrderStatus(MaintainOrderStatusEnum.YSJ.getValue());
+		maintainTraceMapper.insert(maintainTrace);
+		
+		//3、保存数据到耗材表
+		String materialsJson = dataMap.get("materials")[0];
+		if (StringUtil.isNotEmpty(materialsJson)) {
+			JSONArray jsonArray = JSONArray.parseArray(materialsJson);
+			jsonArray.forEach(material -> {
+				JSONObject materialJson = (JSONObject) material;
+				MaintainMaterial maintainMaterial = new MaintainMaterial();
+				maintainMaterial.setMaintainMaterialId(UUID19.uuid());
+				maintainMaterial.setMaterialId(materialJson.getString("materialId"));
+				maintainMaterial.setMaintainOrderId(dataMap.get("orderId")[0]);
+				maintainMaterial.setAmount(Double.parseDouble(materialJson.getString("materialAmount")));
+				maintainMaterial.setMaintainTraceId(maintainTraceId);
+				
+				maintainMaterialMapper.insert(maintainMaterial);
+			});
+		}
+		
+		//4、更改维修单状态
+		maintainOrderMapper.updateState(dataMap.get("orderId")[0], MaintainOrderStatusEnum.YSJ.getValue());
+		
+	}
+	
+	
+	 
+	public List<MaterialAidBean> getMaterials(){
+		
+		List<Material> materials = materialMapper.selectMaterials();
+		List<MaterialAidBean> materialAidBeans = new ArrayList<MaterialAidBean>();
+		materials.stream().forEach(material -> {
+			MaterialAidBean materialAidBean = new MaterialAidBean();
+			materialAidBean.setValue(material.getMaterialId());
+			materialAidBean.setLabel(material.getMaterialName());
+			materialAidBean.setCategory(material.getCategory());
+			materialAidBean.setDescription(material.getDescription());
+			materialAidBean.setGgxh(material.getGgxh());
+			materialAidBean.setMaterialBrand(material.getMaterialName());
+			materialAidBean.setMaterialNumber(material.getMaterialNumber());
+			materialAidBean.setPrice(material.getPrice());
+			materialAidBean.setUnit(material.getUnit());
+			
+			materialAidBeans.add(materialAidBean);
+		});
+		return materialAidBeans;
+	}
+	
+	public String uploadFile(MultipartFile file, Map<String, String[]> resquestMap) throws Exception {
+		
+		String fileSaveURL = "";
+		
+		if("picture".equals(resquestMap.get("fileType")[0])) {
+			//上传图片
+			fileSaveURL = pictureSaveUrl;
+		}else {
+			//上传视频
+			fileSaveURL = videoSaveUrl;
+		}
+		try {
+			String newFileName = FileUtil.updateFileName(
+					file.getOriginalFilename(), resquestMap.get("uuid")[0]);
+			
+			file.transferTo(
+					new File(
+							fileSaveURL+
+							File.separator+
+							newFileName
+							));
+			System.out.println("文件上传成功，original file name : "+file.getOriginalFilename()+" , "
+								+ "new file name : "+newFileName);
+			return newFileName;
+		} catch (Exception e) {
+			throw new Exception(file.getOriginalFilename()+"文件上传失败，"+e.getMessage());
+		}
+	}
 	
 	@SuppressWarnings("unchecked")
 	public <T> T getOrderInfo(String orderId, String orderType) {
@@ -59,7 +174,7 @@ public class MobileLoginService {
 		
 		if(OrderTypeEnum.WX.getValue().equals(orderType)) {
 			//维修单
-			List<MaintainTrace> maintainTraces = miantainTraceMapper.selectOrderTraceByOrderId(orderId);
+			List<MaintainTrace> maintainTraces = maintainTraceMapper.selectOrderTraceByOrderId(orderId);
 			
 			maintainTraces.stream().forEachOrdered(maintainTrace -> {
 				OrderStatusBean orderStatusBean = new OrderStatusBean();

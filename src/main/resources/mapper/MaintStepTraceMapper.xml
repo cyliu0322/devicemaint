@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maint.system.mapper.MaintStepTraceMapper" >
+  <resultMap id="BaseResultMap" type="com.maint.system.model.MaintStepTrace" >
+    <result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="order_id" property="orderId" jdbcType="VARCHAR" />
+    <result column="step_name" property="stepName" jdbcType="VARCHAR" />
+    <result column="step_id" property="stepId" jdbcType="VARCHAR" />
+    <result column="is_complete" property="isComplete" jdbcType="CHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="complete_date" property="completeDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <insert id="insert" parameterType="com.maint.system.model.MaintStepTrace" >
+    insert into tbl_maint_step_trace (id, order_id, step_name, 
+      step_id, is_complete, create_date, 
+      complete_date)
+    values (#{id,jdbcType=VARCHAR}, #{orderId,jdbcType=VARCHAR}, #{stepName,jdbcType=VARCHAR}, 
+      #{stepId,jdbcType=VARCHAR}, #{isComplete,jdbcType=CHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{completeDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maint.system.model.MaintStepTrace" >
+    insert into tbl_maint_step_trace
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderId != null" >
+        order_id,
+      </if>
+      <if test="stepName != null" >
+        step_name,
+      </if>
+      <if test="stepId != null" >
+        step_id,
+      </if>
+      <if test="isComplete != null" >
+        is_complete,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="completeDate != null" >
+        complete_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="stepName != null" >
+        #{stepName,jdbcType=VARCHAR},
+      </if>
+      <if test="stepId != null" >
+        #{stepId,jdbcType=VARCHAR},
+      </if>
+      <if test="isComplete != null" >
+        #{isComplete,jdbcType=CHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="completeDate != null" >
+        #{completeDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+</mapper>

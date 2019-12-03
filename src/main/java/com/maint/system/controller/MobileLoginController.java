@@ -1,7 +1,5 @@
 package com.maint.system.controller;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +31,7 @@ import com.maint.system.enums.MaintainOrderStatusEnum;
 import com.maint.system.enums.OrderTypeEnum;
 import com.maint.system.model.MaintainOrder;
 import com.maint.system.model.MaintenanceOrder;
+import com.maint.system.model.MaterialAidBean;
 import com.maint.system.model.OrderAidBean;
 import com.maint.system.model.OrderStatusBean;
 import com.maint.system.service.MobileLoginService;
@@ -68,10 +67,13 @@ public class MobileLoginController {
 		
 		System.out.println("orderId:"+orderId+", deviceBrand:"+deviceBrand+",state:"+state);
 		
+		model.addAttribute("orderId", orderId);
+		
 		if (StringUtil.isNotEmpty(state) && MaintainOrderStatusEnum.DSJ.getValue().equals(state)) {
 			return "mobile/first-inspection";
 		}
 		
+		model.addAttribute("deviceBrand", deviceBrand);
 		return "mobile/operate-order";
 	}
 	
@@ -152,35 +154,63 @@ public class MobileLoginController {
 		return JSONObject.toJSONString(resultBean);
 	}
 	
-	@PostMapping(value = "uploadPicture")
+	@PostMapping(value = "uploadFile")
 	@ResponseBody
-	public String uploadPicture(HttpServletRequest resquest,
+	public String uploadFile(HttpServletRequest resquest,
 			@RequestParam("file") MultipartFile file) {
 		
 		Map<String, String[]> resquestMap = resquest.getParameterMap();
 		
-		if(file.isEmpty()) {
-			log.error("文件上传失败，文件为空。");
-		}
 		try {
-			file.transferTo(new File("E:\\个人\\项目\\维修系统\\测试图片上传"
-		+File.separator+resquestMap.get("uuid")[0]+
-		file.getOriginalFilename().substring(file.getOriginalFilename().indexOf("."))));
-			System.out.println("文件上传成功，original file name : "+file.getOriginalFilename()+" , "
-					+ "new file name : "+resquestMap.get("uuid")[0]+
-					file.getOriginalFilename().substring(file.getOriginalFilename().indexOf(".")));
+			
+			String fileName = mobileService.uploadFile(file, resquestMap);
+			
+			return fileName;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e.getMessage());
+			return e.getMessage();
 		}
 		
-		resquestMap.forEach((k,v) -> {
-			System.out.println("key : "+k+",value : "+v);
-		});
-		System.out.println("----uploadPicture-------");
-		return resquestMap.get("uuid")[0]+
-				file.getOriginalFilename().substring(file.getOriginalFilename().indexOf("."));
 	}
 	
-
+	@PostMapping(value = "getMetrials")
+	@ResponseBody
+	public String getMetrials(HttpServletRequest resquest) {
+		
+		ResultBean resultBean = null;
+		try {
+			List<MaterialAidBean> materials = mobileService.getMaterials();
+			resultBean = ResultBean.successData(materials);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			ResultBean.error(e.getMessage());
+		}
+		
+		String reString = JSONObject.toJSONString(resultBean);
+		
+		return reString;
+	}
+	
+	@PostMapping(value = "saveFirstInspection")
+	@ResponseBody
+	public String saveFirstInspection(HttpServletRequest resquest) {
+		
+		Map<String, String[]> dataMap =resquest.getParameterMap();
+		
+		dataMap.forEach((k,v)->{
+			System.out.println("key:"+k+", value:"+v[0]);
+		});
+		
+		ResultBean resultBean = null;
+		try {
+			mobileService.saveFirstInspection(dataMap);
+			resultBean = ResultBean.success("首检资料保存成功！");
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			resultBean = ResultBean.error(e.getMessage());
+		}
+		
+		return JSONObject.toJSONString(resultBean);
+	}
+	
 }

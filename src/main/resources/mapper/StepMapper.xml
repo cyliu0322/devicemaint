@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maint.system.mapper.StepMapper" >
+  <resultMap id="BaseResultMap" type="com.maint.system.model.Step" >
+    <id column="step_id" property="stepId" jdbcType="VARCHAR" />
+    <result column="step_name" property="stepName" jdbcType="VARCHAR" />
+    <result column="step_description" property="stepDescription" jdbcType="VARCHAR" />
+    <result column="brand_id" property="brandId" jdbcType="VARCHAR" />
+    <result column="weight" property="weight" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    step_id, step_name, step_description, brand_id, weight
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_step
+    where step_id = #{stepId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from tbl_step
+    where step_id = #{stepId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maint.system.model.Step" >
+    insert into tbl_step (step_id, step_name, step_description, 
+      brand_id, weight)
+    values (#{stepId,jdbcType=VARCHAR}, #{stepName,jdbcType=VARCHAR}, #{stepDescription,jdbcType=VARCHAR}, 
+      #{brandId,jdbcType=VARCHAR}, #{weight,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maint.system.model.Step" >
+    insert into tbl_step
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="stepId != null" >
+        step_id,
+      </if>
+      <if test="stepName != null" >
+        step_name,
+      </if>
+      <if test="stepDescription != null" >
+        step_description,
+      </if>
+      <if test="brandId != null" >
+        brand_id,
+      </if>
+      <if test="weight != null" >
+        weight,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="stepId != null" >
+        #{stepId,jdbcType=VARCHAR},
+      </if>
+      <if test="stepName != null" >
+        #{stepName,jdbcType=VARCHAR},
+      </if>
+      <if test="stepDescription != null" >
+        #{stepDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null" >
+        #{brandId,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null" >
+        #{weight,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maint.system.model.Step" >
+    update tbl_step
+    <set >
+      <if test="stepName != null" >
+        step_name = #{stepName,jdbcType=VARCHAR},
+      </if>
+      <if test="stepDescription != null" >
+        step_description = #{stepDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null" >
+        brand_id = #{brandId,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null" >
+        weight = #{weight,jdbcType=INTEGER},
+      </if>
+    </set>
+    where step_id = #{stepId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maint.system.model.Step" >
+    update tbl_step
+    set step_name = #{stepName,jdbcType=VARCHAR},
+      step_description = #{stepDescription,jdbcType=VARCHAR},
+      brand_id = #{brandId,jdbcType=VARCHAR},
+      weight = #{weight,jdbcType=INTEGER}
+    where step_id = #{stepId,jdbcType=VARCHAR}
+  </update>
+</mapper>

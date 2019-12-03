@@ -9,7 +9,32 @@
     <link th:href="@{/lib/zui/css/zui.min.css}" rel="stylesheet">
     <link th:href="@{/css/bootstrapValidator.min.css}" rel="stylesheet">
     <link th:href="@{/css/datatables.min.css}" rel="stylesheet">
+    <link th:href="@{/css/jquery-ui.css}" rel="stylesheet">
     <link th:href="@{/lib/zui/lib/uploader/zui.uploader.min.css}" rel="stylesheet">
+    
+    <style>
+  	.ui-autocomplete {
+	    max-height: 200px;
+	    overflow-y: auto;
+	    /* prevent horizontal scrollbar */
+	    overflow-x: hidden;
+	}
+  /* IE 6 doesn't support max-height
+   * we use height instead, but this forces the menu to always be this tall
+   */
+  	html .ui-autocomplete {
+	    height: 200px;
+	}
+	.ui-front{
+		z-index:1500;
+	}
+	.bodyclass{
+		 position:fixed;
+	     top:0;
+	     height: 100%;
+	     overflow: hidden;
+	}
+  </style>
   </head>
   <body>
     <header style="height:32px;line-height:32px;background-color:#3280fc;border-color:#1970fc;text-align:center;">
@@ -17,7 +42,7 @@
     </header>
     <article>
     	<hr class="divider" style="height:15px;background-color:#eee;margin-right:-10px;">
-    	<!-- 耗材 -->
+    	<!-- 品牌步骤 -->
     	<div id="brandStepDiv" style="height:180px;margin-left:8px;margin-right:8px;">
     		<p style="margin-top:8px;"><b>品牌步骤</b></p>
 		    <hr class="divider">
@@ -33,7 +58,7 @@
     		<div class="row" style="margin-top:8px;margin-bottom:8px;">
     			<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10"><b>耗材</b></div>
     			<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-    				<button class="btn btn-mini btn-primary" type="button"  data-toggle="modal" data-target="#addMetarialModal">+材料</button>
+    				<button class="btn btn-mini btn-primary" type="button"  data-toggle="modal" data-target="#addMaterialModal">+材料</button>
     			</div>
     		</div>
 		    <hr class="divider">
@@ -53,7 +78,7 @@
 		    		<div class="row" style="margin-top:8px;margin-bottom:8px;">
 		    			<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10"><b>上传图片</b></div>
 		    		</div>
-				    <hr class="divider">
+				    <hr class="divider" style="margin-bottom:4px;">
 				    <div id='pictureUploader' class="uploader">
 					  <div class="uploader-message text-center">
 					    <div class="content"></div>
@@ -76,7 +101,7 @@
 		    		<div class="row" style="margin-top:8px;margin-bottom:8px;">
 		    			<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10"><b>上传视频</b></div>
 		    		</div>
-				    <hr class="divider">
+				    <hr class="divider" style="margin-bottom:4px;">
 				    <div id='videoUploader' class="uploader">
 					  <div class="uploader-message text-center">
 					    <div class="content"></div>
@@ -101,7 +126,7 @@
 		    		</div>
 				    <hr class="divider" style="margin-bottom:8px;">
 				    <div>
-					  <textarea class="form-control" rows="3" name="faultDescription" placeholder="故障描述"></textarea>
+					  <textarea class="form-control" rows="3" id="faultDescription" name="faultDescription" placeholder="故障描述"></textarea>
 					</div>
 		    	</div>
 		    	
@@ -129,48 +154,110 @@
     	
     	<!-- 提交 -->
     	<div id="submitDiv">
-    		<button id="submitBtn" class="btn btn-primary btn-block " type="button" th:onclick="'goMaintenance(\''+*{maintenanceOrderId}+'\',\''+*{deviceBrand}+'\');'">提交</button>
+    		<button id="submitBtn" class="btn btn-primary btn-block " type="button" th:onclick="'maintainResultSubmit();'">提交</button>
     	</div>
     	
-    	<div class="modal fade" id="addMetarialModal">
+    	<div class="modal fade" id="addMaterialModal">
 		    <div class="modal-dialog">
 		        <div class="modal-content">
 		            <div class="modal-header">
 			            <button id="btnCloseSendEmail" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-			            <h4 class="modal-title"></h4>
+			            <h4 class="modal-title">材料选择</h4>
 			        </div>
 			        <div class="modal-body">
-			            <form class="form-horizontal">
+			            <form class="form-horizontal" id="materialForm">
 						  <div class="form-group">
-						    <label for="meterialName" class="col-md-4 col-sm-4">材料名</label>
+						    <label for="materialName" class="col-md-4 col-sm-4">材料名</label>
 						    <div class="col-md-8 col-sm-8">
-						      <input type="text" class="form-control" id="meterialName" name="meterialName" placeholder="材料名">
+						      <input type="text" class="form-control" id="materialName" name="materialName" placeholder="材料名" data-bv-notempty="true" data-bv-notempty-message="材料名不能为空">
 						    </div>
 						  </div>
 						  <div class="form-group">
-						    <label for="meterialAmount" class="col-md-4 col-sm-4">数量</label>
+						    <label for="materialAmount" class="col-md-4 col-sm-4">数量</label>
 						    <div class="col-md-8 col-sm-8">
-						      <input type="text" class="form-control" id="meterialAmount" name="meterialAmount" placeholder="材料数量">
+						      <input type="text" class="form-control" id="materialAmount" name="materialAmount" placeholder="材料数量" data-bv-notempty="true" data-bv-notempty-message="材料数量不能为空">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <div class="col-md-8 col-sm-8">
+						      <input type="hidden" class="form-control" id="materialId" name="materialId" placeholder="matrialId">
 						    </div>
 						  </div>
 						</form>
 			        </div>
 			        <div class="modal-footer" align="center">
-			            <button type="button" class="btn btn-primary standardColor" style="border:0px;" th:onclick="'sendEmail();'">提交</button>
+			            <button type="button" class="btn btn-primary" style="border:0px;" th:onclick="'addMaterialSubmit();'">提交</button>
 			        </div>
 		        </div>
 		    </div>
 		</div>
     </article>
 
-    <script th:src="@{/lib/zui/lib/jquery/jquery.js}"></script>
+    <script th:src="@{/js/jquery.js}"></script>
+    <script th:src="@{/js/jquery-ui.js}"></script>
     <script th:src="@{/lib/zui/js/zui.min.js}"></script>
     <script th:src="@{/js/jquery.serializejson.min.js}"></script>
     <script th:src="@{/js/bootstrapValidator.min.js}"></script>
     <script th:src="@{/js/datatables.min.js}"></script>
     <script th:src="@{/lib/zui/lib/uploader/zui.uploader.min.js}"></script>
-    <script type="text/javascript">
+    <script th:inline="javascript">
     $(document).ready(function() {
+
+    	$('#addMaterialModal').modal({
+    		backdrop : 'static',
+    		show: false
+    	});
+    	$('#addMaterialModal').on('shown.zui.modal', function() {
+    		$("body").addClass('bodyclass');
+    		
+    		$.ajax({
+		        type: "POST",
+			    data: "",
+			    dataType: "json",
+		        url: "/mobile/getMetrials",
+		        async: false,
+		        contentType: "application/json",
+		        success:function(responseData){
+		        	if(responseData.code == 0){
+		        		$( "#materialName" ).autocomplete( "option", "source", responseData.data );
+		        	}else{
+		        		alert(responseData.msg);
+		        	}
+		     	},
+		     	error: function () {
+		     		alert("获取材料列表失败");
+			 	}
+		    });
+    		
+    	});
+    	$('#addMaterialModal').on('hidden.zui.modal', function() {
+    		$("#materialId").val(""),
+	        $("#materialName").val(""),
+	        $("#materialAmount").val("")
+    		$("body").removeClass('bodyclass');
+  		});
+    	
+    	$( "#materialName" ).autocomplete({
+    		minLength: 1,
+    	    source: [],
+    	    focus: function( event, ui ) {
+    	        $( this ).val( ui.item.label );
+    	        return false;
+    	    },
+    	    select: function (event, ui) {
+    	    	event.preventDefault();
+    	    	$( this ).val( ui.item.label );
+    	    	$("#materialId").val(ui.item.value);
+				
+    	        return false;
+    	    }
+    	}).autocomplete( "instance" )._renderItem = function( ul, item ) {
+    	      return $( "<li>" )
+    	      	.attr( "data-value", item)
+    	        .append( "<div>" + item.label + "</div>" )
+    	        .appendTo( ul );
+    	    };
+    	
         $('#consumablesTable').DataTable( {
             "scrollY": "120px",
             "scrollCollapse": true,
@@ -179,32 +266,11 @@
             "ordering": false,
             "info": false,
             
-            "data": [
-                {
-                    "id":       "1",
-                    "material":     "Garrett Winters",
-                    "amount": "1"
-                },
-                {
-                    "id": "2",
-                    "material": "Director",
-                    "amount": "4"
-                },
-                {
-                    "id": "3",
-                    "material": "Garrett Winters",
-                    "amount": "1"
-                },
-                {
-                    "id": "4",
-                    "material": "Garrett Winters",
-                    "amount": "1"
-                }
-            ],
+            "data": [],
             "columns": [
-                {"title": "ID", "name":"id", "targets":"0", "data": "id" ,"visible": true,"type": "string", className: "text-center"},
-                {"title": "材料名", "name":"material", "targets":"1", "data": "material" ,"visible": true,"type": "string", className: "text-center"},
-                {"title": "数量", "name":"amount", "targets":"2", "data": "amount" ,"visible": true,"type": "string", className: "text-center"},
+                {"title": "ID", "name":"materialId", "targets":"0", "data": "materialId" ,"visible": true,"type": "string", className: "text-center"},
+                {"title": "材料名", "name":"materialName", "targets":"1", "data": "materialName" ,"visible": true,"type": "string", className: "text-center"},
+                {"title": "数量", "name":"materialAmount", "targets":"2", "data": "materialAmount" ,"visible": true,"type": "string", className: "text-center"},
                 {
                     "targets": -1,
                     "data": null,
@@ -214,10 +280,14 @@
             ]
         } );
     } );
+    
+    var uploadedPictureName="";
+    
     /*上传图片*/
     $('#pictureUploader').uploader({
 	  	autoUpload: false,             // 当选择文件后立即自动进行上传操作
-		url: '/mobile/uploadPicture',  // 文件上传提交地址
+		url: '/mobile/uploadFile',  // 文件上传提交地址
+		multipart_params:{ fileType: 'picture'},
 		limitFilesCount:1,            //限定文件上传的数目
 		dropPlaceholder:false,
 		uploadedMessage:true,
@@ -230,8 +300,7 @@
 		filters:{
 		    // 只允许上传图片或图标（.ico）
 		    mime_types: [
-		        {title: '图片', extensions: 'jpg,gif,png,jpeg,bmp'},
-		        {title: '视频', extensions: 'mp4'}
+		        {title: '图片', extensions: 'jpg,gif,png,jpeg,bmp'}
 		    ],
 		    max_file_size: '5mb',     // 最大上传文件为 5MB
 		    prevent_duplicates: true  // 不允许上传重复文件
@@ -239,24 +308,27 @@
 		onFileUploaded:function(file, responseObject){
 			if(responseObject.status==200){
 				console.log("msg:"+responseObject.response)
-				//写个上传成功标志，只有当上传成功之后才可以提交
-				uploadSuccesFlag = "SUCCESS";
+				
+				uploadedPictureName = responseObject.response;
 			}
 			console.log("fileId:"+file.id+",fileName:"+file.name);
 		},
 		onError:function(error){
-			console.log("code="+error.code+",msg:"+error.message);
+			console.log("文件上传失败，code="+error.code+",msg:"+error.message);
 		},
 		deleteActionOnDone:function(file, doRemoveFile){
 			alert("已上传的文件不可删除");
 			console.log("fileId:"+file.id+",fileName:"+file.name);
-			
 		}
     });
+    
+    var uploadedVideoName = "";
+    
     /*上传视频*/
     $('#videoUploader').uploader({
 	  	autoUpload: false,             // 当选择文件后立即自动进行上传操作
-		url: '/mobile/uploadPicture',  // 文件上传提交地址
+		url: '/mobile/uploadFile',  // 文件上传提交地址
+		multipart_params:{ fileType: 'video'},
 		limitFilesCount:1,            //限定文件上传的数目
 		dropPlaceholder:false,
 		uploadedMessage:true,
@@ -269,17 +341,16 @@
 		filters:{
 		    // 只允许上传图片或图标（.ico）
 		    mime_types: [
-		        {title: '图片', extensions: 'jpg,gif,png,jpeg,bmp'},
 		        {title: '视频', extensions: 'mp4'}
 		    ],
-		    max_file_size: '5mb',     // 最大上传文件为 5MB
+		    max_file_size: '10mb',     // 最大上传文件为 10MB
 		    prevent_duplicates: true  // 不允许上传重复文件
 		},
 		onFileUploaded:function(file, responseObject){
 			if(responseObject.status==200){
 				console.log("msg:"+responseObject.response)
 				//写个上传成功标志，只有当上传成功之后才可以提交
-				uploadSuccesFlag = "SUCCESS";
+				uploadedVideoName = responseObject.response;
 			}
 			console.log("fileId:"+file.id+",fileName:"+file.name);
 		},
@@ -293,15 +364,62 @@
 		}
     });
     
-    /**
-     * 删除
-     */
+    /*增加材料*/
+    function addMaterialSubmit(){
+    	$("#materialForm").bootstrapValidator('validate');
+		if ($("#materialForm").data('bootstrapValidator').isValid()){
+			var table = $('#consumablesTable').DataTable();
+			 
+			table.row.add( {
+			        "materialId":       $("#materialId").val(),
+			        "materialName":   $("#materialName").val(),
+			        "materialAmount":     $("#materialAmount").val()
+			    } ).draw();
+			$('#addMaterialModal').modal('hide');
+		}
+    }
+    
+    /*维修结果提交*/
+    function maintainResultSubmit(){
+    	
+    	/* var tableData = $('#consumablesTable').DataTable().data();
+    	var materials=[];
+    	$.each(tableData,function(k, v){
+    		materials.push(v);
+    	});
+    	var materialsJson=JSON.stringify(materials);
+    	
+    	$.ajax({
+	        type: "POST",
+		    data: "materials="+encodeURIComponent(materialsJson)
+		    +"&uploadedVideoName="+uploadedVideoName
+		    +"&uploadedPictureName="+uploadedPictureName
+		    +"&faultDescription="+$("#faultDescription").val()
+		    +"&orderId="+[[${orderId}]],
+		    dataType: "json",
+	        url: "/mobile/saveFirstInspection",
+	        async: false,
+	        success:function(responseData){
+	        	if(responseData.code == 0){
+	        		alert(responseData.msg);
+	        		window.location.href="/mobile/toSearchOrder";
+	        	}else{
+	        		alert(responseData.msg);
+	        	}
+	     	},
+	     	error: function () {
+	     		alert("首检所用材料保存失败！");
+		 	}
+	    }); */
+    }
+    
+    /*删除*/
      function delRow (delCol) {
         var data = $('#consumablesTable').DataTable()
         .row( $(delCol).parents('tr') )
         .remove()
         .draw();
-    }
+    } 
     </script>
   </body>
 </html>

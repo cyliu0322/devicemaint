@@ -4,10 +4,20 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.maint.system.model.MaintainOrder;
 
 public interface MaintainOrderMapper {
+	
+	/**
+	 * 更改维修订单状态
+	 * @param maintainOrderId 维修订单号
+	 * @param state 状态
+	 * @return
+	 */
+	@Update(value = "UPDATE tbl_maintain_order SET state = #{state} WHERE maintain_order_id = #{maintainOrderId}")
+	int updateState(@Param("maintainOrderId") String maintainOrderId, @Param("state") String state);
 	
 	@Select(value = "SELECT * FROM tbl_maintain_order WHERE maintain_order_id = #{orderId} limit 1")
 	MaintainOrder selectOrderByOrderId(@Param("orderId") String orderId);

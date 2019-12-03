@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maint.system.mapper.MaterialMapper" >
+  <resultMap id="BaseResultMap" type="com.maint.system.model.Material" >
+    <id column="material_id" property="materialId" jdbcType="VARCHAR" />
+    <result column="material_name" property="materialName" jdbcType="VARCHAR" />
+    <result column="material_number" property="materialNumber" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="DOUBLE" />
+    <result column="unit" property="unit" jdbcType="VARCHAR" />
+    <result column="material_brand" property="materialBrand" jdbcType="VARCHAR" />
+    <result column="category" property="category" jdbcType="VARCHAR" />
+    <result column="ggxh" property="ggxh" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    material_id, material_name, material_number, description, price, unit, material_brand, 
+    category, ggxh
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_material
+    where material_id = #{materialId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from tbl_material
+    where material_id = #{materialId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maint.system.model.Material" >
+    insert into tbl_material (material_id, material_name, material_number, 
+      description, price, unit, 
+      material_brand, category, ggxh
+      )
+    values (#{materialId,jdbcType=VARCHAR}, #{materialName,jdbcType=VARCHAR}, #{materialNumber,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{price,jdbcType=DOUBLE}, #{unit,jdbcType=VARCHAR}, 
+      #{materialBrand,jdbcType=VARCHAR}, #{category,jdbcType=VARCHAR}, #{ggxh,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.maint.system.model.Material" >
+    insert into tbl_material
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="materialId != null" >
+        material_id,
+      </if>
+      <if test="materialName != null" >
+        material_name,
+      </if>
+      <if test="materialNumber != null" >
+        material_number,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="unit != null" >
+        unit,
+      </if>
+      <if test="materialBrand != null" >
+        material_brand,
+      </if>
+      <if test="category != null" >
+        category,
+      </if>
+      <if test="ggxh != null" >
+        ggxh,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="materialId != null" >
+        #{materialId,jdbcType=VARCHAR},
+      </if>
+      <if test="materialName != null" >
+        #{materialName,jdbcType=VARCHAR},
+      </if>
+      <if test="materialNumber != null" >
+        #{materialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="unit != null" >
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="materialBrand != null" >
+        #{materialBrand,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null" >
+        #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="ggxh != null" >
+        #{ggxh,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maint.system.model.Material" >
+    update tbl_material
+    <set >
+      <if test="materialName != null" >
+        material_name = #{materialName,jdbcType=VARCHAR},
+      </if>
+      <if test="materialNumber != null" >
+        material_number = #{materialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        price = #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="unit != null" >
+        unit = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="materialBrand != null" >
+        material_brand = #{materialBrand,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null" >
+        category = #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="ggxh != null" >
+        ggxh = #{ggxh,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where material_id = #{materialId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maint.system.model.Material" >
+    update tbl_material
+    set material_name = #{materialName,jdbcType=VARCHAR},
+      material_number = #{materialNumber,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DOUBLE},
+      unit = #{unit,jdbcType=VARCHAR},
+      material_brand = #{materialBrand,jdbcType=VARCHAR},
+      category = #{category,jdbcType=VARCHAR},
+      ggxh = #{ggxh,jdbcType=VARCHAR}
+    where material_id = #{materialId,jdbcType=VARCHAR}
+  </update>
+</mapper>
