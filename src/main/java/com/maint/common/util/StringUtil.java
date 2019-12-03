@@ -14,9 +14,9 @@ public class StringUtil {
 	private static final String NULLSTR = "";
 	
 	/**
-	 * 生成随机字符串
+	 * 生成指定前缀的随机字符串
 	 */
-	public static String generateCode(int length) {
+	public static String generateCode(int length, String prefix) {
 		String str = "ABCDEFGHJKLMNPQRTVWY0123456789";
 		Random random = new Random();
 		StringBuffer sb = new StringBuffer();
@@ -25,7 +25,7 @@ public class StringUtil {
 			sb.append(str.charAt(number));
 		}
 		
-		return sb.toString();
+		return prefix + sb.toString();
 	}
 	
 	/**

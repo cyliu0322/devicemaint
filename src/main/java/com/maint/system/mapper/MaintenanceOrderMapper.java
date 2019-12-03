@@ -31,6 +31,8 @@ public interface MaintenanceOrderMapper {
     int insertSelective(MaintenanceOrder record);
 
     MaintenanceOrder selectByPrimaryKey(String maintenanceOrderId);
+    
+    List<MaintenanceOrder> selectAllMaintenance();
 
     int updateByPrimaryKeySelective(MaintenanceOrder record);
 

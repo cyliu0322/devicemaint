@@ -53,7 +53,7 @@ public class DeviceService {
 	}
 	
 	private String generateCode(int length) {
-		String code = StringUtil.generateCode(length);
+		String code = StringUtil.generateCode(length, "");
 		//校验是否重复
 		if (deviceMapper.selectByPrimaryKey(code) != null) {
 			code = generateCode(length);

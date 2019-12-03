@@ -187,7 +187,7 @@
 				var data = obj.data;
 				var event = obj.event;
 				if (event === 'generate') {
-					alert(2342);
+					addUpkeep(data.deviceId);
 				} else if (event === 'editDevice') {
 					editDevice(data.deviceId);
 				} else if (event === 'delDevice') {
@@ -235,6 +235,20 @@
 						layer.close(index);
 					}
 				);
+			}
+			
+			function addUpkeep(deviceId) {
+				layer.open({
+					content: "/maintenance/" + deviceId,
+					title: "保养单",
+					area: ['40%', '85%'],
+					type: 2,
+					maxmin: true,
+					shadeClose: true,
+					end: function () {
+						table.reload(childTableId);
+					}
+				});
 			}
 			
 			function addDevice(companyId) {

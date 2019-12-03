@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.maint.common.annotation.OperationLog;
 import com.maint.common.util.ResultBean;
 import com.maint.system.model.Device;
+import com.maint.system.service.BrandService;
 import com.maint.system.service.DeviceService;
-
-import cn.hutool.crypto.Mode;
+import com.maint.system.service.VipService;
 
 @Controller
 @RequestMapping("/device")
@@ -25,6 +25,12 @@ public class DeviceController {
 
 	@Resource
 	private DeviceService deviceService;
+	
+	@Resource
+	private VipService vipService;
+	
+	@Resource
+	private BrandService brandService;
 	
 	@GetMapping
 	public String add() {

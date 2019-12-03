@@ -57,7 +57,7 @@ public class MaintService {
 	}
 	
 	private String generateCode(int length) {
-		String code = StringUtil.generateCode(length);
+		String code = StringUtil.generateCode(length, "");
 		//校验是否重复
 		MaintainTrace trace = traceMapper.selectByPrimaryKey(code);
 		if (trace != null) {
