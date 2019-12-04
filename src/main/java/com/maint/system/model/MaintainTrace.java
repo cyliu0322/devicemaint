@@ -23,8 +23,9 @@ public class MaintainTrace {
 
     private String orderStatus;
     
-    @JsonProperty("statusDesc")
     private String statusDesc;
+    
+    private String username;
 
     public String getMaintainTraceId() {
         return maintainTraceId;
@@ -87,7 +88,23 @@ public class MaintainTrace {
     }
 
     public void setOrderStatus(String orderStatus) {
-        this.statusDesc = MaintainOrderStatusEnum.getvalueOf(orderStatus).getTxt();
         this.orderStatus = orderStatus == null ? null : orderStatus.trim();
     }
+
+	public String getStatusDesc() {
+		return statusDesc;
+	}
+
+	public void setStatusDesc(String statusDesc) {
+		this.statusDesc = statusDesc;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+    
 }

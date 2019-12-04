@@ -21,12 +21,6 @@
     from tbl_maintain_trace
     where maintain_trace_id = #{maintainTraceId,jdbcType=VARCHAR}
   </select>
-  <select id="selectByMaintId" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from tbl_maintain_trace
-    where maintain_order_id = #{maintId,jdbcType=VARCHAR} order by maintain_date desc;
-  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from tbl_maintain_trace
     where maintain_trace_id = #{maintainTraceId,jdbcType=VARCHAR}
@@ -134,4 +128,15 @@
       order_status = #{orderStatus,jdbcType=CHAR}
     where maintain_trace_id = #{maintainTraceId,jdbcType=VARCHAR}
   </update>
+  
+  <select id="selectByMaintId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    	mt.maintain_trace_id,
+    	mt.fault_cause,
+    	mt.maintain_date,
+    	mt.order_status,
+    	u.username
+    from tbl_maintain_trace mt left join user u on mt.user_id = u.user_id
+    where maintain_order_id = #{maintId,jdbcType=VARCHAR} order by maintain_date desc;
+  </select>
 </mapper>

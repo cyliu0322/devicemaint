@@ -326,7 +326,7 @@
 				//不存在就创建展开行
 				if (trObjChildren.data('index') != indexChildren) {
 					//装载HTML元素
-					var tr = '<tr data-index="' + indexChildren + '"><td colspan="' + colspan + '"><div style="height: auto;padding-left:' + 0 + 'px;padding-right:' + 0 + 'px" class="layui-table-cell">' + content + '</div></td></tr>';
+					var tr = '<tr data-index="' + indexChildren + '"><td class="layui-table-col-special"></td><td colspan="' + (colspan - 1) + '"><div style="height: auto;padding-left: ' + 0 + 'px;padding-right:' + 0 + 'px" class="layui-table-cell">' + content + '</div></td></tr>';
 					trObjChildren = trObj.after(tr).next().hide(); //隐藏展开行
 					var fixTr = '<tr data-index="' + indexChildren + '"></tr>';//固定行
 					//leftTrChildren = leftTr.after(fixTr).next().hide(); //左固定

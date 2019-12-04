@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.github.pagehelper.PageHelper;
 import com.maint.common.util.StringUtil;
+import com.maint.system.enums.MaintainOrderStatusEnum;
 import com.maint.system.mapper.MaintainOrderMapper;
 import com.maint.system.mapper.MaintainTraceMapper;
 import com.maint.system.model.MaintainOrder;
@@ -26,8 +28,13 @@ public class MaintService {
 	@Resource
 	private MaintainTraceMapper traceMapper;
 	
-	public List<MaintainOrder> selectAllMaint() {
-		return maintMapper.selectAllMaint();
+	public List<MaintainOrder> selectAllWithQuery(int page, int rows, MaintainOrder maintQuery) {
+		PageHelper.startPage(page, rows);
+		List<MaintainOrder> maints = maintMapper.selectAllWithQuery(maintQuery);
+		for (MaintainOrder maintainOrder : maints) {
+			maintainOrder.setStateDesc(MaintainOrderStatusEnum.getvalueOf(maintainOrder.getState()).getTxt());
+		}
+		return maints;
 	}
 	
 	public MaintainOrder selectMaintById(String maintId) {
@@ -35,7 +42,11 @@ public class MaintService {
 	}
 	
 	public List<MaintainTrace> selectTracesByMaintId(String maintId) {
-		return traceMapper.selectByMaintId(maintId);
+		List<MaintainTrace> traces = traceMapper.selectByMaintId(maintId);
+		for (MaintainTrace maintainTrace : traces) {
+			maintainTrace.setStatusDesc(MaintainOrderStatusEnum.getvalueOf(maintainTrace.getOrderStatus()).getTxt());
+		}
+		return traces;
 	}
 	
 	@Transactional

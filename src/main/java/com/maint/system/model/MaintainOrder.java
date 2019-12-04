@@ -32,7 +32,6 @@ public class MaintainOrder {
 
     private String state;
     
-    @JsonProperty("stateDesc")
     private String stateDesc;
 
     private Integer deptId;
@@ -46,6 +45,8 @@ public class MaintainOrder {
     private Double score;
 
     private Integer userId;
+    
+    private String username;
 
     public String getMaintainOrderId() {
         return maintainOrderId;
@@ -148,11 +149,18 @@ public class MaintainOrder {
     }
 
     public void setState(String state) {
-    	this.stateDesc = MaintainOrderStatusEnum.getvalueOf(state).getTxt();
         this.state = state == null ? null : state.trim();
     }
 
-    public Integer getDeptId() {
+    public String getStateDesc() {
+		return stateDesc;
+	}
+
+	public void setStateDesc(String stateDesc) {
+		this.stateDesc = stateDesc;
+	}
+
+	public Integer getDeptId() {
         return deptId;
     }
 
@@ -199,4 +207,13 @@ public class MaintainOrder {
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+    
 }

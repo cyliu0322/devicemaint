@@ -33,7 +33,12 @@ public interface MaintainOrderMapper {
 
     MaintainOrder selectByPrimaryKey(String maintainOrderId);
     
-    List<MaintainOrder> selectAllMaint();
+    /**
+     * 获取所有维修单
+     * @param maintQuery
+     * @return
+     */
+    List<MaintainOrder> selectAllWithQuery(MaintainOrder maintQuery);
 
     int updateByPrimaryKeySelective(MaintainOrder record);
 

@@ -33,11 +33,6 @@
     from tbl_maintain_order
     where maintain_order_id = #{maintainOrderId,jdbcType=VARCHAR}
   </select>
-  <select id="selectAllMaint" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from tbl_maintain_order
-  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from tbl_maintain_order
     where maintain_order_id = #{maintainOrderId,jdbcType=VARCHAR}
@@ -261,4 +256,25 @@
       user_id = #{userId,jdbcType=INTEGER}
     where maintain_order_id = #{maintainOrderId,jdbcType=VARCHAR}
   </update>
+  
+  <select id="selectAllWithQuery" resultMap="BaseResultMap">
+    select 
+    	mo.maintain_order_id,
+    	mo.company_name,
+    	mo.company_id,
+    	mo.device_name,
+    	mo.state,
+    	mo.fault_description,
+    	mo.create_date,
+    	u.username
+    from tbl_maintain_order mo left join user u on mo.user_id = u.user_id
+    <where>
+		<if test="companyName != null and companyName != ''">
+			AND mo.company_name like CONCAT('%', #{companyName, jdbcType=VARCHAR}, '%')
+		</if>
+		<if test="state != null and state != ''">
+			AND mo.state = #{state}
+		</if>
+	</where>
+  </select>
 </mapper>

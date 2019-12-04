@@ -45,8 +45,8 @@ public class MaintController {
 	@GetMapping("/list")
 	@ResponseBody
 	public PageResultBean<MaintainOrder> getMaintList(@RequestParam(value = "page", defaultValue = "1") int page,
-			@RequestParam(value = "limit", defaultValue = "10") int limit) {
-		List<MaintainOrder> maints = maintService.selectAllMaint();
+			@RequestParam(value = "limit", defaultValue = "10") int limit, MaintainOrder maintQuery) {
+		List<MaintainOrder> maints = maintService.selectAllWithQuery(page, limit, maintQuery);
 		PageInfo<MaintainOrder> maintPageInfo = new PageInfo<>(maints);
 		return new PageResultBean<>(maintPageInfo.getTotal(), maintPageInfo.getList());
 	}
