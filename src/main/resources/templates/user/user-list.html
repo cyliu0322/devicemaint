@@ -23,10 +23,10 @@
 		<form class="layui-form zadmin-search-area input">
 			<div class="layui-form-item">
 				<div class="layui-inline">
-					<label for="username" class="layui-form-label">用户名</label>
+					<label for="nickname" class="layui-form-label">姓名</label>
 					<div class="layui-input-inline">
-						<input type="text" name="username" autocomplete="off"
-							id="username" class="layui-input">
+						<input type="text" name="nickname" autocomplete="off"
+							id="nickname" class="layui-input">
 					</div>
 					
 					<label for="tel" class="layui-form-label">手机</label>
@@ -34,23 +34,6 @@
 						<input type="text" name="tel" autocomplete="off" id="tel"
 							class="layui-input">
 					</div>
-					
-					<!-- 
-					<label for="deptTree" class="layui-form-label">区域</label>
-					<div class="layui-input-inline">
-						<ul id="deptTree" class="dtree" data-id="0" data-value="请选择"></ul>
-						<input type="hidden" id="deptId" name="deptId">
-					</div>
-					
-					<label for="status" class="layui-form-label">状态</label>
-					<div class="layui-input-inline">
-						<select name="status" id="status">
-							<option value="">请选择</option>
-							<option value="1">正常</option>
-							<option value="0">锁定</option>
-						</select>
-					</div>
-					 -->
 					
 					<button lay-submit="" lay-filter="search"
 						class="layui-btn layui-btn-sm layui-btn-primary table-action">
@@ -154,10 +137,11 @@
 				cols: [
 					[
 						{type: 'numbers', title: '序号', width: "5%"},
-						{field: 'userId', title: 'ID', width: "10%", hide: true},
-						{field: 'username', title: '用户名', width: "15%"},
+						{field: 'userId', title: 'ID', hide: true},
+						{field: 'username', title: '账号', width: "10%"},
+						{field: 'nickname', title: '姓名', width: "10%"},
 						{field: 'tel', title: '手机', width: "12%"},
-						{field: 'roleNames', title: '角色', width: "24%",
+						{field: 'roleNames', title: '角色', width: "18%",
 							templet: function(d) {
 								var name = "";
 								d.roleNames.forEach(function(e){
@@ -166,11 +150,9 @@
 								return name.substr(0, name.length - 1);
 							}
 						},
-						{field: 'deptName', title: '维修点', width: "12%"},
-						/* {field: 'createTime', title: '创建时间', width: "12%"},
-						{field: 'lastLoginTime', title: '最后登陆时间', width: "12%"}, */
-						{field: 'status', title: '状态', templet: "#statusTpl", width: "12%"},
-						{title: '操作', fixed: 'right', align: 'center', toolbar: '#column-toolbar'}
+						{field: 'deptName', title: '维修点', width: "25%"},
+						{field: 'status', title: '状态', templet: "#statusTpl", width: "10%"},
+						{title: '操作', fixed: 'right', align: 'center', toolbar: '#column-toolbar', width: "10%"}
 					]
 				]
 			});

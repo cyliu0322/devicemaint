@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.pagehelper.PageHelper;
 import com.maint.common.util.StringUtil;
 import com.maint.system.mapper.CompanyMapper;
 import com.maint.system.mapper.DeviceMapper;
@@ -29,8 +30,9 @@ public class VipService {
 	@Resource
 	private DeviceMapper deviceMapper;
 	
-	public List<Company> selectAllCompany() {
-		return companyMapper.selectAllCompany();
+	public List<Company> selectAllWithQuery(int page, int rows, Company company) {
+		PageHelper.startPage(page, rows);
+		return companyMapper.selectAllWithQuery(company);
 	}
 	
 	public List<Device> selectDeviceByCompanyId(String companyId) {

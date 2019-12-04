@@ -35,8 +35,8 @@ public class VipController {
 	@GetMapping("/list")
 	@ResponseBody
 	public PageResultBean<Company> getList(@RequestParam(value = "page", defaultValue = "1") int page,
-			@RequestParam(value = "limit", defaultValue = "10") int limit) {
-		List<Company> vips = vipService.selectAllCompany();
+			@RequestParam(value = "limit", defaultValue = "10") int limit, Company companyQuery) {
+		List<Company> vips = vipService.selectAllWithQuery(page, limit, companyQuery);
 		PageInfo<Company> userPageInfo = new PageInfo<>(vips);
 		return new PageResultBean<>(userPageInfo.getTotal(), userPageInfo.getList());
 	}

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.github.pagehelper.PageInfo;
 import com.maint.common.annotation.OperationLog;
+import com.maint.common.constants.RoleEnum;
 import com.maint.common.util.PageResultBean;
 import com.maint.common.util.ResultBean;
 import com.maint.system.enums.MaintainOrderStatusEnum;
@@ -59,16 +60,18 @@ public class MaintController {
 	
 	@GetMapping("/prior/{maintId}")
 	public String appointPrior(@PathVariable("maintId") String maintId, Model model) {
-		List<User> users = userService.selectPriorers();
+		List<User> users = userService.selectByRole(RoleEnum.SJY.getRoleId());
+		MaintainOrder maint = maintService.selectMaintById(maintId);
 		model.addAttribute("users", users);
-		model.addAttribute("maintId", maintId);
+		model.addAttribute("maint", maint);
 		model.addAttribute("appoint", MaintainOrderStatusEnum.DSJ.getValue());
 		return "maint/maint-prior";
 	}
 	
 	@GetMapping("/mp/{maintId}")
 	public String appointMp(@PathVariable("maintId") String maintId, Model model) {
-		model.addAttribute("maintId", maintId);
+		MaintainOrder maint = maintService.selectMaintById(maintId);
+		model.addAttribute("maint", maint);
 		model.addAttribute("appoint", MaintainOrderStatusEnum.DWX.getValue());
 		return "maint/maint-mp";
 	}

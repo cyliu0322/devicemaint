@@ -21,6 +21,8 @@ public class User implements Serializable {
 	@NotBlank(message = "密码不能为空", groups = Create.class)
 	private String password;
 	
+	private String nickname;
+	
 	@JsonIgnore
 	private String salt;
 	
@@ -66,6 +68,14 @@ public class User implements Serializable {
 	
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public String getNickname() {
+		return nickname;
+	}
+	
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 	
 	public String getSalt() {

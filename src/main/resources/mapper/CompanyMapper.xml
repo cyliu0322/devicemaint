@@ -19,11 +19,6 @@
     from tbl_company
     where company_id = #{companyId,jdbcType=VARCHAR}
   </select>
-  <select id="selectAllCompany" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from tbl_company
-  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from tbl_company
     where company_id = #{companyId,jdbcType=VARCHAR}
@@ -119,4 +114,15 @@
       dept_id = #{deptId,jdbcType=INTEGER}
     where company_id = #{companyId,jdbcType=VARCHAR}
   </update>
+  
+  <select id="selectAllWithQuery" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_company
+    <where>
+		<if test="companyName != null and companyName != ''">
+			AND company_name like CONCAT('%', #{companyName, jdbcType=VARCHAR}, '%')
+		</if>
+	</where>
+  </select>
 </mapper>

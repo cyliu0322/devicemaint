@@ -6,6 +6,7 @@
         <id column="user_id" jdbcType="INTEGER" property="userId"/>
         <result column="username" jdbcType="VARCHAR" property="username"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="nickname" jdbcType="VARCHAR" property="nickname"/>
         <result column="salt" jdbcType="VARCHAR" property="salt"/>
         <result column="tel" jdbcType="VARCHAR" property="tel"/>
         <result column="status" jdbcType="CHAR" property="status"/>
@@ -19,6 +20,7 @@
             user_id,
             username,
             password,
+            nickname,
             salt,
             tel,
             status,
@@ -56,13 +58,6 @@
         	</choose>
         </where>
     </select>
-    <select id="selectPoiorers" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-        select
-        u.user_id, u.username, u.tel
-        from user u, user_role ur
-        where u.user_id = ur.user_id and ur.role_id = 3 and u.status = 1
-    </select>
-
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete
         from user
@@ -71,9 +66,9 @@
 
     <insert id="insert" keyColumn="user_id" keyProperty="userId" parameterType="com.maint.system.model.User"
             useGeneratedKeys="true">
-        insert into user (username, password, salt,
+        insert into user (username, password, nickname, salt,
                           tel, status, last_login_time, active_code, dept_id)
-        values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR},
+        values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR},
                 #{tel,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, #{lastLoginTime,jdbcType=TIMESTAMP},
                 #{activeCode,jdbcType=VARCHAR}, #{deptId,jdbcType=INTEGER})
     </insert>
@@ -85,6 +80,9 @@
             </if>
             <if test="password != null">
                 password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="nickname != null">
+                nickname = #{nickname,jdbcType=VARCHAR},
             </if>
             <if test="salt != null">
                 salt = #{salt,jdbcType=VARCHAR},
@@ -234,6 +232,7 @@
         select u.user_id,
                u.username,
                u.password,
+               u.nickname,
                u.salt,
                u.tel,
                u.status,
@@ -246,17 +245,11 @@
         from user u
                  left join dept d on u.dept_id = d.dept_id
         <where>
-            <if test="username != null and username != ''">
-                AND u.username = #{username}
+            <if test="nickname != null and nickname != ''">
+                AND u.nickname like CONCAT('%', #{nickname, jdbcType=VARCHAR}, '%')
             </if>
             <if test="tel != null and tel != ''">
                 AND u.tel = #{tel}
-            </if>
-            <if test="status != null and status != ''">
-                AND u.status = #{status}
-            </if>
-            <if test="deptId != null and deptId != ''">
-                AND d.dept_id = #{deptId}
             </if>
         </where>
     </select>
@@ -266,5 +259,12 @@
         set status = 1
         where user_id = #{userId}
     </update>
+    
+    <select id="selectByRole" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        u.user_id, u.username, u.tel
+        from user u, user_role ur
+        where u.user_id = ur.user_id and u.status = 1 and ur.role_id = #{roleId}
+    </select>
 
 </mapper>

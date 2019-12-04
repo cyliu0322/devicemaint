@@ -19,10 +19,18 @@
 	<div class="z-body animated fadeIn">
 		<form action="" method="post" class="layui-form layui-form-pane">
 			<div class="layui-form-item">
-				<label for="username" class="layui-form-label">用户名</label>
+				<label for="username" class="layui-form-label">账号</label>
 				<div class="layui-input-block">
 					<input type="text" id="username" name="username"
-						th:value="${user?.username}" lay-verify="required"
+						th:value="${user?.username}" lay-verify="required|minlen|alphanum"
+						lay-vertype="tips" autocomplete="off" placeholder="不少于4个字符的英文字母或者数字" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label for="nickname" class="layui-form-label">姓名</label>
+				<div class="layui-input-block">
+					<input type="text" id="nickname" name="nickname"
+						th:value="${user?.nickname}" lay-verify="required"
 						lay-vertype="tips" autocomplete="off" class="layui-input">
 				</div>
 			</div>
@@ -36,7 +44,7 @@
 			</div>
 			<!-- 编辑时不显示密码框 -->
 			<div th:if="${user == null}" class="layui-form-item">
-				<label for="password" class="layui-form-label">用户密码</label>
+				<label for="password" class="layui-form-label">密码</label>
 				<div class="layui-input-block">
 					<input type="password" id="password" name="password"
 						lay-verify="required" lay-vertype="tips" autocomplete="off"
@@ -65,17 +73,9 @@
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label">维修点</label>
-				<div class="layui-input-block">
-					<ul id="deptTree" class="dtree" data-id="0" data-value="请选择维修点"></ul>
-				</div>
-			</div>
-			<div class="layui-form-item">
 				<div class="layui-input-block"
 					style="margin-left: 0; text-align: center;">
-					<input type="hidden" id="deptId" name="deptId"
-						th:value="${user?.deptId}"> <input type="hidden"
-						id="userId" name="userId" th:value="${user?.userId}">
+					<input type="hidden" id="userId" name="userId" th:value="${user?.userId}">
 					<button th:text="${user}?'修改':'增加'"
 						class="layui-btn layui-btn-normal btn-w100" lay-submit=""
 						data-th-lay-filter="${user}?'edit':'add'"></button>
@@ -85,76 +85,86 @@
 	</div>
 	
 	<script th:src="@{/lib/jquery/jquery.min.js}"></script>
-    <script th:src="@{/lib/layui/layui.js}"></script>
-    <script th:src="@{/js/common.js}"></script>
+	<script th:src="@{/lib/layui/layui.js}"></script>
+	<script th:src="@{/js/common.js}"></script>
+	
+	<script>
+		layui.config({
+			base: '/lib/layui/extend/'
+		}).extend({
+			formSelects: 'formSelects-v4'
+		}).use(['form', 'layer', 'formSelects', 'dtree'], function () {
+			$ = layui.jquery;
+			var form = layui.form,
+				layer = layui.layer,
+				formSelects = layui.formSelects,
+				dtree = layui.dtree;
 
-    <script>
-        layui.config({
-            base: '/lib/layui/extend/'
-        }).extend({
-            formSelects: 'formSelects-v4'
-        }).use(['form', 'layer', 'formSelects', 'dtree'], function () {
-            $ = layui.jquery;
-            var form = layui.form
-                , layer = layui.layer
-                , formSelects = layui.formSelects
-                , dtree = layui.dtree;
-
-            dtree.renderSelect({
-                elem: "#deptTree",
-                url: "/dept/tree",
-                dataStyle: "layuiStyle",
-                width: "100%",
-                method: "GET",
-                dot: false,
-                accordion: true,
-                menubar: true,
-                response: {
-                	statusCode: 0,
-                    message: "msg",
-                    treeId: "id",
-                    parentId: "parentId",
-                    title: "name",
-                    disabled: "forbidden"
+			/* dtree.renderSelect({
+				elem: "#deptTree",
+				url: "/dept/tree",
+				dataStyle: "layuiStyle",
+				width: "100%",
+				method: "GET",
+				dot: false,
+				accordion: true,
+				menubar: true,
+				response: {
+					statusCode: 0,
+					message: "msg",
+					treeId: "id",
+					parentId: "parentId",
+					title: "name",
+					disabled: "forbidden"
+				},
+				done: function() {
+					var deptId = [[${user?.deptId + ''}]] ;
+					dtree.dataInit("deptTree", deptId);
+					dtree.setSelectValue("deptTree");
+				}
+			});
+			
+			dtree.on("node('deptTree')" ,function(obj){
+				$("#deptId").val(obj.param.nodeId);
+			}); */
+			
+			//自定义校验
+			form.verify({
+				minlen : function(value) {
+                    if (value.length < 4) {
+                        return '至少输入4个字符';
+                    }
                 },
-                done: function() {
-                    var deptId = [[${user?.deptId + ''}]] ;
-                    dtree.dataInit("deptTree", deptId);
-                    dtree.setSelectValue("deptTree");
-                }
-            });
+                alphanum : [/^[a-zA-Z0-9]*$/, '必须是英文字母或者数字']
+			});
 
-            dtree.on("node('deptTree')" ,function(obj){
-                $("#deptId").val(obj.param.nodeId);
-            });
-
-            form.on('submit(add)', function (form) {
-                form.field.role = formSelects.value('role-select', 'val');
-                $.post('/user', form.field, function (result) {
-                    handlerResult(result, addDone);
-                });
-                return false;
-            });
-
-            //监听提交
-            form.on('submit(edit)', function (form) {
-                form.field._method = 'PUT';
-                form.field.role = formSelects.value('role-select', 'val');
-                $.post('/user', form.field, function (result) {
-                    handlerResult(result, editDone);
-                });
-                return false;
-            });
-
-            function addDone(data) {
-                layer.msg("添加成功", {icon: 6});
-            }
-
-            function editDone(data) {
-                layer.msg("修改成功", {icon: 6});
-            }
-        });
-    </script>
+			form.on('submit(add)', function (form) {
+				form.field.role = formSelects.value('role-select', 'val');
+				$.post('/user', form.field, function (result) {
+					handlerResult(result, addDone);
+				});
+				return false;
+			});
+			
+			//监听提交
+			form.on('submit(edit)', function (form) {
+				form.field._method = 'PUT';
+				form.field.role = formSelects.value('role-select', 'val');
+				$.post('/user', form.field, function (result) {
+					handlerResult(result, editDone);
+				});
+				return false;
+			});
+			
+			function addDone(data) {
+				layer.msg("添加成功", {icon: 6});
+			}
+			
+			function editDone(data) {
+				layer.msg("修改成功", {icon: 6});
+			}
+		});
+	</script>
 </body>
 
 </html>

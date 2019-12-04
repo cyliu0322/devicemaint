@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
     <link rel="shortcut icon" type="image/x-icon" th:href="@{/favicon.ico}"/>
     <link rel="stylesheet" th:href="@{/lib/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/lib/layui/extend/soulTable.css}">
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/animate.min.css}">
     <link rel="stylesheet" th:href="@{/iconfont/iconfont.css}">
@@ -23,7 +24,7 @@
 		<form class="layui-form zadmin-search-area input">
 			<div class="layui-form-item">
 				<div class="layui-inline">
-					<label for="companyName" class="layui-form-label">名称</label>
+					<label for="companyName" class="layui-form-label">客户</label>
 					<div class="layui-input-inline">
 						<input type="text" name="companyName" autocomplete="off"
 							id="companyName" class="layui-input">
@@ -98,37 +99,70 @@
 	<script th:src="@{/js/common.js}"></script>
 	
     <script>
-    	var childTableId;
 		layui.config({
 			base: '/lib/layui/extend/'
-		}).use(['table', 'element', 'form', 'tablePlug'], function () {
+		}).use(['table', 'element', 'form', 'soulTable'], function () {
 			var table = layui.table;
 			var $ = layui.$;
 			var form = layui.form;
 			var dtree = layui.dtree;
-			var tablePlug = layui.tablePlug;
-			
-            tablePlug.smartReload.enable(true);
+			var soulTable = layui.soulTable;
 			
 			table.render({
 				elem: '#vip-table',
 				url: '/vip/list',
 				page: true,
 				toolbar: '#toolbar',
-				smartReloadModel: true,
+				defaultToolbar: null,
+				overflow: {
+					type: 'title',
+					hoverTime: 500
+				},
 				cols: [
 					[
-						{type: 'numbers', title: '序号', width: "5%"},
-						{field: 'companyId', title: 'ID', width: "20%", hide: true},
-						{field: 'companyName', title: '用户名', width: "25%", event: 'collapse',
-							templet: function(d) {
-								return '<div style="position: relative;\n' + ' padding: 0 10px 0 20px;">' + d.companyName + '<i style="left: 0px;" lay-tips="展开" class="layui-icon layui-colla-icon layui-icon-right"></i></div>'
+						{title: '#', width: "4%", collapse: true, children:[
+							{
+								title: '设备信息',
+								url: function(row) {
+									return '/device/list/' + row.companyId;
+								},
+								height: 180,
+								page: false,
+								overflow: {
+									type: 'title',
+									hoverTime: 500
+								},
+								cols: [
+									[
+										{field: 'deviceName', title: '设备名称', width: "20%"},
+										{field: 'brandName', title: '品牌', width: "10%"},
+										{field: 'code', title: '型号', width: "10%"},
+										{field: 'address', title: '设备地址', width: "30%"},
+										{field: 'years', title: '使用年数', width: "8%"},
+										{field: 'lastMaintenanceTime', title: '上次维护', width: "10%",
+											templet: function(d) {
+												return d.lastMaintenanceTime.substr(0, 10);
+											}	
+										},
+										{title: '操作', fixed: 'right', align: 'center', toolbar: '#children-column-toolbar', width: "12%"}
+									]
+								],
+								done: function() {
+									soulTable.render(this);
+								}
 							}
-						},
+						]},
+						{field: 'companyId', title: 'ID', hide: true},
+						{field: 'companyName', title: '客户', width: "20%"},
 						{field: 'companyAddress', title: '地址', width: "35%"},
-						{title: '操作', fixed: 'right', align: 'center', toolbar: '#column-toolbar'}
+						{field: 'contact', title: '联系人', width: "13%"},
+						{field: 'phone', title: '联系电话', width: "13%"},
+						{title: '操作', fixed: 'right', align: 'center', toolbar: '#column-toolbar', width: "15%"}
 					]
-				]
+				],
+				done: function() {
+					soulTable.render(this);
+				}
 			});
 			
 			// 工具条点击事件
@@ -150,35 +184,6 @@
 					del(obj);
 				} else if (event === 'addDevice') {
 					addDevice(data.companyId);
-				} else if (event === 'collapse') {
-					var trObj = layui.$(this).parent('tr'); //当前行
-					var accordion = true //开启手风琴，那么在进行折叠操作时，始终只会展现当前展开的表格。
-					var content = '<table lay-filter="deviceTable"></table>' //内容
-					//表格行折叠方法
-					collapseTable({
-						elem: trObj,
-						accordion: accordion,
-						content: content,
-						success: function(trObjChildren, index) { //成功回调函数
-							childTableId = index;
-							//trObjChildren 展开tr层DOM
-							//index 当前层索引
-							trObjChildren.find('table').attr("id", index);
-							table.render({
-								elem: "#" + index,
-								url: '/device/list/' + data.companyId,
-								limit: 3,
-								cellMinWidth: 80,
-								cols: [
-		                        	[
-										{field: 'code', title: '型号', width: "30%"},
-										{field: 'address', title: '地址'},
-										{title: '操作', fixed: 'right', align: 'center', toolbar: '#children-column-toolbar'}
-									]
-								]
-		                    });
-		                }
-		            });
 				}
 			});
 			
@@ -303,51 +308,12 @@
 				table.reload(childTableId);
 			}
 			
-			function collapseTable(options) {
-				var trObj = options.elem;
-				if (!trObj)
-					return;
-				var accordion = options.accordion,
-				success = options.success,
-				content = options.content || '';
-				var tableView = trObj.parents('.layui-table-view'); //当前表格视图
-				var id = tableView.attr('lay-id'); //当前表格标识
-				var index = trObj.data('index'); //当前行索引
-				var leftTr = tableView.find('.layui-table-fixed.layui-table-fixed-l tr[data-index="' + index + '"]'); //左侧当前固定行
-				var rightTr = tableView.find('.layui-table-fixed.layui-table-fixed-r tr[data-index="' + index + '"]'); //右侧当前固定行
-				var colspan = trObj.find('td').length; //获取合并长度
-				var trObjChildren = trObj.next(); //展开行Dom
-				var indexChildren = id + '-' + index + '-children'; //展开行索引
-				var leftTrChildren = tableView.find('.layui-table-fixed.layui-table-fixed-l tr[data-index="' + indexChildren + '"]'); //左侧展开固定行
-				var rightTrChildren = tableView.find('.layui-table-fixed.layui-table-fixed-r tr[data-index="' + indexChildren + '"]'); //右侧展开固定行
-				console.log(3242343242);
-				var lw = leftTr.width() + 15; //左宽
-				var rw = rightTr.width() + 15; //右宽
-				//不存在就创建展开行
-				if (trObjChildren.data('index') != indexChildren) {
-					//装载HTML元素
-					var tr = '<tr data-index="' + indexChildren + '"><td class="layui-table-col-special"></td><td colspan="' + (colspan - 1) + '"><div style="height: auto;padding-left: ' + 0 + 'px;padding-right:' + 0 + 'px" class="layui-table-cell">' + content + '</div></td></tr>';
-					trObjChildren = trObj.after(tr).next().hide(); //隐藏展开行
-					var fixTr = '<tr data-index="' + indexChildren + '"></tr>';//固定行
-					//leftTrChildren = leftTr.after(fixTr).next().hide(); //左固定
-					//rightTrChildren = rightTr.after(fixTr).next().hide(); //右固定
-				}
-				//展开|折叠箭头图标
-		        trObj.find('td[lay-event="collapse"] i.layui-colla-icon').toggleClass("layui-icon-right layui-icon-down");
-		        //显示|隐藏展开行
-				trObjChildren.toggle();
-				//开启手风琴折叠和折叠箭头
-				if (accordion) {
-					trObj.siblings().find('td[lay-event="collapse"] i.layui-colla-icon').removeClass("layui-icon-down").addClass("layui-icon-right");
-					trObjChildren.siblings('[data-index$="-children"]').hide(); //展开
-					//rightTrChildren.siblings('[data-index$="-children"]').hide(); //左固定
-					//leftTrChildren.siblings('[data-index$="-children"]').hide(); //右固定
-				}
-				success(trObjChildren, indexChildren); //回调函数
-				heightChildren = trObjChildren.height(); //展开高度固定
-				//rightTrChildren.height(heightChildren + 115).toggle(); //左固定
-				//leftTrChildren.height(heightChildren + 115).toggle(); //右固定
-			}
+			form.on('submit(search)', function (form) {
+				table.reload('vip-table', {
+					where: form.field
+				});
+				return false;
+			});
 		});
 	</script>
 </body>

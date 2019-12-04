@@ -21,7 +21,7 @@
 				<label for="" class="layui-form-label">维修单id</label>
 				<div class="layui-input-block">
 					<input type="text" id="maintainOrderId" name="maintainOrderId"
-						th:value="${maintId}" class="layui-input">
+						th:value="${maint.maintainOrderId}" class="layui-input">
 				</div>
 			</div>
 			<div class="layui-form-item" style="display: none;">
@@ -29,6 +29,33 @@
 				<div class="layui-input-block">
 					<input type="text" id="state" name="state"
 						th:value="${appoint}" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label for="" class="layui-form-label" style="border-style: solid solid none solid;">客户名称</label>
+				<div class="layui-input-block">
+					<input type="text" id="companyName" name="companyName"
+						th:value="${maint.companyName}" class="layui-input" style="border-style: solid solid none solid;" readonly>
+				</div>
+				<label for="" class="layui-form-label" style="border-style: solid solid none solid;">设备品牌</label>
+				<div class="layui-input-block">
+					<input type="text" id="deviceBrand" name="deviceBrand"
+						th:value="${maint.deviceBrand}" class="layui-input" style="border-style: solid solid none solid;" readonly>
+				</div>
+				<label for="" class="layui-form-label" style="border-style: solid solid none solid;">设备型号</label>
+				<div class="layui-input-block">
+					<input type="text" id="deviceCode" name="deviceCode"
+						th:value="${maint.deviceCode}" class="layui-input" style="border-style: solid solid none solid;" readonly>
+				</div>
+				<label for="" class="layui-form-label" style="border-style: solid solid none solid;">设备型号</label>
+				<div class="layui-input-block">
+					<input type="text" id="deviceName" name="deviceName"
+						th:value="${maint.deviceName}" class="layui-input" style="border-style: solid solid none solid;" readonly>
+				</div>
+				<label for="" class="layui-form-label">设备地址</label>
+				<div class="layui-input-block">
+					<input type="text" id="deviceAddr" name="deviceAddr"
+						th:value="${maint.deviceAddr}" class="layui-input" readonly>
 				</div>
 			</div>
 			<div class="layui-form-item">

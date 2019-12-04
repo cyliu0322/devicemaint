@@ -126,7 +126,7 @@
 									[
 										{field: 'faultCause', title: '描述', width: "65%"},
 										{field: 'statusDesc', title: '状态', width: "10%"},
-										{field: 'username', title: '记录人', width: "10%"},
+										{field: 'nickname', title: '记录人', width: "10%"},
 										{field: 'maintainDate', title: '时间', width: "15%"}
 									]
 								],
@@ -145,7 +145,7 @@
 							}	
 						},
 						{field: 'stateDesc', title: '维修单状态', width: "10%"},
-						{field: 'username', title: '当前负责人', width: "10%"},
+						{field: 'nickname', title: '当前负责人', width: "10%"},
 						{title: '操作', fixed: 'right', width: "10%", align: 'center', toolbar: '#column-toolbar'}
 					]
 				],
@@ -170,7 +170,7 @@
 			function appointPrior(maintid) {
 				layer.open({
                     content: '/maint/prior/' + maintid,
-                    title: "编辑",
+                    title: "派单",
                     area: ['40%', '85%'],
                     type: 2,
                     maxmin: true,
@@ -184,7 +184,7 @@
 			function appointMp(maintid) {
 				layer.open({
                     content: '/maint/mp/' + maintid,
-                    title: "编辑",
+                    title: "派单",
                     area: ['40%', '85%'],
                     type: 2,
                     maxmin: true,

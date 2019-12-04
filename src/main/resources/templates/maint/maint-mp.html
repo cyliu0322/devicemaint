@@ -33,6 +33,33 @@
 				</div>
 			</div>
 			<div class="layui-form-item">
+				<label for="" class="layui-form-label" style="border-style: solid solid none solid;">客户名称</label>
+				<div class="layui-input-block">
+					<input type="text" id="companyName" name="companyName"
+						th:value="${maint.companyName}" class="layui-input" style="border-style: solid solid none solid;" readonly>
+				</div>
+				<label for="" class="layui-form-label" style="border-style: solid solid none solid;">设备品牌</label>
+				<div class="layui-input-block">
+					<input type="text" id="deviceBrand" name="deviceBrand"
+						th:value="${maint.deviceBrand}" class="layui-input" style="border-style: solid solid none solid;" readonly>
+				</div>
+				<label for="" class="layui-form-label" style="border-style: solid solid none solid;">设备型号</label>
+				<div class="layui-input-block">
+					<input type="text" id="deviceCode" name="deviceCode"
+						th:value="${maint.deviceCode}" class="layui-input" style="border-style: solid solid none solid;" readonly>
+				</div>
+				<label for="" class="layui-form-label" style="border-style: solid solid none solid;">设备型号</label>
+				<div class="layui-input-block">
+					<input type="text" id="deviceName" name="deviceName"
+						th:value="${maint.deviceName}" class="layui-input" style="border-style: solid solid none solid;" readonly>
+				</div>
+				<label for="" class="layui-form-label">设备地址</label>
+				<div class="layui-input-block">
+					<input type="text" id="deviceAddr" name="deviceAddr"
+						th:value="${maint.deviceAddr}" class="layui-input" readonly>
+				</div>
+			</div>
+			<div class="layui-form-item">
 				<label class="layui-form-label">维修点</label>
 				<div class="layui-input-block">
 					<ul id="deptTree" class="dtree" data-id="0" data-value="请选择维修点"></ul>
@@ -50,44 +77,44 @@
 	</div>
 	
 	<script th:src="@{/lib/jquery/jquery.min.js}"></script>
-    <script th:src="@{/lib/layui/layui.js}"></script>
-    <script th:src="@{/js/common.js}"></script>
-
-    <script>
-        layui.config({
-            base: '/lib/layui/extend/'
-        }).extend({
-            formSelects: 'formSelects-v4'
-        }).use(['form', 'layer', 'formSelects', 'dtree'], function () {
-            $ = layui.jquery;
-            var form = layui.form
-                , layer = layui.layer
-                , formSelects = layui.formSelects
-                , dtree = layui.dtree;
-
-            dtree.renderSelect({
-                elem: "#deptTree",
-                url: "/dept/tree",
-                dataStyle: "layuiStyle",
-                width: "100%",
-                method: "GET",
-                dot: false,
-                accordion: true,
-                menubar: true,
-                response: {
-                	statusCode: 0,
-                    message: "msg",
-                    treeId: "id",
-                    parentId: "parentId",
-                    title: "name",
-                    disabled: "forbidden"
-                }
-            });
-
-            dtree.on("node('deptTree')" ,function(obj){
-                $("#userId").val(obj.param.nodeId);
-            });
-
+	<script th:src="@{/lib/layui/layui.js}"></script>
+	<script th:src="@{/js/common.js}"></script>
+	
+	<script>
+		layui.config({
+			base: '/lib/layui/extend/'
+		}).extend({
+			formSelects: 'formSelects-v4'
+		}).use(['form', 'layer', 'formSelects', 'dtree'], function () {
+			$ = layui.jquery;
+			var form = layui.form,
+				layer = layui.layer,
+				formSelects = layui.formSelects,
+				dtree = layui.dtree;
+			
+			dtree.renderSelect({
+				elem: "#deptTree",
+				url: "/dept/tree",
+				dataStyle: "layuiStyle",
+				width: "100%",
+				method: "GET",
+				dot: false,
+				accordion: true,
+				menubar: true,
+				response: {
+					statusCode: 0,
+					message: "msg",
+					treeId: "id",
+					parentId: "parentId",
+					title: "name",
+					disabled: "forbidden"
+				}
+			});
+			
+			dtree.on("node('deptTree')" ,function(obj){
+				$("#userId").val(obj.param.nodeId);
+			});
+			
 			//监听提交
 			form.on('submit(appoint)', function (form) {
 				form.field._method = 'PUT';
@@ -98,7 +125,6 @@
 			});
 			
 			function addDone(data) {
-				console.log("add result id : ", data);
 				layer.msg("派单成功", {icon: 6});
 			}
         });

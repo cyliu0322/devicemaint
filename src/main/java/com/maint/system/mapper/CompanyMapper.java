@@ -13,7 +13,11 @@ public interface CompanyMapper {
 
     Company selectByPrimaryKey(String companyId);
     
-    List<Company> selectAllCompany();
+    /**
+     * 查询所有大客户
+     * @return
+     */
+    List<Company> selectAllWithQuery(Company company);
 
     int updateByPrimaryKeySelective(Company record);
 

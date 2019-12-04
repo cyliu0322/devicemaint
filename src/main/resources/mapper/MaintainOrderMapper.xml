@@ -266,7 +266,7 @@
     	mo.state,
     	mo.fault_description,
     	mo.create_date,
-    	u.username
+    	u.nickname
     from tbl_maintain_order mo left join user u on mo.user_id = u.user_id
     <where>
 		<if test="companyName != null and companyName != ''">

@@ -135,7 +135,7 @@
     	mt.fault_cause,
     	mt.maintain_date,
     	mt.order_status,
-    	u.username
+    	u.nickname
     from tbl_maintain_trace mt left join user u on mt.user_id = u.user_id
     where maintain_order_id = #{maintId,jdbcType=VARCHAR} order by maintain_date desc;
   </select>

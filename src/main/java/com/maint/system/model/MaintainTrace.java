@@ -25,7 +25,7 @@ public class MaintainTrace {
     
     private String statusDesc;
     
-    private String username;
+    private String nickname;
 
     public String getMaintainTraceId() {
         return maintainTraceId;
@@ -99,12 +99,12 @@ public class MaintainTrace {
 		this.statusDesc = statusDesc;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getNickname() {
+		return nickname;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
     
 }

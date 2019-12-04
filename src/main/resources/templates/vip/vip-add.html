@@ -51,10 +51,10 @@
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label for="email" class="layui-form-label">邮箱</label>
+				<label for="phone" class="layui-form-label">邮箱</label>
 				<div class="layui-input-block">
 					<input type="text" id="email" name="email"
-						th:value="${vip?.email}" lay-verify="required|email"
+						th:value="${vip?.email}" lay-verify="customEmail"
 						lay-vertype="tips" autocomplete="off" class="layui-input">
 				</div>
 			</div>
@@ -78,73 +78,87 @@
 	</div>
 	
 	<script th:src="@{/lib/jquery/jquery.min.js}"></script>
-    <script th:src="@{/lib/layui/layui.js}"></script>
-    <script th:src="@{/js/common.js}"></script>
-
-    <script>
-        layui.config({
-            base: '/lib/layui/extend/'
-        }).extend({
-            formSelects: 'formSelects-v4'
-        }).use(['form', 'layer', 'formSelects', 'dtree'], function () {
-            $ = layui.jquery;
-            var form = layui.form
-                , layer = layui.layer
-                , formSelects = layui.formSelects
-                , dtree = layui.dtree;
-
-            dtree.renderSelect({
-                elem: "#deptTree",
-                url: "/dept/tree/area",
-                dataStyle: "layuiStyle",
-                width: "100%",
-                method: "GET",
-                dot: false,
-                accordion: true,
-                menubar: true,
-                response: {
-                	statusCode: 0,
-                    message: "msg",
-                    treeId: "id",
-                    parentId: "parentId",
-                    title: "name"
-                },
-                done: function() {
-                    var deptId = [[${vip?.deptId + ''}]] ;
-                    dtree.dataInit("deptTree", deptId);
-                    dtree.setSelectValue("deptTree");
-                }
-            });
-
-            dtree.on("node('deptTree')" ,function(obj){
-                $("#deptId").val(obj.param.nodeId);
-            });
-
-            form.on('submit(add)', function (form) {
-                $.post('/vip', form.field, function (result) {
-                    handlerResult(result, addDone);
-                });
-                return false;
-            });
-
-            //监听提交
-            form.on('submit(edit)', function (form) {
-                form.field._method = 'PUT';
-                $.post('/vip', form.field, function (result) {
-                    handlerResult(result, editDone);
-                });
-                return false;
-            });
+	<script th:src="@{/lib/layui/layui.js}"></script>
+	<script th:src="@{/js/common.js}"></script>
+    
+	<script>
+		layui.config({
+			base: '/lib/layui/extend/'
+		}).extend({
+			formSelects: 'formSelects-v4'
+		}).use(['form', 'layer', 'formSelects', 'dtree'], function () {
+			$ = layui.jquery;
+			var form = layui.form,
+				layer = layui.layer,
+				formSelects = layui.formSelects,
+				dtree = layui.dtree;
             
-            function addDone(data) {
-                layer.msg("添加成功", {icon: 6});
-            }
-
-            function editDone(data) {
-                layer.msg("修改成功", {icon: 6});
-            }
-        });
-    </script>
+			dtree.renderSelect({
+				elem: "#deptTree",
+				url: "/dept/tree/area",
+				dataStyle: "layuiStyle",
+				width: "100%",
+				method: "GET",
+				dot: false,
+				accordion: true,
+				menubar: true,
+				response: {
+					statusCode: 0,
+					message: "msg",
+					treeId: "id",
+					parentId: "parentId",
+					title: "name"
+					},
+				done: function() {
+					var deptId = [[${vip?.deptId + ''}]] ;
+					dtree.dataInit("deptTree", deptId);
+					dtree.setSelectValue("deptTree");
+				}
+			});
+			
+			dtree.on("node('deptTree')" ,function(obj){
+				$("#deptId").val(obj.param.nodeId);
+			});
+			
+			form.verify({
+				//自定义非必填邮箱校验
+				customEmail: function(value) {
+					if(value == '') {
+						return;
+					} else {
+						var regex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+						if(!regex.test(value)) {
+							return '邮箱格式不正确';
+						}
+					}
+				}
+			});
+			
+			form.on('submit(add)', function (form) {
+				$.post('/vip', form.field, function (result) {
+					handlerResult(result, addDone);
+				});
+				return false;
+			});
+			
+			//监听提交
+			form.on('submit(edit)', function (form) {
+				form.field._method = 'PUT';
+				$.post('/vip', form.field, function (result) {
+					handlerResult(result, editDone);
+				});
+				return false;
+			});
+			
+			function addDone(data) {
+				layer.msg("添加成功", {icon: 6});
+			}
+			
+			function editDone(data) {
+				layer.msg("修改成功", {icon: 6});
+			}
+		});
+	</script>
 </body>
 
 </html>

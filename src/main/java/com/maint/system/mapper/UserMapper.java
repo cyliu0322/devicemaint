@@ -67,10 +67,10 @@ public interface UserMapper {
     List<User> selectUnassignCharger(@Param("deptId") Integer deptId);
 
     /**
-     * 获取首检人
+     * 获取特定角色的用户
      * @return
      */
-    List<User> selectPoiorers();
+    List<User> selectByRole(@Param("roleId") Integer roleId);
     
     /**
      * 更改用户的状态为某项值
