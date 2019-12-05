@@ -23,8 +23,8 @@ public class DeviceService {
 	@Resource
 	private DeviceMapper deviceMapper;
 	
-	public List<Device> selectDeviceByCompanyId(String companyId) {
-		return deviceMapper.selectDeviceByCompanyId(companyId);
+	public List<Device> selectByCompanyId(String companyId) {
+		return deviceMapper.selectByCompanyId(companyId);
 	}
 	
 	public Device selectOne(String deviceId) {
@@ -39,7 +39,7 @@ public class DeviceService {
 	
 	@Transactional
 	public boolean update(Device device) {
-		return deviceMapper.updateByPrimaryKey(device) == 1 ? true : false;
+		return deviceMapper.updateByPrimaryKeySelective(device) == 1 ? true : false;
 	}
 	
 	@Transactional

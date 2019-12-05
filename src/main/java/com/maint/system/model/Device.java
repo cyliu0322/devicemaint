@@ -2,22 +2,32 @@ package com.maint.system.model;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class Device {
     private String deviceId;
+    
+    private String serialNumber;
 
+    private String deviceName;
+    
     private String companyId;
 
     private String code;
 
     private String brandId;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date firstTime;
 
     private Integer years;
 
     private String address;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date lastMaintenanceTime;
+    
+    private String brandName;
 
     public String getDeviceId() {
         return deviceId;
@@ -27,7 +37,23 @@ public class Device {
         this.deviceId = deviceId == null ? null : deviceId.trim();
     }
 
-    public String getCompanyId() {
+    public String getSerialNumber() {
+		return serialNumber;
+	}
+
+	public void setSerialNumber(String serialNumber) {
+		this.serialNumber = serialNumber;
+	}
+
+	public String getDeviceName() {
+		return deviceName;
+	}
+
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
+	}
+
+	public String getCompanyId() {
         return companyId;
     }
 
@@ -82,4 +108,13 @@ public class Device {
     public void setLastMaintenanceTime(Date lastMaintenanceTime) {
         this.lastMaintenanceTime = lastMaintenanceTime;
     }
+
+	public String getBrandName() {
+		return brandName;
+	}
+
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
+	}
+    
 }

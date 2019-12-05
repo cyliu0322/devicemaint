@@ -35,10 +35,6 @@ public class VipService {
 		return companyMapper.selectAllWithQuery(company);
 	}
 	
-	public List<Device> selectDeviceByCompanyId(String companyId) {
-		return deviceMapper.selectDeviceByCompanyId(companyId);
-	}
-	
 	public Company selectOne(String companyId) {
 		return companyMapper.selectByPrimaryKey(companyId);
 	}

@@ -15,7 +15,7 @@ public interface DeviceMapper {
 
     Device selectByPrimaryKey(String deviceId);
     
-    List<Device> selectDeviceByCompanyId(@Param("companyId") String companyId);
+    List<Device> selectByCompanyId(@Param("companyId") String companyId);
     
     int delByCompanyId(@Param("companyId") String companyId);
 

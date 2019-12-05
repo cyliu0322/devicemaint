@@ -74,17 +74,17 @@
 	
 	<script type="text/html" id="children-column-toolbar">
 		<shiro:hasPermission name="user:update">
-			<a lay-event="generate">
+			<a lay-event="keepFit">
 				<i class="zadmin-icon zadmin-icon-setting zadmin-oper-area zadmin-blue" title="保养单"></i>
 			</a>
 		</shiro:hasPermission>
 		<shiro:hasPermission name="user:update">
-			<a lay-event="editDevice">
+			<a lay-event="childEdit">
 				<i class="zadmin-icon zadmin-icon-edit-square zadmin-oper-area zadmin-blue" title="编辑"></i>
 			</a>
 		</shiro:hasPermission>
 		<shiro:hasPermission name="user:delete">
-			<a lay-event="delDevice">
+			<a lay-event="childDel">
 				<i class="zadmin-icon zadmin-icon-delete zadmin-oper-area zadmin-red" title="删除"></i>
 			</a>
 		</shiro:hasPermission>
@@ -134,10 +134,11 @@
 								},
 								cols: [
 									[
-										{field: 'deviceName', title: '设备名称', width: "20%"},
+										{field: 'serialNumber', title: '设备编号', width: "10%"},
+										{field: 'deviceName', title: '设备名称', width: "15%"},
 										{field: 'brandName', title: '品牌', width: "10%"},
 										{field: 'code', title: '型号', width: "10%"},
-										{field: 'address', title: '设备地址', width: "30%"},
+										{field: 'address', title: '设备地址', width: "25%"},
 										{field: 'years', title: '使用年数', width: "8%"},
 										{field: 'lastMaintenanceTime', title: '上次维护', width: "10%",
 											templet: function(d) {
@@ -147,6 +148,18 @@
 										{title: '操作', fixed: 'right', align: 'center', toolbar: '#children-column-toolbar', width: "12%"}
 									]
 								],
+								toolEvent: function(obj, pobj) {
+									// obj 子表当前行对象
+									// pobj 父表当前行对象
+									var childId = this.id; // 通过 this 对象获取当前子表的id
+									if (obj.event === 'keepFit') {
+										keepFit(obj.data.deviceId, childId);
+			                        } else if (obj.event === 'childEdit') {
+			                        	childEdit(obj.data.deviceId, childId);
+			                        } else if (obj.event === 'childDel') {
+			                        	childDel(obj.data.deviceId, childId);
+			                        }
+								},
 								done: function() {
 									soulTable.render(this);
 								}
@@ -178,25 +191,13 @@
 			table.on('tool(vipTable)', function (obj) {
 				var data = obj.data;
 				var event = obj.event;
+				var index = obj.tr.data('index');	//当前行索引
 				if (event === 'edit') {
 					edit(data.companyId);
 				} else if (event === 'del') {
 					del(obj);
 				} else if (event === 'addDevice') {
-					addDevice(data.companyId);
-				}
-			});
-			
-			// 单元格点击事件
-			table.on('tool(deviceTable)', function (obj) {
-				var data = obj.data;
-				var event = obj.event;
-				if (event === 'generate') {
-					addUpkeep(data.deviceId);
-				} else if (event === 'editDevice') {
-					editDevice(data.deviceId);
-				} else if (event === 'delDevice') {
-					delDevice(obj);
+					addDevice(data.companyId, index);
 				}
 			});
 			
@@ -242,21 +243,7 @@
 				);
 			}
 			
-			function addUpkeep(deviceId) {
-				layer.open({
-					content: "/maintenance/" + deviceId,
-					title: "保养单",
-					area: ['40%', '85%'],
-					type: 2,
-					maxmin: true,
-					shadeClose: true,
-					end: function () {
-						table.reload(childTableId);
-					}
-				});
-			}
-			
-			function addDevice(companyId) {
+			function addDevice(companyId, index) {
 				layer.open({
 					content: "/device?company=" + companyId,
 					title: "新增设备",
@@ -265,12 +252,26 @@
 					maxmin: true,
 					shadeClose: true,
 					end: function () {
-						table.reload('vip-table');
+						table.reload('vip-table' + index + '0');
 					}
 				});
 			}
 			
-			function editDevice(id) {
+			function keepFit(deviceId) {
+				layer.open({
+					content: "/maintenance/" + deviceId,
+					title: "保养单",
+					area: ['40%', '85%'],
+					type: 2,
+					maxmin: true,
+					shadeClose: true,
+					end: function () {
+						table.reload(childId);
+					}
+				});
+			}
+			
+			function childEdit(id, tableId) {
 				layer.open({
 					content: "/device/" + id,
 					title: "编辑设备",
@@ -279,18 +280,18 @@
 					maxmin: true,
 					shadeClose: true,
 					end: function () {
-						table.reload(childTableId);
+						table.reload(tableId);
 					}
 				});
 			}
 			
-			function delDevice(obj) {
+			function childDel(id, tableId) {
+				childTableId = tableId;
 				layer.confirm("确定删除设备信息吗？", {icon: 3, title: '提示'},
 					function (index) {//确定回调
-						var id = obj.data.deviceId;
 						$.post('/device/' + id, {_method: "DELETE"}, function (data) {
 							layer.close(index);
-							handlerResult(data, delDeviceDone);
+							handlerResult(data, delChildDone);
 						});
 					}, function (index) {//取消回调
 						layer.close(index);
@@ -303,9 +304,9 @@
 				table.reload('vip-table');
 			}
 			
-			function delDeviceDone(data) {
+			function delChildDone(data) {
 				parent.layer.msg("删除成功", {icon: 6});
-				table.reload(childTableId);
+				
 			}
 			
 			form.on('submit(search)', function (form) {

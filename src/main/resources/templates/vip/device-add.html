@@ -19,11 +19,57 @@
 	<div class="z-body animated fadeIn">
 		<form action="" method="post" class="layui-form layui-form-pane">
 			<div class="layui-form-item">
-				<label for="code" class="layui-form-label">设备编号</label>
+				<label for="serialNumber" class="layui-form-label" style="border-style: solid solid none solid;">设备编号</label>
+				<div class="layui-input-block">
+					<input type="text" id="serialNumber" name="serialNumber"
+						th:value="${device?.serialNumber}" lay-verify="required"
+						lay-vertype="tips" autocomplete="off" class="layui-input border-no-bottom">
+				</div>
+				<label for="deviceName" class="layui-form-label" style="border-style: solid solid none solid;">设备名称</label>
+				<div class="layui-input-block">
+					<input type="text" id="deviceName" name="deviceName"
+						th:value="${device?.deviceName}" lay-verify="required"
+						lay-vertype="tips" autocomplete="off" class="layui-input border-no-bottom">
+				</div>
+				<label for="code" class="layui-form-label" style="border-style: solid solid none solid;">设备型号</label>
 				<div class="layui-input-block">
 					<input type="text" id="code" name="code"
 						th:value="${device?.code}" lay-verify="required"
-						lay-vertype="tips" autocomplete="off" class="layui-input">
+						lay-vertype="tips" autocomplete="off" class="layui-input border-no-bottom">
+				</div>
+				<label for="firstTime" class="layui-form-label" style="border-style: solid solid none solid;">初装时间</label>
+				<div class="layui-input-block">
+					<input type="text" id="firstTime" name="firstTime"
+						th:value="${#dates.format(device?.firstTime, 'yyyy-MM-dd HH:mm:ss')}" lay-verify="required"
+						lay-vertype="tips" autocomplete="off" class="layui-input custom-date border-no-bottom">
+				</div>
+				<label for="code" class="layui-form-label" style="border-style: solid solid none solid;">使用年数</label>
+				<div class="layui-input-block">
+					<input type="number" id="years" name="years"
+						th:value="${device?.years}" lay-verify="required|number"
+						lay-vertype="tips" autocomplete="off" class="layui-input border-no-bottom">
+				</div>
+				<label for="address" class="layui-form-label" style="border-style: solid solid none solid;">设备地址</label>
+				<div class="layui-input-block">
+					<input type="text" id="address" name="address"
+						th:value="${device?.address}" lay-verify="required"
+						lay-vertype="tips" autocomplete="off" class="layui-input border-no-bottom">
+				</div>
+				<label for="lastMaintenanceTime" class="layui-form-label" style="border-style: solid solid none solid;">上次维护</label>
+				<div class="layui-input-block">
+					<input type="text" id="lastMaintenanceTime" name="lastMaintenanceTime"
+						th:value="${#dates.format(device?.lastMaintenanceTime, 'yyyy-MM-dd HH:mm:ss')}" lay-verify="required"
+						lay-vertype="tips" autocomplete="off" class="layui-input custom-date border-no-bottom">
+				</div>
+				<label class="layui-form-label">品牌</label>
+				<div class="layui-input-block">
+					<select name="brandId" xm-select="brand-select" lay-verify="required"
+						lay-vertype="tips">
+						<option value="">请选择品牌</option>
+						<option th:each="brand:${brands}" th:value="${brand.brandId}"
+							th:text="${brand.brandName}"
+							th:selected="${(device?.brandId == brand.brandId)}"></option>
+					</select>
 				</div>
 			</div>
 			<div class="layui-form-item">
@@ -40,47 +86,51 @@
 	</div>
 	
 	<script th:src="@{/lib/jquery/jquery.min.js}"></script>
-    <script th:src="@{/lib/layui/layui.js}"></script>
-    <script th:src="@{/js/common.js}"></script>
-    
-    <script>
-        layui.config({
-            base: '/lib/layui/extend/'
-        }).extend({
-            formSelects: 'formSelects-v4'
-        }).use(['form', 'layer', 'formSelects'], function () {
-            $ = layui.jquery;
-            var form = layui.form,
-            	layer = layui.layer,
-				formSelects = layui.formSelects,
-				dtree = layui.dtree;
-        	
-            form.on('submit(add)', function (form) {
-            	form.field.companyId = getQueryString('company');
-                $.post('/device', form.field, function (result) {
-                    handlerResult(result, addDone);
-                });
-                return false;
-            });
-
-            //监听提交
-            form.on('submit(edit)', function (form) {
-                form.field._method = 'PUT';
-                $.post('/device', form.field, function (result) {
-                    handlerResult(result, editDone);
-                });
-                return false;
-            });
-            
-            function addDone(data) {
-                layer.msg("添加成功", {icon: 6});
-            }
-
-            function editDone(data) {
-                layer.msg("修改成功", {icon: 6});
-            }
-        });
-    </script>
+	<script th:src="@{/lib/layui/layui.js}"></script>
+	<script th:src="@{/js/common.js}"></script>
+	
+	<script>
+		layui.config({
+			base: '/lib/layui/extend/'
+		}).use(['form', 'layer', 'laydate'], function () {
+			$ = layui.jquery;
+			var form = layui.form,
+				layer = layui.layer,
+				laydate = layui.laydate;
+			
+			lay('.custom-date').each(function() {
+				laydate.render({
+					elem: this,
+					type: 'datetime'
+				});
+			});
+			
+			form.on('submit(add)', function (form) {
+				form.field.companyId = getQueryString('company');
+				$.post('/device', form.field, function (result) {
+					handlerResult(result, addDone);
+				});
+				return false;
+			});
+			
+			//监听提交
+			form.on('submit(edit)', function (form) {
+				form.field._method = 'PUT';
+				$.post('/device', form.field, function (result) {
+					handlerResult(result, editDone);
+				});
+				return false;
+			});
+			
+			function addDone(data) {
+				layer.msg("添加成功", {icon: 6});
+			}
+			
+			function editDone(data) {
+				layer.msg("修改成功", {icon: 6});
+			}
+		});
+	</script>
 </body>
 
 </html>

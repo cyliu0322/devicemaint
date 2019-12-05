@@ -166,3 +166,7 @@
 .zadmin-right {
     float: right;
 }
+
+.border-no-bottom {
+	border-style: solid solid none solid;
+}

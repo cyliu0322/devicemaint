@@ -55,4 +55,15 @@
     set brand_name = #{brandName,jdbcType=VARCHAR}
     where brand_id = #{brandId,jdbcType=VARCHAR}
   </update>
+  
+  <select id="selectAllWithQuery" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_device_brand
+    <where>
+		<if test="brandName != null and brandName != ''">
+			AND brand_name like CONCAT('%', #{brandName, jdbcType=VARCHAR}, '%')
+		</if>
+	</where>
+  </select>
 </mapper>

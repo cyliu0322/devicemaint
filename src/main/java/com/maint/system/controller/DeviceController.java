@@ -17,7 +17,6 @@ import com.maint.common.util.ResultBean;
 import com.maint.system.model.Device;
 import com.maint.system.service.BrandService;
 import com.maint.system.service.DeviceService;
-import com.maint.system.service.VipService;
 
 @Controller
 @RequestMapping("/device")
@@ -27,26 +26,25 @@ public class DeviceController {
 	private DeviceService deviceService;
 	
 	@Resource
-	private VipService vipService;
-	
-	@Resource
 	private BrandService brandService;
 	
 	@GetMapping
-	public String add() {
+	public String add(Model model) {
+		model.addAttribute("brands", brandService.selectAll());
 		return "vip/device-add";
 	}
 	
 	@GetMapping("/{deviceId}")
 	public String update(@PathVariable("deviceId") String deviceId, Model model) {
 		model.addAttribute("device", deviceService.selectOne(deviceId));
+		model.addAttribute("brands", brandService.selectAll());
 		return "vip/device-add";
 	}
 	
 	@GetMapping("/list/{companyId}")
 	@ResponseBody
 	public ResultBean selectDeviceByVip(@PathVariable("companyId") String companyId) {
-		return ResultBean.success(deviceService.selectDeviceByCompanyId(companyId));
+		return ResultBean.success(deviceService.selectByCompanyId(companyId));
 	}
 	
 	@OperationLog("新增设备")
