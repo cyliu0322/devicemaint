@@ -272,7 +272,7 @@
 		filters:{
 		    // 只允许上传图片或图标（.ico）
 		    mime_types: [
-		        {title: '图片', extensions: 'jpg,gif,png,jpeg,bmp'}
+		        {title: '图片', extensions: 'jpg,gif,png,jpeg,bmp',mimeTypes: 'image/*'}
 		    ],
 		    max_file_size: '5mb',     // 最大上传文件为 5MB
 		    prevent_duplicates: true  // 不允许上传重复文件
@@ -313,7 +313,7 @@
 		filters:{
 		    // 只允许上传图片或图标（.ico）
 		    mime_types: [
-		        {title: '视频', extensions: 'mp4'}
+		        {title: '视频', extensions: 'mp4',mimeTypes: 'video/*'}
 		    ],
 		    max_file_size: '10mb',     // 最大上传文件为 10MB
 		    prevent_duplicates: true  // 不允许上传重复文件

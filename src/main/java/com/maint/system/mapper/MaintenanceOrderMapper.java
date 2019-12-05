@@ -9,6 +9,9 @@ import org.apache.ibatis.annotations.Update;
 import com.maint.system.model.MaintenanceOrder;
 
 public interface MaintenanceOrderMapper {
+	@Select(value = "SELECT device_id FROM tbl_maintenance_order WHERE maintenance_order_id = #{orderId} limit 1")
+	String selectDeviceIdByOrderId(@Param("orderId") String orderId);
+	
 	/**
 	 * 更改保养订单状态
 	 * @param maintenanceOrderId 保养订单号

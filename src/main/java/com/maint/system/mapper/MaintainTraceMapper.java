@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.maint.system.model.MaintainOrder;
 import com.maint.system.model.MaintainTrace;
 
 public interface MaintainTraceMapper {

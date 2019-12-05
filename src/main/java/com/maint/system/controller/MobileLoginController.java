@@ -29,6 +29,7 @@ import com.maint.common.util.ResultBean;
 import com.maint.common.util.StringUtil;
 import com.maint.system.enums.MaintainOrderStatusEnum;
 import com.maint.system.enums.OrderTypeEnum;
+import com.maint.system.model.MaintStepAidBean;
 import com.maint.system.model.MaintainOrder;
 import com.maint.system.model.MaintenanceOrder;
 import com.maint.system.model.MaterialAidBean;
@@ -64,8 +65,6 @@ public class MobileLoginController {
 			@RequestParam(value = "orderId", required = true) String orderId,
 			@RequestParam(value = "deviceBrand", required = true) String deviceBrand,
 			@RequestParam(value = "state", required = false) String state) {
-		
-		System.out.println("orderId:"+orderId+", deviceBrand:"+deviceBrand+",state:"+state);
 		
 		model.addAttribute("orderId", orderId);
 		
@@ -197,10 +196,6 @@ public class MobileLoginController {
 		
 		Map<String, String[]> dataMap =resquest.getParameterMap();
 		
-		dataMap.forEach((k,v)->{
-			System.out.println("key:"+k+", value:"+v[0]);
-		});
-		
 		ResultBean resultBean = null;
 		try {
 			mobileService.saveFirstInspection(dataMap);
@@ -212,5 +207,46 @@ public class MobileLoginController {
 		
 		return JSONObject.toJSONString(resultBean);
 	}
+	
+	@GetMapping(value = "getBrandStep")
+	@ResponseBody
+	public ResultBean getBrandStep(HttpServletRequest resquest) {
+		
+		Map<String, String[]> dataMap =resquest.getParameterMap();
+		
+		ResultBean resultBean = null;
+		try {
+			List<MaintStepAidBean> steps = mobileService.getBrandStep(dataMap);
+			resultBean = ResultBean.success(steps);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			resultBean = ResultBean.error(e.getMessage());
+		}
+		
+		return resultBean;
+	}
+	
+	@PostMapping(value = "saveMaintInfo")
+	@ResponseBody
+	public ResultBean saveMaintInfo(HttpServletRequest resquest) {
+		
+		Map<String, String[]> dataMap =resquest.getParameterMap();
+		
+		dataMap.forEach((k,v)->{
+			System.out.println("key="+k+",value="+v[0]);
+		});
+		
+		ResultBean resultBean = null;
+		try {
+			mobileService.saveMaintInfo(dataMap);
+			resultBean = ResultBean.success("维修信息保存成功");
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			resultBean = ResultBean.error(e.getMessage());
+		}
+		
+		return resultBean;
+	}
+	
 	
 }

@@ -210,8 +210,10 @@
 	      		
 	      		<hr class="divider" style="height:15px;background-color:#eee;margin-right:-10px;">
 	      		
-	      		<div id="goMaintainDiv">
-	      			<button id="goMaintainBtn" class="btn btn-primary btn-block " type="button" th:onclick="'goMaintain(\''+*{maintainOrderId}+'\',\''+*{deviceBrand}+'\',\''+*{state}+'\');'">去维修</button>
+	      		<div id="goMaintainDiv" th:switch="*{state}">
+	      			<button th:case="'1'" id="goFirstInspectionBtn" class="btn btn-primary btn-block " type="button" th:onclick="'goMaintain(\''+*{maintainOrderId}+'\',\''+*{deviceBrand}+'\',\''+*{state}+'\');'">去首检</button>
+	      			<button th:case="'4'" id="goMaintainBtn" class="btn btn-primary btn-block " type="button" th:onclick="'goMaintain(\''+*{maintainOrderId}+'\',\''+*{deviceBrand}+'\',\''+*{state}+'\');'">去维修</button>
+	      			<button th:case="*" disabled="disabled" class="btn btn-primary btn-block " type="button">去维修</button>
 	      		</div>
       		</div>
       		<!-- 保养单 -->
@@ -250,9 +252,9 @@
 	      		</div>
 	      		
 	      		<hr class="divider" style="height:15px;background-color:#eee;margin-right:-10px;">
-	      		
-	      		<div id="goMaintenanceDiv">
-	      			<button id="goMaintenanceBtn" class="btn btn-primary btn-block " type="button" th:onclick="'goMaintenance(\''+*{maintenanceOrderId}+'\',\''+*{deviceBrand}+'\');'">去保养</button>
+	      		<div id="goMaintenanceDiv" th:switch="*{state}">
+	      			<button th:case="'2'" id="goMaintenanceBtn" class="btn btn-primary btn-block " type="button" th:onclick="'goMaintenance(\''+*{maintenanceOrderId}+'\',\''+*{deviceBrand}+'\');'">去保养</button>
+	      			<button th:case="*" disabled="disabled" class="btn btn-primary btn-block " type="button">去保养</button>
 	      		</div>
       		</div>
       		<div id="goBackDiv" style="margin-top:10px;">
@@ -272,13 +274,14 @@
     
     	/*进入维修信息提交页*/
     	function goMaintain(orderId, deviceBrand, state){
-    		console.log("orderId :"+orderId+" , deviceBrand :"+deviceBrand+", state :"+state);
     		
     		window.location.href="/mobile/goMaintain?orderId="+orderId+"&deviceBrand="+deviceBrand+"&state="+state;
     	}
     	
     	function goMaintenance(orderId, deviceBrand){
+    		
     		window.location.href="/mobile/goMaintain?orderId="+orderId+"&deviceBrand="+deviceBrand;
+    		
     	}
     
     	/*实现“订单状态”和“订单详情”切换*/

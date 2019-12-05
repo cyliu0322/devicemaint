@@ -22,21 +22,29 @@ import com.maint.common.util.UUID19;
 import com.maint.system.enums.MaintainOrderStatusEnum;
 import com.maint.system.enums.MaintenanceOrderStatusEnum;
 import com.maint.system.enums.OrderTypeEnum;
+import com.maint.system.mapper.DeviceMapper;
+import com.maint.system.mapper.MaintStepTraceMapper;
 import com.maint.system.mapper.MaintainMaterialMapper;
 import com.maint.system.mapper.MaintainOrderMapper;
 import com.maint.system.mapper.MaintainTraceMapper;
+import com.maint.system.mapper.MaintenanceMaterialMapper;
 import com.maint.system.mapper.MaintenanceOrderMapper;
 import com.maint.system.mapper.MaintenanceTraceMapper;
 import com.maint.system.mapper.MaterialMapper;
+import com.maint.system.mapper.StepMapper;
+import com.maint.system.model.MaintStepAidBean;
+import com.maint.system.model.MaintStepTrace;
 import com.maint.system.model.MaintainMaterial;
 import com.maint.system.model.MaintainOrder;
 import com.maint.system.model.MaintainTrace;
+import com.maint.system.model.MaintenanceMaterial;
 import com.maint.system.model.MaintenanceOrder;
 import com.maint.system.model.MaintenanceTrace;
 import com.maint.system.model.Material;
 import com.maint.system.model.MaterialAidBean;
 import com.maint.system.model.OrderAidBean;
 import com.maint.system.model.OrderStatusBean;
+import com.maint.system.model.Step;
 
 @Service
 public class MobileLoginService {
@@ -53,11 +61,196 @@ public class MobileLoginService {
 	private MaterialMapper materialMapper;
 	@Autowired
 	private MaintainMaterialMapper maintainMaterialMapper;
+	@Autowired
+	private MaintenanceMaterialMapper maintenanceMaterialMapper;
+	@Autowired
+	private StepMapper stepMapper;
+	@Autowired
+	private MaintStepTraceMapper maintStepTraceMapper;
+	@Autowired
+	private DeviceMapper deviceMapper;
 	
 	@Value("${file.picture.save-url}")
 	private String pictureSaveUrl;
 	@Value("${file.video.save-url}")
 	private String videoSaveUrl;
+	
+	@Transactional(rollbackFor=Exception.class)
+	public void saveMaintInfo(Map<String, String[]> dataMap) throws Exception {
+		String orderId = dataMap.get("orderId")[0];
+		OrderTypeEnum orderTypeEnum = getOrderTypeByOrderId(orderId);
+		String state = "";
+		Date currentDate = new Date();
+		if (OrderTypeEnum.WX.getValue().equals(orderTypeEnum.getValue())) {
+			//维修
+			state = "1".equals(dataMap.get("isSuccess")[0])?
+					MaintainOrderStatusEnum.WXWC.getValue():MaintainOrderStatusEnum.WXZ.getValue();
+			//插入追踪表（tbl_maintenance_trace）
+			MaintainTrace maintainTrace = new MaintainTrace();
+			maintainTrace.setFaultCause(dataMap.get("faultDescription")[0]);
+			maintainTrace.setImage(dataMap.get("uploadedPictureName")[0]);
+			maintainTrace.setMaintainDate(currentDate);
+			String maintainTraceId = UUID19.uuid();
+			maintainTrace.setMaintainOrderId(orderId);
+			maintainTrace.setMaintainTraceId(maintainTraceId);
+			maintainTrace.setOrderStatus(state);
+			maintainTrace.setUserId(ShiroUtil.getCurrentUser().getUserId());
+			maintainTrace.setVideo(dataMap.get("uploadedVideoName")[0]);
+			maintainTraceMapper.insert(maintainTrace);
+			
+			//插入维修步骤追踪表（tbl_maint_step_trace），如果该步骤已经插入，就判断该步骤是否完成，如完成就更改is_complete字段
+			String maintStepTraces = dataMap.get("brandStepTable")[0];
+			JSONArray maintStepTraceJsonArray = JSONArray.parseArray(maintStepTraces);
+			maintStepTraceJsonArray.forEach(maintStepTraceJson -> {
+				JSONObject maintStepJsonObject = (JSONObject) maintStepTraceJson;
+				MaintStepTrace maintStepTrace =maintStepTraceMapper.selectMaintStepTracesByStepId(orderId, maintStepJsonObject.getString("stepId"));
+				String maintStepTraceId = "";
+				if (StringUtil.isNull(maintStepTrace)) {
+					maintStepTrace = new MaintStepTrace();
+					maintStepTrace.setCreateDate(currentDate);
+					maintStepTraceId = UUID19.uuid();
+					maintStepTrace.setId(maintStepTraceId);
+					maintStepTrace.setOrderId(orderId);
+					maintStepTrace.setStepId(maintStepJsonObject.getString("stepId"));
+					maintStepTrace.setStepName(maintStepJsonObject.getString("stepName"));
+					if("1".equals(maintStepJsonObject.getString("isComplete"))) {
+						maintStepTrace.setIsComplete("1");
+						maintStepTrace.setCompleteDate(currentDate);
+					}
+					maintStepTraceMapper.insert(maintStepTrace);
+				}else {
+					maintStepTraceId = maintStepTrace.getId();
+					if ("0".equals(maintStepTrace.getIsComplete()) && "1".equals(maintStepJsonObject.getString("isComplete"))) {
+						maintStepTraceMapper.updateIsComplete(maintStepTrace.getId(), "1");
+					}
+				}
+			});
+			
+			//插入维修材料表（tbl_maintain_material）
+			String materialsJson = dataMap.get("materials")[0];
+			if (StringUtil.isNotEmpty(materialsJson)) {
+				JSONArray jsonArray = JSONArray.parseArray(materialsJson);
+				for (int i = 0; i < jsonArray.size(); i++) {
+					JSONObject materialJson = (JSONObject) jsonArray.get(i);
+					MaintainMaterial maintainMaterial = new MaintainMaterial();
+					maintainMaterial.setMaintainMaterialId(UUID19.uuid());
+					maintainMaterial.setMaterialId(materialJson.getString("materialId"));
+					maintainMaterial.setMaintainOrderId(orderId);
+					maintainMaterial.setAmount(Double.parseDouble(materialJson.getString("materialAmount")));
+					maintainMaterial.setMaintainTraceId(maintainTraceId);
+					maintainMaterial.setMaintStepTraceId(
+							maintStepTraceMapper.selectId(
+									orderId, materialJson.getString("modelStepId")));
+					
+					maintainMaterialMapper.insert(maintainMaterial);
+				}
+			}
+			
+			//更改订单表（tbl_maintain_order）状态
+			if (state.equals(MaintainOrderStatusEnum.WXWC.getValue())) {
+				maintainOrderMapper.updateState(orderId, state);
+			}
+		}else {
+			//保养
+			state = "1".equals(dataMap.get("isSuccess")[0])?
+					MaintenanceOrderStatusEnum.BYWC.getValue():MaintenanceOrderStatusEnum.BYZ.getValue();
+			//插入追踪表（tbl_maintenance_trace）
+			MaintenanceTrace maintenanceTrace = new MaintenanceTrace();
+			maintenanceTrace.setFaultCause(dataMap.get("faultDescription")[0]);
+			maintenanceTrace.setImage(dataMap.get("uploadedPictureName")[0]);
+			maintenanceTrace.setMaintenanceDate(currentDate);
+			String maintenanceTraceId = UUID19.uuid();
+			maintenanceTrace.setMaintenanceOrderId(orderId);
+			maintenanceTrace.setMaintenanceTraceId(maintenanceTraceId);
+			maintenanceTrace.setOrderStatus(state);
+			maintenanceTrace.setUserId(ShiroUtil.getCurrentUser().getUserId());
+			maintenanceTrace.setVideo(dataMap.get("uploadedVideoName")[0]);
+			maintenanceTraceMapper.insert(maintenanceTrace);
+			
+			//插入维修步骤追踪表（tbl_maint_step_trace），如果该步骤已经插入，就判断该步骤是否完成，如完成就更改is_complete字段
+			String maintStepTraces = dataMap.get("brandStepTable")[0];
+			JSONArray maintStepTraceJsonArray = JSONArray.parseArray(maintStepTraces);
+			maintStepTraceJsonArray.forEach(maintStepTraceJson -> {
+				JSONObject maintStepJsonObject = (JSONObject) maintStepTraceJson;
+				MaintStepTrace maintStepTrace =maintStepTraceMapper.selectMaintStepTracesByStepId(orderId, maintStepJsonObject.getString("stepId"));
+				String maintStepTraceId = "";
+				if (StringUtil.isNull(maintStepTrace)) {
+					maintStepTrace = new MaintStepTrace();
+					maintStepTrace.setCreateDate(currentDate);
+					maintStepTraceId = UUID19.uuid();
+					maintStepTrace.setId(maintStepTraceId);
+					maintStepTrace.setOrderId(orderId);
+					maintStepTrace.setStepId(maintStepJsonObject.getString("stepId"));
+					maintStepTrace.setStepName(maintStepJsonObject.getString("stepName"));
+					if("1".equals(maintStepJsonObject.getString("isComplete"))) {
+						maintStepTrace.setIsComplete("1");
+						maintStepTrace.setCompleteDate(currentDate);
+					}
+					maintStepTraceMapper.insert(maintStepTrace);
+				}else {
+					maintStepTraceId = maintStepTrace.getId();
+					if ("0".equals(maintStepTrace.getIsComplete()) && "1".equals(maintStepJsonObject.getString("isComplete"))) {
+						maintStepTraceMapper.updateIsComplete(maintStepTrace.getId(), "1");
+					}
+				}
+			});
+			
+			//插入维护材料表（tbl_maintenance_material）
+			String materialsJson = dataMap.get("materials")[0];
+			if (StringUtil.isNotEmpty(materialsJson)) {
+				JSONArray jsonArray = JSONArray.parseArray(materialsJson);
+				for (int i = 0; i < jsonArray.size(); i++) {
+					JSONObject materialJson = (JSONObject) jsonArray.get(i);
+					MaintenanceMaterial maintenanceMaterial = new MaintenanceMaterial();
+					maintenanceMaterial.setMaintenanceMaterialId(UUID19.uuid());
+					maintenanceMaterial.setMaterialId(materialJson.getString("materialId"));
+					maintenanceMaterial.setMaintenanceOrderId(orderId);
+					maintenanceMaterial.setAmount(Double.parseDouble(materialJson.getString("materialAmount")));
+					maintenanceMaterial.setMaintenanceTraceId(maintenanceTraceId);
+					maintenanceMaterial.setMaintStepTraceId(
+							maintStepTraceMapper.selectId(
+									orderId, materialJson.getString("modelStepId")));
+					
+					maintenanceMaterialMapper.insert(maintenanceMaterial);
+				}
+			}
+			
+			//更改订单表（tbl_maintenance_order）状态
+			if(state.equals(MaintenanceOrderStatusEnum.BYWC.getValue())) {
+				maintenanceOrderMapper.updateState(orderId, state);
+				
+				//更改设备保养时间
+				String deviceId = maintenanceOrderMapper.selectDeviceIdByOrderId(orderId);
+				deviceMapper.updateLastMaintenanceTime(deviceId, currentDate);
+			}
+		}
+	}
+	
+	public List<MaintStepAidBean> getBrandStep(Map<String, String[]> dataMap){
+		
+		List<Step> steps = stepMapper.selectSteps(dataMap.get("deviceBrand")[0]);
+		List<MaintStepTrace> maintStepTraces = maintStepTraceMapper.selectMaintStepTracesByOrderId(dataMap.get("orderId")[0]);
+		
+		List<MaintStepAidBean> maintStepAidBeans = new ArrayList<MaintStepAidBean>();
+		steps.stream().forEach((step) -> {
+			MaintStepAidBean maintStepAidBean = new MaintStepAidBean();
+			maintStepAidBean.setStepId(step.getStepId());
+			maintStepAidBean.setStepName(step.getStepName());
+			maintStepAidBean.setIsMaint(false);
+			maintStepAidBean.setIsComplete("0");
+			
+			for (MaintStepTrace maintStepTrace : maintStepTraces) {
+				if (step.getStepId().equals(maintStepTrace.getStepId())) {
+					maintStepAidBean.setIsMaint(true);
+					maintStepAidBean.setIsComplete(maintStepTrace.getIsComplete());
+				}
+			}
+			
+			maintStepAidBeans.add(maintStepAidBean);
+		});
+		
+		return maintStepAidBeans;
+	}
 	
 	@Transactional(rollbackFor=Exception.class)
 	public void saveFirstInspection(Map<String, String[]> dataMap) throws Exception {

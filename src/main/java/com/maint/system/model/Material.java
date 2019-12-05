@@ -1,6 +1,6 @@
 package com.maint.system.model;
 
-public class Material {
+public class Material{
     private String materialId;
 
     private String materialName;

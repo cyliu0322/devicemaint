@@ -11,6 +11,7 @@
     <link th:href="@{/css/datatables.min.css}" rel="stylesheet">
     <link th:href="@{/css/jquery-ui.css}" rel="stylesheet">
     <link th:href="@{/lib/zui/lib/uploader/zui.uploader.min.css}" rel="stylesheet">
+    <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet" >
     
     <style>
   	.ui-autocomplete {
@@ -43,12 +44,22 @@
     <article>
     	<hr class="divider" style="height:15px;background-color:#eee;margin-right:-10px;">
     	<!-- 品牌步骤 -->
-    	<div id="brandStepDiv" style="height:180px;margin-left:8px;margin-right:8px;">
-    		<p style="margin-top:8px;"><b>品牌步骤</b></p>
+    	<div id="brandStepDiv" style="height:250px;margin-left:8px;margin-right:8px;">
+    		<div class="row" style="margin-top:8px;margin-bottom:8px;">
+    			<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10"><b>品牌步骤</b></div>
+    		</div>
 		    <hr class="divider">
-		    <p style="margin-top:8px;">1、步骤一</p>
-		    <p style="margin-top:8px;">2、步骤二</p>
-		    <p style="margin-top:8px;">3、步骤三</p>
+		    <table class="layui-hide" id="brandStepTableId" lay-filter="brandStepTable"></table>
+			<script type="text/html" id="isCompleteTpl">
+  				<input type="checkbox" name="isComplete" value={{d.isComplete}} lay-skin="switch" lay-text="是|否" lay-filter="isCompleteDemo" {{ d.isComplete == '1' ? 'checked disabled' : '' }}>
+			</script>
+			<script type="text/html" id="barDemo">
+				{{#  if(d.isComplete == '1'){ }}
+    				<button type="button" class="layui-btn layui-btn-primary layui-btn-xs" disabled="disabled" lay-event="addMaterial">+材料</button>
+  				{{#  }else{ }}
+					<button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="addMaterial">+材料</button>
+				{{#  } }}
+			</script>
     	</div>
     	
     	<hr class="divider" style="height:15px;background-color:#eee;margin-right:-10px;">
@@ -57,9 +68,9 @@
     	<div id="consumablesDiv" style="height:200px;margin-left:8px;margin-right:8px;">
     		<div class="row" style="margin-top:8px;margin-bottom:8px;">
     			<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10"><b>耗材</b></div>
-    			<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+    			<!-- <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
     				<button class="btn btn-mini btn-primary" type="button"  data-toggle="modal" data-target="#addMaterialModal">+材料</button>
-    			</div>
+    			</div> -->
     		</div>
 		    <hr class="divider">
 		    <div id="dataTableDiv">
@@ -110,7 +121,6 @@
 					  <div class="uploader-files file-list file-list-lg"></div>
 					  <div>
 					    <hr class="divider">
-					    <!-- <div class="uploader-status pull-right text-muted"></div> -->
 					    <button type="button" class="btn btn-link uploader-btn-browse"><i class="icon icon-plus"></i> 选择视频</button>
 					    <button type="button" class="btn btn-link uploader-btn-start"><i class="icon icon-cloud-upload"></i> 开始上传</button>
 					  </div>
@@ -137,7 +147,7 @@
     	
     	<div id="isSuccessDiv" style="height:80px;margin-left:8px;margin-right:8px;">
     		<div class="row" style="margin-top:8px;margin-bottom:8px;">
-    			<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10"><b>是否完成</b></div>
+    			<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10"><b>订单完成</b></div>
     		</div>
 		    <hr class="divider">
     		<div class="form-group" style="padding-top:10px;">
@@ -180,7 +190,14 @@
 						  </div>
 						  <div class="form-group">
 						    <div class="col-md-8 col-sm-8">
+						    	<!-- 材料Id -->
 						      <input type="hidden" class="form-control" id="materialId" name="materialId" placeholder="matrialId">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <div class="col-md-8 col-sm-8">
+						    	<!-- 步骤Id -->
+						      <input type="hidden" class="form-control" id="modelStepId" name="modelStepId" placeholder="modelStepId">
 						    </div>
 						  </div>
 						</form>
@@ -200,13 +217,80 @@
     <script th:src="@{/js/bootstrapValidator.min.js}"></script>
     <script th:src="@{/js/datatables.min.js}"></script>
     <script th:src="@{/lib/zui/lib/uploader/zui.uploader.min.js}"></script>
+    <script th:src="@{/lib/layui/layui.js}"></script>
     <script th:inline="javascript">
+    var table;
     $(document).ready(function() {
-
-    	$('#addMaterialModal').modal({
-    		backdrop : 'static',
-    		show: false
+    	layui.config({
+    		  version: true //一般用于更新模块缓存，默认不开启。设为true即让浏览器不缓存。也可以设为一个固定的值，如：201610
     	});
+    	
+    	layui.use('table', function(){
+    		  table = layui.table,
+    		  form = layui.form;
+    		  
+    		  table.render({
+    		    elem: '#brandStepTableId'
+    		    ,height: 200
+    		    ,url:'/mobile/getBrandStep?deviceBrand='+[[${deviceBrand}]]+'&orderId='+[[${orderId}]]
+    		    ,cols: [[
+    		    	{type: 'checkbox', width:'15%', fixed: 'left'}
+    		    	,{field:'stepId', align:'center', title: 'ID'}
+    		     	,{field:'stepName', width:'35%', align:'center', title: '步骤'} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
+    		     	,{field:'isComplete', width:'25%', title: '完成', align:'center', templet: '#isCompleteTpl'}
+    		     	,{fixed: 'right', width:'25%', align:'center',title: '操作', toolbar: '#barDemo'}
+    		    ]]
+    		  	,done: function () {
+    	            $("[data-field='stepId']").css('display','none');
+    	        }
+    		 });
+    		 //监听工具条
+    		 table.on('tool(brandStepTable)', function(obj){
+    		    var data = obj.data;
+    		    if(obj.event === 'addMaterial'){
+    		    	//判断复选框有位选中，选中才能往下走
+    		    	var isCheck = false;
+    		    	$.each(table.checkStatus('brandStepTableId').data,function(k,v){
+    		    		if(v.stepId == data.stepId){
+    		    			isCheck = true;
+    		    			return false;
+    		    		}
+    		    	});
+    		    	
+    		    	if(!isCheck){
+    		    		alert("复选框未选中，不能为该步骤增加耗材");
+    		    		return false;
+    		    	}
+    		    	
+    		      	$('#addMaterialModal').modal({
+    		    		backdrop : 'static',
+    		    		show: true
+    		    	});
+    		      	$("#modelStepId").val(data.stepId);
+    		    }
+    		  });
+    		  //监听是否完成操作
+    		  form.on('switch(isCompleteDemo)', function(obj){
+    			  var parents=$(this).parents();
+    			  var trIndex;
+    			  $.each(parents,function(k,v){
+    				  if(v.tagName == 'TR'){
+    					  trIndex=v.rowIndex;
+    				  }
+    			 });
+    			  
+    		  	 if(obj.elem.checked){
+    		  		this.value = '1';
+    		  		table.cache.brandStepTableId[trIndex].isComplete=this.value;
+    		  	 }else{
+    		  		this.value = '0';
+    		  		table.cache.brandStepTableId[trIndex].isComplete=this.value;
+    		  	 }
+    		  });
+    		  
+    	});
+
+    	
     	$('#addMaterialModal').on('shown.zui.modal', function() {
     		$("body").addClass('bodyclass');
     		
@@ -271,6 +355,7 @@
                 {"title": "ID", "name":"materialId", "targets":"0", "data": "materialId" ,"visible": true,"type": "string", className: "text-center"},
                 {"title": "材料名", "name":"materialName", "targets":"1", "data": "materialName" ,"visible": true,"type": "string", className: "text-center"},
                 {"title": "数量", "name":"materialAmount", "targets":"2", "data": "materialAmount" ,"visible": true,"type": "string", className: "text-center"},
+                {"title": "步骤ID", "name":"modelStepId", "targets":"2", "data": "modelStepId" ,"visible": false,"type": "string", className: "text-center"},
                 {
                     "targets": -1,
                     "data": null,
@@ -373,7 +458,8 @@
 			table.row.add( {
 			        "materialId":       $("#materialId").val(),
 			        "materialName":   $("#materialName").val(),
-			        "materialAmount":     $("#materialAmount").val()
+			        "materialAmount":     $("#materialAmount").val(),
+			        "modelStepId":     $("#modelStepId").val()
 			    } ).draw();
 			$('#addMaterialModal').modal('hide');
 		}
@@ -382,7 +468,31 @@
     /*维修结果提交*/
     function maintainResultSubmit(){
     	
-    	/* var tableData = $('#consumablesTable').DataTable().data();
+    	var checkStatus = table.checkStatus('brandStepTableId');
+    	if($("input[name='isSuccess']:checked").val() == '1'){
+    		if(!checkStatus.isAll){
+    			alert("维修（或保养）步骤未全部选中，不能选择“订单完成”");
+    			return false;
+    		}
+    		
+    		$.each(table.cache.brandStepTableId, function(k, v){
+    			var flag = 0;
+    			$.each(v, function(k2, v2){
+    				if(k2 == 'isComplete'){
+    					if(v2 == '0'){
+    						alert("“"+v.stepName+"”步骤未完成，不能选择“订单完成”");
+    						flag = 9;
+    						return false;
+    					}
+    				}
+    			});
+    			if(flag == 9){
+					return false;
+				}
+			});
+    	}
+    	
+    	var tableData = $('#consumablesTable').DataTable().data();
     	var materials=[];
     	$.each(tableData,function(k, v){
     		materials.push(v);
@@ -395,9 +505,11 @@
 		    +"&uploadedVideoName="+uploadedVideoName
 		    +"&uploadedPictureName="+uploadedPictureName
 		    +"&faultDescription="+$("#faultDescription").val()
+		    +"&isSuccess="+$("input[name='isSuccess']:checked").val()
+		    +"&brandStepTable="+encodeURIComponent(JSON.stringify(checkStatus.data))
 		    +"&orderId="+[[${orderId}]],
 		    dataType: "json",
-	        url: "/mobile/saveFirstInspection",
+	        url: "/mobile/saveMaintInfo",
 	        async: false,
 	        success:function(responseData){
 	        	if(responseData.code == 0){
@@ -408,9 +520,9 @@
 	        	}
 	     	},
 	     	error: function () {
-	     		alert("首检所用材料保存失败！");
+	     		alert("维修所用材料保存失败！");
 		 	}
-	    }); */
+	    });
     }
     
     /*删除*/

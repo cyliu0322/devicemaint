@@ -28,10 +28,6 @@
 		<button class="btn btn-primary" th:onclick="'login();'">提交</button>
       </div>
       
-      <!-- <div id="alertDiv" class="alert alert-warning alert-dismissable">
-		  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-		  <p>您可以点击右上角的 <i class="icon-remove"></i> 来关闭这条消息。</p>
-	  </div> -->
     </article>
 
     <script th:src="@{/lib/zui/lib/jquery/jquery.js}"></script>
@@ -57,7 +53,6 @@
 			        		window.location.href="/mobile/toSearchOrder";
 			        	}else{
 			        		alert(data.msg);
-			        		//$("#alertDiv").alert();
 			        	}
 			     	},
 			     	error: function () {
