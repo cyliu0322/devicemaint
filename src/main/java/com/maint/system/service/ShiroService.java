@@ -92,7 +92,7 @@ public class ShiroService {
 			}
 		}
 		
-		filterChainDefinitionMap.put("/**", "authc");
+		filterChainDefinitionMap.put("/**", "kickout, authc");
 		
 		return filterChainDefinitionMap;
 	}

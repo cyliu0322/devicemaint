@@ -4,6 +4,7 @@ import cn.hutool.json.JSONUtil;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,8 +16,8 @@ public class WebHelper {
     /**
      * 是否是Ajax请求
      */
-    public static boolean isAjaxRequest(HttpServletRequest request) {
-        String requestedWith = request.getHeader("x-requested-with");
+    public static boolean isAjaxRequest(ServletRequest request) {
+        String requestedWith = ((HttpServletRequest) request).getHeader("x-requested-with");
         return "XMLHttpRequest".equalsIgnoreCase(requestedWith);
     }
 

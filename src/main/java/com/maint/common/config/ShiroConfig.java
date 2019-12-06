@@ -1,39 +1,27 @@
 package com.maint.common.config;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
-import net.sf.ehcache.CacheException;
-import net.sf.ehcache.CacheManager;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
-import org.apache.shiro.cache.ehcache.EhCacheManager;
-import org.apache.shiro.io.ResourceUtils;
 import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.session.SessionListener;
-import org.apache.shiro.session.mgt.SessionManager;
-import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
-import org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator;
-import org.apache.shiro.session.mgt.eis.SessionDAO;
-import org.apache.shiro.session.mgt.eis.SessionIdGenerator;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
 import org.crazycake.shiro.RedisSessionDAO;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.core.io.ClassPathResource;
 
 import com.maint.common.shiro.EnhanceModularRealmAuthenticator;
 import com.maint.common.shiro.OAuth2Helper;
 import com.maint.common.shiro.RestShiroFilterFactoryBean;
 import com.maint.common.shiro.ShiroActionProperties;
 import com.maint.common.shiro.credential.RetryLimitHashedCredentialsMatcher;
+import com.maint.common.shiro.filter.KickoutSessionFilter;
 import com.maint.common.shiro.filter.OAuth2AuthenticationFilter;
 import com.maint.common.shiro.filter.RestAuthorizationFilter;
 import com.maint.common.shiro.filter.RestFormAuthenticationFilter;
@@ -45,10 +33,7 @@ import com.maint.system.service.ShiroService;
 import javax.annotation.Resource;
 import javax.servlet.Filter;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
 
 @Configuration
@@ -70,6 +55,9 @@ public class ShiroConfig {
 	@Value("${spring.redis.port}")
 	private Integer redisPort;
 	
+	@Value("${LoginURL}")
+	private String URMPUrl;
+	
 //	@Value("${ehcache.config-location}")
 //	private String ehcachePath;
 	
@@ -82,6 +70,7 @@ public class ShiroConfig {
 		shiroFilterFactoryBean.setUnauthorizedUrl("/403");
 		
 		Map<String, Filter> filters = shiroFilterFactoryBean.getFilters();
+		filters.put("kickout", kickoutSessionFilter());
 		filters.put("authc", new RestFormAuthenticationFilter());
 		filters.put("perms", new RestAuthorizationFilter());
 		filters.put("oauth2Authc", new OAuth2AuthenticationFilter(oAuth2Helper));
@@ -180,6 +169,30 @@ public class ShiroConfig {
 		sessionManager.setSessionDAO(redisSessionDAO());
 		sessionManager.setSessionIdUrlRewritingEnabled(false);
 		return sessionManager;
+	}
+	
+	/**
+	 *
+	 * @描述：kickoutSessionFilter同一个用户多设备登录限制
+	 * @创建人：wyait
+	 * @创建时间：2018年4月24日 下午8:14:28
+	 * @return
+	 */
+	public KickoutSessionFilter kickoutSessionFilter() {
+		KickoutSessionFilter kickoutSessionFilter = new KickoutSessionFilter();
+		// 使用cacheManager获取相应的cache来缓存用户登录的会话；用于保存用户—会话之间的关系的；
+		// 这里我们还是用之前shiro使用的ehcache实现的cacheManager()缓存管理
+		// 也可以重新另写一个，重新配置缓存时间之类的自定义缓存属性
+		kickoutSessionFilter.setCacheManager(redisCacheManager());
+		// 用于根据会话ID，获取会话进行踢出操作的；
+		kickoutSessionFilter.setSessionManager(sessionManager());
+		// 是否踢出后来登录的，默认是false；即后者登录的用户踢出前者登录的用户；踢出顺序。
+		kickoutSessionFilter.setKickoutAfter(false);
+		// 同一个用户最大的会话数，默认1；比如2的意思是同一个用户允许最多同时两个人登录；
+		kickoutSessionFilter.setMaxSession(1);
+		// 被踢出后重定向到的地址；
+		kickoutSessionFilter.setKickoutUrl(URMPUrl);
+		return kickoutSessionFilter;
 	}
 	
 //	/**
