@@ -24,6 +24,12 @@
 		<form class="layui-form zadmin-search-area input">
 			<div class="layui-form-item">
 				<div class="layui-inline">
+					<label for="maintainOrderId" class="layui-form-label">订单号</label>
+					<div class="layui-input-inline">
+						<input type="text" name="maintainOrderId" autocomplete="off"
+							id="maintainOrderId" class="layui-input">
+					</div>
+					
 					<label for="companyName" class="layui-form-label">客户</label>
 					<div class="layui-input-inline">
 						<input type="text" name="companyName" autocomplete="off"
@@ -66,19 +72,20 @@
 	</script>
 	
 	<script type="text/html" id="column-toolbar">
-		<shiro:hasPermission name="maint:appoint">
-			{{# if(d.state == 0 || d.state == 2) { }}
+		{{# if(d.state == 0 || d.state == 2) { }}
+			<shiro:hasPermission name="maint:appoint">
 				<a lay-event="appoint">
-					<i class="zadmin-icon zadmin-icon-edit-square zadmin-oper-area zadmin-blue" title="派单"></i>
+					<i class="layui-icon layui-icon-release zadmin-oper-area zadmin-blue" title="派单"></i>
 				</a>
-			{{# } }}
-		</shiro:hasPermission>
-		<shiro:hasPermission name="maint:delete">
-			<a lay-event="del">
-				<i class="zadmin-icon zadmin-icon-delete zadmin-oper-area zadmin-red" title="删除"></i>
-			</a>
-		</shiro:hasPermission>
-		
+			</shiro:hasPermission>
+		{{# } }}
+		{{# if(d.state == 0) { }}
+			<shiro:hasPermission name="maint:delete">
+				<a lay-event="del">
+					<i class="zadmin-icon zadmin-icon-delete zadmin-oper-area zadmin-red" title="删除"></i>
+				</a>
+			</shiro:hasPermission>
+		{{# } }}
 		<shiro:lacksPermission name="maint:appoint">
 			<i class="zadmin-icon zadmin-icon-wuquanxian zadmin-oper-area zadmin-red" title="无权限"></i>
 		</shiro:lacksPermission>
@@ -95,7 +102,6 @@
 			var table = layui.table;
 			var $ = layui.$;
 			var form = layui.form;
-			var dtree = layui.dtree;
 			var soulTable = layui.soulTable;
 			
 			table.render({
@@ -135,17 +141,25 @@
 								}
 							}
 						]},
-						{field: 'maintainOrderId', title: 'ID', hide: true},
-						{field: 'companyName', title: '客户', width: "16%"},
-						{field: 'deviceName', title: '设备', width: "16%"},
-						{field: 'faultDescription', title: '故障描述', width: "24%"},
+						{field: 'maintainOrderId', title: '订单号', width: "15%"},
+						{field: 'companyName', title: '客户', width: "14%"},
+						{field: 'deviceName', title: '设备', width: "10%"},
+						{field: 'faultDescription', title: '故障描述', width: "17%"},
 						{field: 'createDate', title: '报修日期', width: "10%",
 							templet: function(d) {
 								return d.createDate.substr(0, 10);
 							}	
 						},
 						{field: 'stateDesc', title: '维修单状态', width: "10%"},
-						{field: 'nickname', title: '当前负责人', width: "10%"},
+						{field: 'nickname', title: '当前负责人', width: "10%",
+							templet: function(d) {
+								if (d.state == '3' || d.state == '4') {
+									return d.deptname;
+								} else {
+									return d.nickname;
+								}
+							}	
+						},
 						{title: '操作', fixed: 'right', width: "10%", align: 'center', toolbar: '#column-toolbar'}
 					]
 				],
@@ -158,12 +172,14 @@
 			table.on('tool(maintTable)', function (obj) {
 				var data = obj.data;
 				var event = obj.event;
-				if(event === 'appoint') {
-					if(data.state == '0') {
+				if (event === 'appoint') {
+					if (data.state == '0') {
 						appointPrior(data.maintainOrderId);
-					} else if(data.state == '2') {
+					} else if (data.state == '2') {
 						appointMp(data.maintainOrderId);
 					}
+				} else if (event === 'del') {
+					del(data.maintainOrderId);
 				}
 			});
 			
@@ -195,12 +211,30 @@
                 });
 			}
 			
+			function del(id) {
+				layer.confirm("确定删除用户吗?", {icon: 3, title: '提示'},
+					function (index) {//确定回调
+						$.post('/maint/' + id, {_method: "DELETE"}, function (data) {
+							layer.close(index);
+							handlerResult(data, deleteDone);
+						});
+					}, function (index) {//取消回调
+						layer.close(index);
+					}
+				);
+			}
+			
 			form.on('submit(search)', function (form) {
 				table.reload('maint-table', {
 					where: form.field
 				});
 				return false;
 			});
+			
+			function deleteDone(data) {
+				parent.layer.msg("删除成功", {icon: 6});
+				table.reload('maint-table');
+			}
 		});
 	</script>
 </body>

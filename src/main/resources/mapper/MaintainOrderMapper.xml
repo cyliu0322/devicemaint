@@ -266,9 +266,13 @@
     	mo.state,
     	mo.fault_description,
     	mo.create_date,
-    	u.nickname
-    from tbl_maintain_order mo left join user u on mo.user_id = u.user_id
+    	u.nickname,
+    	d.dept_name
+    from tbl_maintain_order mo left join user u on mo.user_id = u.user_id left join dept d on mo.dept_id = d.dept_id
     <where>
+    	<if test="maintainOrderId != null and maintainOrderId != ''">
+			AND mo.maintain_order_id = #{maintainOrderId, jdbcType=VARCHAR}
+		</if>
 		<if test="companyName != null and companyName != ''">
 			AND mo.company_name like CONCAT('%', #{companyName, jdbcType=VARCHAR}, '%')
 		</if>

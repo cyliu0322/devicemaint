@@ -40,7 +40,13 @@ public class MaintenanceOrder {
     private String maintenanceTime;
 
     private String bz;
+    
+    private String stateDesc;
 
+    private String nickname;
+    
+    private String deptname;
+    
     public String getMaintenanceOrderId() {
         return maintenanceOrderId;
     }
@@ -192,4 +198,29 @@ public class MaintenanceOrder {
     public void setBz(String bz) {
         this.bz = bz == null ? null : bz.trim();
     }
+
+	public String getStateDesc() {
+		return stateDesc;
+	}
+
+	public void setStateDesc(String stateDesc) {
+		this.stateDesc = stateDesc;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public String getDeptname() {
+		return deptname;
+	}
+
+	public void setDeptname(String deptname) {
+		this.deptname = deptname;
+	}
+    
 }

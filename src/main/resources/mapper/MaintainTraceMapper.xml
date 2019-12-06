@@ -139,4 +139,9 @@
     from tbl_maintain_trace mt left join user u on mt.user_id = u.user_id
     where maintain_order_id = #{maintId,jdbcType=VARCHAR} order by maintain_date desc;
   </select>
+  
+  <delete id="deleteByMaintId" parameterType="java.lang.String" >
+    delete from tbl_maintain_trace
+    where maintain_order_id = #{maintId,jdbcType=VARCHAR}
+  </delete>
 </mapper>

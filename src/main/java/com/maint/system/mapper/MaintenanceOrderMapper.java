@@ -35,7 +35,7 @@ public interface MaintenanceOrderMapper {
 
     MaintenanceOrder selectByPrimaryKey(String maintenanceOrderId);
     
-    List<MaintenanceOrder> selectAllMaintenance();
+    List<MaintenanceOrder> selectAllWithQuery(MaintenanceOrder query);
 
     int updateByPrimaryKeySelective(MaintenanceOrder record);
 

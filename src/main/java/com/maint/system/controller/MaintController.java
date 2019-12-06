@@ -61,26 +61,33 @@ public class MaintController {
 	@GetMapping("/prior/{maintId}")
 	public String appointPrior(@PathVariable("maintId") String maintId, Model model) {
 		List<User> users = userService.selectByRole(RoleEnum.SJY.getRoleId());
-		MaintainOrder maint = maintService.selectMaintById(maintId);
+		MaintainOrder maint = maintService.selectByMaintId(maintId);
 		model.addAttribute("users", users);
 		model.addAttribute("maint", maint);
-		model.addAttribute("appoint", MaintainOrderStatusEnum.DSJ.getValue());
+		model.addAttribute("nextState", MaintainOrderStatusEnum.DSJ.getValue());
 		return "maint/maint-prior";
 	}
 	
 	@GetMapping("/mp/{maintId}")
 	public String appointMp(@PathVariable("maintId") String maintId, Model model) {
-		MaintainOrder maint = maintService.selectMaintById(maintId);
+		MaintainOrder maint = maintService.selectByMaintId(maintId);
 		model.addAttribute("maint", maint);
-		model.addAttribute("appoint", MaintainOrderStatusEnum.DWX.getValue());
+		model.addAttribute("nextState", MaintainOrderStatusEnum.DWX.getValue());
 		return "maint/maint-mp";
 	}
 	
 	@PutMapping("/appoint")
 	@ResponseBody
-	public ResultBean update(MaintainOrder maint) {
+	public ResultBean appoint(MaintainOrder maint) {
 		maintService.appoint(maint);
 		return ResultBean.success();
 	}
 	
+	@OperationLog("删除维修单")
+	@DeleteMapping("/{maintId}")
+	@ResponseBody
+	public ResultBean delete(@PathVariable("maintId") String maintId) {
+		maintService.delete(maintId);
+		return ResultBean.success();
+	}
 }

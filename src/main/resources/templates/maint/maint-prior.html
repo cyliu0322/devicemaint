@@ -18,7 +18,7 @@
 	<div class="z-body animated fadeIn">
 		<form action="" method="post" class="layui-form layui-form-pane">
 			<div class="layui-form-item" style="display: none;">
-				<label for="" class="layui-form-label">维修单id</label>
+				<label for="" class="layui-form-label">维修单ID</label>
 				<div class="layui-input-block">
 					<input type="text" id="maintainOrderId" name="maintainOrderId"
 						th:value="${maint.maintainOrderId}" class="layui-input">
@@ -28,7 +28,7 @@
 				<label for="" class="layui-form-label">维修单状态</label>
 				<div class="layui-input-block">
 					<input type="text" id="state" name="state"
-						th:value="${appoint}" class="layui-input">
+						th:value="${nextState}" class="layui-input">
 				</div>
 			</div>
 			<div class="layui-form-item">
@@ -37,20 +37,20 @@
 					<input type="text" id="companyName" name="companyName"
 						th:value="${maint.companyName}" class="layui-input" style="border-style: solid solid none solid;" readonly>
 				</div>
-				<label for="" class="layui-form-label" style="border-style: solid solid none solid;">设备品牌</label>
+				<label for="" class="layui-form-label" style="border-style: solid solid none solid;">设备名称</label>
 				<div class="layui-input-block">
-					<input type="text" id="deviceBrand" name="deviceBrand"
-						th:value="${maint.deviceBrand}" class="layui-input" style="border-style: solid solid none solid;" readonly>
+					<input type="text" id="deviceName" name="deviceName"
+						th:value="${maint.deviceName}" class="layui-input" style="border-style: solid solid none solid;" readonly>
 				</div>
 				<label for="" class="layui-form-label" style="border-style: solid solid none solid;">设备型号</label>
 				<div class="layui-input-block">
 					<input type="text" id="deviceCode" name="deviceCode"
 						th:value="${maint.deviceCode}" class="layui-input" style="border-style: solid solid none solid;" readonly>
 				</div>
-				<label for="" class="layui-form-label" style="border-style: solid solid none solid;">设备型号</label>
+				<label for="" class="layui-form-label" style="border-style: solid solid none solid;">设备品牌</label>
 				<div class="layui-input-block">
-					<input type="text" id="deviceName" name="deviceName"
-						th:value="${maint.deviceName}" class="layui-input" style="border-style: solid solid none solid;" readonly>
+					<input type="text" id="deviceBrand" name="deviceBrand"
+						th:value="${maint.deviceBrand}" class="layui-input" style="border-style: solid solid none solid;" readonly>
 				</div>
 				<label for="" class="layui-form-label">设备地址</label>
 				<div class="layui-input-block">
@@ -93,7 +93,7 @@
 			//监听提交
 			form.on('submit(appoint)', function (form) {
 				form.field._method = 'PUT';
-				$.post('/maint/appoint', form.field, function (result) {
+				$.post('/maint/appoint/prior', form.field, function (result) {
 					handlerResult(result, addDone);
 				});
 				return false;

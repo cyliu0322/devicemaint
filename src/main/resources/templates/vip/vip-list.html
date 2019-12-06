@@ -75,7 +75,7 @@
 	<script type="text/html" id="children-column-toolbar">
 		<shiro:hasPermission name="user:update">
 			<a lay-event="keepFit">
-				<i class="zadmin-icon zadmin-icon-setting zadmin-oper-area zadmin-blue" title="保养单"></i>
+				<i class="layui-icon layui-icon-util zadmin-oper-area zadmin-blue" title="保养"></i>
 			</a>
 		</shiro:hasPermission>
 		<shiro:hasPermission name="user:update">
@@ -257,7 +257,7 @@
 				});
 			}
 			
-			function keepFit(deviceId) {
+			function keepFit(deviceId, tableId) {
 				layer.open({
 					content: "/maintenance/" + deviceId,
 					title: "保养单",
@@ -266,7 +266,7 @@
 					maxmin: true,
 					shadeClose: true,
 					end: function () {
-						table.reload(childId);
+						table.reload(tableId);
 					}
 				});
 			}

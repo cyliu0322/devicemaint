@@ -37,7 +37,7 @@ public class MaintService {
 		return maints;
 	}
 	
-	public MaintainOrder selectMaintById(String maintId) {
+	public MaintainOrder selectByMaintId(String maintId) {
 		return maintMapper.selectByPrimaryKey(maintId);
 	}
 	
@@ -67,6 +67,14 @@ public class MaintService {
 		//短信发送服务
 	}
 	
+	@Transactional
+	public void delete(String maintId) {
+		// 删除订单追踪表
+		traceMapper.deleteByMaintId(maintId);
+		
+		maintMapper.deleteByPrimaryKey(maintId);
+	}
+		
 	private String generateCode(int length) {
 		String code = StringUtil.generateCode(length, "");
 		//校验是否重复

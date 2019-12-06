@@ -33,11 +33,6 @@
     from tbl_maintenance_order
     where maintenance_order_id = #{maintenanceOrderId,jdbcType=VARCHAR}
   </select>
-  <select id="selectAllMaintenance" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from tbl_maintenance_order
-  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from tbl_maintenance_order
     where maintenance_order_id = #{maintenanceOrderId,jdbcType=VARCHAR}
@@ -47,16 +42,14 @@
       device_name, device_id, device_code, 
       device_brand, device_addr, device_years, 
       company_contact, company_phone, company_email, 
-      state, dept_id, create_date, 
-      score, user_id, maintenance_time, 
-      bz)
+      state, dept_id, score, 
+      user_id, maintenance_time, bz)
     values (#{maintenanceOrderId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
       #{deviceName,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, #{deviceCode,jdbcType=VARCHAR}, 
       #{deviceBrand,jdbcType=VARCHAR}, #{deviceAddr,jdbcType=VARCHAR}, #{deviceYears,jdbcType=INTEGER}, 
       #{companyContact,jdbcType=VARCHAR}, #{companyPhone,jdbcType=VARCHAR}, #{companyEmail,jdbcType=VARCHAR}, 
-      #{state,jdbcType=CHAR}, #{deptId,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
-      #{score,jdbcType=DOUBLE}, #{userId,jdbcType=INTEGER}, #{maintenanceTime,jdbcType=VARCHAR}, 
-      #{bz,jdbcType=VARCHAR})
+      #{state,jdbcType=CHAR}, #{deptId,jdbcType=INTEGER}, #{score,jdbcType=DOUBLE}, 
+      #{userId,jdbcType=INTEGER}, #{maintenanceTime,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.maint.system.model.MaintenanceOrder" >
     insert into tbl_maintenance_order
@@ -261,4 +254,29 @@
       bz = #{bz,jdbcType=VARCHAR}
     where maintenance_order_id = #{maintenanceOrderId,jdbcType=VARCHAR}
   </update>
+  
+  <select id="selectAllWithQuery" resultMap="BaseResultMap">
+    select 
+    	mo.maintenance_order_id,
+    	mo.company_name,
+    	mo.company_id,
+    	mo.device_name,
+    	mo.state,
+    	mo.create_date,
+    	mo.maintenance_time,
+    	u.nickname,
+    	d.dept_name
+    from tbl_maintenance_order mo left join user u on mo.user_id = u.user_id left join dept d on mo.dept_id = d.dept_id
+    <where>
+    	<if test="maintenanceOrderId != null and maintenanceOrderId != ''">
+			AND mo.maintenance_order_id = #{maintenanceOrderId, jdbcType=VARCHAR}
+		</if>
+		<if test="companyName != null and companyName != ''">
+			AND mo.company_name like CONCAT('%', #{companyName, jdbcType=VARCHAR}, '%')
+		</if>
+		<if test="state != null and state != ''">
+			AND mo.state = #{state}
+		</if>
+	</where>
+  </select>
 </mapper>

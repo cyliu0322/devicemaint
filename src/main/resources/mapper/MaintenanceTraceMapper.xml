@@ -21,12 +21,6 @@
     from tbl_maintenance_trace
     where maintenance_trace_id = #{maintenanceTraceId,jdbcType=VARCHAR}
   </select>
-  <select id="selectByUpkeepId" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from tbl_maintenance_trace
-    where maintenance_order_id = #{upkeepId,jdbcType=VARCHAR}
-  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from tbl_maintenance_trace
     where maintenance_trace_id = #{maintenanceTraceId,jdbcType=VARCHAR}
@@ -34,11 +28,11 @@
   <insert id="insert" parameterType="com.maint.system.model.MaintenanceTrace" >
     insert into tbl_maintenance_trace (maintenance_trace_id, maintenance_order_id, 
       fault_cause, video, image, 
-      user_id, maintenance_date, order_status
+      user_id, order_status
       )
     values (#{maintenanceTraceId,jdbcType=VARCHAR}, #{maintenanceOrderId,jdbcType=VARCHAR}, 
       #{faultCause,jdbcType=VARCHAR}, #{video,jdbcType=VARCHAR}, #{image,jdbcType=VARCHAR}, 
-      #{userId,jdbcType=INTEGER}, #{maintenanceDate,jdbcType=TIMESTAMP}, #{orderStatus,jdbcType=CHAR}
+      #{userId,jdbcType=INTEGER}, #{orderStatus,jdbcType=CHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.maint.system.model.MaintenanceTrace" >
@@ -134,4 +128,20 @@
       order_status = #{orderStatus,jdbcType=CHAR}
     where maintenance_trace_id = #{maintenanceTraceId,jdbcType=VARCHAR}
   </update>
+  
+  <select id="selectByMaintenanceId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    	mt.maintenance_trace_id,
+    	mt.fault_cause,
+    	mt.maintenance_date,
+    	mt.order_status,
+    	u.nickname
+    from tbl_maintenance_trace mt left join user u on mt.user_id = u.user_id
+    where mt.maintenance_order_id = #{maintenanceId,jdbcType=VARCHAR} order by mt.maintenance_date desc;
+  </select>
+  
+  <delete id="deleteByMaintenanceId" parameterType="java.lang.String" >
+    delete from tbl_maintenance_trace
+    where maintenance_order_id = #{maintenanceId,jdbcType=VARCHAR}
+  </delete>
 </mapper>

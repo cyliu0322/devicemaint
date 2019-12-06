@@ -13,6 +13,8 @@ public interface MaintainTraceMapper {
 	List<MaintainTrace> selectOrderTraceByOrderId(@Param("orderId") String orderId);
 	
     int deleteByPrimaryKey(String maintainTraceId);
+    
+    int deleteByMaintId(@Param("maintId") String maintId);
 
     int insert(MaintainTrace record);
 

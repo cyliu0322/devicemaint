@@ -37,6 +37,12 @@
 							th:value="${vip.phone}" lay-verify="required"
 							lay-vertype="tips" autocomplete="off" class="layui-input" style="border-style: solid solid none solid;" readonly>
 					</div>
+				<label for="deviceName" class="layui-form-label" style="border-style: solid solid none solid;">设备名称</label>
+				<div class="layui-input-block">
+					<input type="text" id="deviceName" name="deviceName"
+						th:value="${device.deviceName}" lay-verify="required"
+						lay-vertype="tips" autocomplete="off" class="layui-input" style="border-style: solid solid none solid;" readonly>
+				</div>
 				<label for="deviceBrand" class="layui-form-label" style="border-style: solid solid none solid;">设备品牌</label>
 				<div class="layui-input-block">
 					<input type="text" id="deviceBrand" name="deviceBrand"

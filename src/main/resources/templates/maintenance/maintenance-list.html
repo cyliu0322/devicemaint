@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
     <link rel="shortcut icon" type="image/x-icon" th:href="@{/favicon.ico}"/>
     <link rel="stylesheet" th:href="@{/lib/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/lib/layui/extend/soulTable.css}">
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/animate.min.css}">
     <link rel="stylesheet" th:href="@{/iconfont/iconfont.css}">
@@ -23,16 +24,29 @@
 		<form class="layui-form zadmin-search-area input">
 			<div class="layui-form-item">
 				<div class="layui-inline">
-					<label for="companyName" class="layui-form-label">公司</label>
+					<label for="maintenanceOrderId" class="layui-form-label">订单号</label>
+					<div class="layui-input-inline">
+						<input type="text" name="maintenanceOrderId" autocomplete="off"
+							id="maintenanceOrderId" class="layui-input">
+					</div>
+					
+					<label for="companyName" class="layui-form-label">客户</label>
 					<div class="layui-input-inline">
 						<input type="text" name="companyName" autocomplete="off"
 							id="companyName" class="layui-input">
 					</div>
 					
-					<label for="deviceName" class="layui-form-label">设备</label>
+					<label for="state" class="layui-form-label">状态</label>
 					<div class="layui-input-inline">
-						<input type="text" name="deviceName" autocomplete="off" id="deviceName"
-							class="layui-input">
+						<select name="state" id="state">
+							<option value="">请选择</option>
+							<option value="0">保养单生成</option>
+							<option value="1">待保养</option>
+							<option value="2">保养中</option>
+							<option value="3">保养完成</option>
+							<option value="4">待回访</option>
+							<option value="5">已回访</option>
+						</select>
 					</div>
 					
 					<button lay-submit="" lay-filter="search"
@@ -47,28 +61,20 @@
 	</div>
 	
 	<script type="text/html" id="column-toolbar">
-		<shiro:hasPermission name="maint:appoint">
-			{{# if(d.state == 0 || d.state == 2) { }}
+		{{# if(d.state == 0) { }}
+			<shiro:hasPermission name="maint:appoint">
 				<a lay-event="appoint">
-					<i class="zadmin-icon zadmin-icon-edit-square zadmin-oper-area zadmin-blue" title="派单"></i>
+					<i class="layui-icon layui-icon-release zadmin-oper-area zadmin-blue" title="派单"></i>
 				</a>
-			{{# } }}
-		</shiro:hasPermission>
+				<a lay-event="del">
+					<i class="zadmin-icon zadmin-icon-delete zadmin-oper-area zadmin-red" title="删除"></i>
+				</a>
+			</shiro:hasPermission>
+		{{# } }}
 		
 		<shiro:lacksPermission name="maint:appoint">
 			<i class="zadmin-icon zadmin-icon-wuquanxian zadmin-oper-area zadmin-red" title="无权限"></i>
 		</shiro:lacksPermission>
-	</script>
-	
-	<script type="text/html" id="statusTpl">
-		<!-- 不能禁用自己 -->
-		{{#  if('<shiro:principal property="username"/>' == d.username) { }}
-			<input type="checkbox" disabled name="status" value="{{d.userId}}" lay-skin="switch" lay-text="正常|锁定" lay-filter="status" {{ d.status == '1' ? 'checked' : '' }}>
-		{{#  } }}
-		
-		{{#  if('<shiro:principal property="username"/>' !== d.username) { }}
-			<input type="checkbox" name="status" value="{{d.userId}}" lay-skin="switch" lay-text="正常|锁定" lay-filter="status" {{ d.status == '1' ? 'checked' : '' }}>
-		{{#  } }}
 	</script>
 	
 	<script th:src="@{/lib/jquery/jquery.min.js}"></script>
@@ -78,146 +84,122 @@
     <script>
 		layui.config({
 			base: '/lib/layui/extend/'
-		}).use(['table', 'element', 'form', 'tablePlug'], function () {
+		}).use(['table', 'element', 'form', 'soulTable'], function () {
 			var table = layui.table;
 			var $ = layui.$;
 			var form = layui.form;
-			var dtree = layui.dtree;
-			var tablePlug = layui.tablePlug;
-			
-            tablePlug.smartReload.enable(true);
+			var soulTable = layui.soulTable;
 			
 			table.render({
 				elem: '#maintenance-table',
 				url: '/maintenance/list',
 				page: true,
-				smartReloadModel: true,
+				overflow: {
+					type: 'title',
+					hoverTime: 500
+				},
 				cols: [
 					[
-						{type: 'numbers', title: '序号', width: "5%"},
-						{field: 'companyName', title: '公司', width: "20%", event: 'collapse',
+						{title: '#', width: "4%", collapse: true, children:[
+							{
+								title: '保养记录追踪',
+								url: function(row) {
+									return '/maintenance/trace/' + row.maintenanceOrderId;
+								},
+								height: 300,
+								page: false,
+								overflow: {
+									type: 'title',
+									hoverTime: 500
+								},
+								cols: [
+									[
+										{field: 'faultCause', title: '描述', width: "65%"},
+										{field: 'statusDesc', title: '状态', width: "10%"},
+										{field: 'nickname', title: '记录人', width: "10%"},
+										{field: 'maintenanceDate', title: '时间', width: "15%"}
+									]
+								],
+								done: function () {
+									soulTable.render(this);
+								}
+							}
+						]},
+						{field: 'maintenanceOrderId', title: '订单号', width: "15%"},
+						{field: 'companyName', title: '客户', width: "15%"},
+						{field: 'deviceName', title: '设备', width: "10%"},
+						{field: 'createDate', title: '提请日期', width: "10%",
 							templet: function(d) {
-								return '<div style="position: relative;\n' + ' padding: 0 10px 0 20px;">' + d.companyName + '<i style="left: 0px;" lay-tips="展开" class="layui-icon layui-colla-icon layui-icon-right"></i></div>'
+								return d.createDate.substr(0, 10);
 							}
 						},
-						{field: 'deviceName', title: '设备', width: "20%"},
-						{title: '操作', fixed: 'right', align: 'center', toolbar: '#column-toolbar'}
+						{field: 'maintenanceTime', title: '保养日期', width: "16%"},
+						{field: 'stateDesc', title: '保养单状态', width: "10%"},
+						{field: 'nickname', title: '当前负责人', width: "10%",
+							templet: function(d) {
+								if (d.state == '1' || d.state == '2') {
+									return d.deptname;
+								} else {
+									return d.nickname;
+								}
+							}	
+						},
+						{title: '操作', fixed: 'right', width: "10%", align: 'center', toolbar: '#column-toolbar'}
 					]
-				]
+				],
+				done: function() {
+					soulTable.render(this);
+				}
 			});
 			
 			// 单元格点击事件
 			table.on('tool(maintenanceTable)', function (obj) {
 				var data = obj.data;
 				var event = obj.event;
-				if (event === 'collapse') {
-					var trObj = layui.$(this).parent('tr'); //当前行
-					var accordion = true //开启手风琴，那么在进行折叠操作时，始终只会展现当前展开的表格。
-					var content = '<table></table>' //内容
-					//表格行折叠方法
-					collapseTable({
-						elem: trObj,
-						accordion: accordion,
-						content: content,
-						success: function(trObjChildren, index) { //成功回调函数
-							//trObjChildren 展开tr层DOM
-							//index 当前层索引
-							trObjChildren.find('table').attr("id", index);
-							table.render({
-								elem: "#" + index,
-								url: '/maint/trace/' + data.maintainOrderId,
-								limit: 3,
-								cellMinWidth: 80,
-								cols: [
-		                        	[
-										{field: 'faultCause', title: '故障描述', width: "30%"},
-										{field: 'statusDesc', title: '状态'},
-										{field: 'maintainDate', title: '时间', width: "30%"}
-									]
-								]
-		                    });
-		                }
-		            });
-				} else if(event === 'appoint') {
-					if(data.state == '0') {
-						appointPrior(data.maintainOrderId);
-					} else if(data.state == '2') {
-						appointMp(data.maintainOrderId);
-					}
+				if (event === 'appoint') {
+					appoint(data.maintenanceOrderId);
+				} else if (event === 'del') {
+					del(data.maintenanceOrderId);
 				}
 			});
 			
-			function collapseTable(options) {
-				var trObj = options.elem;
-				if (!trObj)
-					return;
-				var accordion = options.accordion,
-				success = options.success,
-				content = options.content || '';
-				var tableView = trObj.parents('.layui-table-view'); //当前表格视图
-				var id = tableView.attr('lay-id'); //当前表格标识
-				var index = trObj.data('index'); //当前行索引
-				var leftTr = tableView.find('.layui-table-fixed.layui-table-fixed-l tr[data-index="' + index + '"]'); //左侧当前固定行
-				var rightTr = tableView.find('.layui-table-fixed.layui-table-fixed-r tr[data-index="' + index + '"]'); //右侧当前固定行
-				var colspan = trObj.find('td').length; //获取合并长度
-				var trObjChildren = trObj.next(); //展开行Dom
-				var indexChildren = id + '-' + index + '-children'; //展开行索引
-				var leftTrChildren = tableView.find('.layui-table-fixed.layui-table-fixed-l tr[data-index="' + indexChildren + '"]'); //左侧展开固定行
-				var rightTrChildren = tableView.find('.layui-table-fixed.layui-table-fixed-r tr[data-index="' + indexChildren + '"]'); //右侧展开固定行
-				var lw = leftTr.width() + 15; //左宽
-				var rw = rightTr.width() + 15; //右宽
-				//不存在就创建展开行
-				if (trObjChildren.data('index') != indexChildren) {
-					//装载HTML元素
-					var tr = '<tr data-index="' + indexChildren + '"><td colspan="' + colspan + '"><div style="height: auto;padding-left:' + lw + 'px;padding-right:' + rw + 'px" class="layui-table-cell">' + content + '</div></td></tr>';
-					trObjChildren = trObj.after(tr).next().hide(); //隐藏展开行
-					var fixTr = '<tr data-index="' + indexChildren + '"></tr>';//固定行
-					leftTrChildren = leftTr.after(fixTr).next().hide(); //左固定
-					rightTrChildren = rightTr.after(fixTr).next().hide(); //右固定
-				}
-				//展开|折叠箭头图标
-		        trObj.find('td[lay-event="collapse"] i.layui-colla-icon').toggleClass("layui-icon-right layui-icon-down");
-		        //显示|隐藏展开行
-				trObjChildren.toggle();
-				//开启手风琴折叠和折叠箭头
-				if (accordion) {
-					trObj.siblings().find('td[lay-event="collapse"] i.layui-colla-icon').removeClass("layui-icon-down").addClass("layui-icon-right");
-					trObjChildren.siblings('[data-index$="-children"]').hide(); //展开
-					rightTrChildren.siblings('[data-index$="-children"]').hide(); //左固定
-					leftTrChildren.siblings('[data-index$="-children"]').hide(); //右固定
-				}
-				success(trObjChildren, indexChildren); //回调函数
-				heightChildren = trObjChildren.height(); //展开高度固定
-				rightTrChildren.height(heightChildren + 115).toggle(); //左固定
-				leftTrChildren.height(heightChildren + 115).toggle(); //右固定
-			}
-			
-			function appointPrior(maintid) {
+			function appoint(id) {
 				layer.open({
-                    content: '/maint/prior/' + maintid,
-                    title: "编辑",
+                    content: '/maintenance/appoint/' + id,
+                    title: "派单",
                     area: ['40%', '85%'],
                     type: 2,
                     maxmin: true,
                     shadeClose: true,
                     end: function () {
-                        table.reload('maint-table');
+                        table.reload('maintenance-table');
                     }
                 });
 			}
 			
-			function appointMp(maintid) {
-				layer.open({
-                    content: '/maint/mp/' + maintid,
-                    title: "编辑",
-                    area: ['40%', '85%'],
-                    type: 2,
-                    maxmin: true,
-                    shadeClose: true,
-                    end: function () {
-                        table.reload('maint-table');
-                    }
-                });
+			function del(id) {
+				layer.confirm("确定删除用户吗?", {icon: 3, title: '提示'},
+					function (index) {//确定回调
+						$.post('/maintenance/' + id, {_method: "DELETE"}, function (data) {
+							layer.close(index);
+							handlerResult(data, deleteDone);
+						});
+					}, function (index) {//取消回调
+						layer.close(index);
+					}
+				);
+			}
+			
+			form.on('submit(search)', function (form) {
+				table.reload('maintenance-table', {
+					where: form.field
+				});
+				return false;
+			});
+			
+			function deleteDone(data) {
+				parent.layer.msg("删除成功", {icon: 6});
+				table.reload('maintenance-table');
 			}
 		});
 	</script>

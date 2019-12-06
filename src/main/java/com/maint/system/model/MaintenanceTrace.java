@@ -18,6 +18,10 @@ public class MaintenanceTrace {
     private Date maintenanceDate;
 
     private String orderStatus;
+    
+    private String statusDesc;
+    
+    private String nickname;
 
     public String getMaintenanceTraceId() {
         return maintenanceTraceId;
@@ -82,4 +86,21 @@ public class MaintenanceTrace {
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus == null ? null : orderStatus.trim();
     }
+
+	public String getStatusDesc() {
+		return statusDesc;
+	}
+
+	public void setStatusDesc(String statusDesc) {
+		this.statusDesc = statusDesc;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+    
 }

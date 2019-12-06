@@ -12,6 +12,8 @@ public interface MaintenanceTraceMapper {
 	List<MaintenanceTrace> selectOrderTraceByOrderId(@Param("orderId") String orderId);
 	
     int deleteByPrimaryKey(String maintenanceTraceId);
+    
+    int deleteByMaintenanceId(@Param("maintenanceId") String maintenanceId);
 
     int insert(MaintenanceTrace record);
 
@@ -19,7 +21,7 @@ public interface MaintenanceTraceMapper {
 
     MaintenanceTrace selectByPrimaryKey(String maintenanceTraceId);
     
-    List<MaintenanceTrace> selectByUpkeepId(@Param("upkeepId") String upkeepId);
+    List<MaintenanceTrace> selectByMaintenanceId(@Param("maintenanceId") String maintenanceId);
 
     int updateByPrimaryKeySelective(MaintenanceTrace record);
 

@@ -8,6 +8,7 @@ import com.github.pagehelper.PageInfo;
 import com.maint.common.annotation.OperationLog;
 import com.maint.common.util.PageResultBean;
 import com.maint.common.util.ResultBean;
+import com.maint.system.enums.MaintenanceOrderStatusEnum;
 import com.maint.system.model.Company;
 import com.maint.system.model.Device;
 import com.maint.system.model.DeviceBrand;
@@ -51,8 +52,8 @@ public class MaintenanceController {
 	@GetMapping("/list")
 	@ResponseBody
 	public PageResultBean<MaintenanceOrder> getMaintenanceList(@RequestParam(value = "page", defaultValue = "1") int page,
-			@RequestParam(value = "limit", defaultValue = "10") int limit) {
-		List<MaintenanceOrder> maintenances = maintenanceService.selectAll();
+			@RequestParam(value = "limit", defaultValue = "10") int limit, MaintenanceOrder maintenanceQuery) {
+		List<MaintenanceOrder> maintenances = maintenanceService.selectAllWithQuery(page, limit, maintenanceQuery);
 		PageInfo<MaintenanceOrder> pageInfo = new PageInfo<>(maintenances);
 		return new PageResultBean<>(pageInfo.getTotal(), pageInfo.getList());
 	}
@@ -68,11 +69,40 @@ public class MaintenanceController {
 		return "vip/upkeep-add";
 	}
 	
-	@OperationLog("新增设备")
+	@OperationLog("新增保养单")
 	@PostMapping
 	@ResponseBody
 	public ResultBean add(MaintenanceOrder maintenance) {
 		maintenanceService.add(maintenance);
+		return ResultBean.success();
+	}
+	
+	@GetMapping("/trace/{maintenanceId}")
+	@ResponseBody
+	public ResultBean getTraceList(@PathVariable("maintenanceId") String maintenanceId) {
+		return ResultBean.success(maintenanceService.getTracesByMaintenanceId(maintenanceId));
+	}
+	
+	@GetMapping("/appoint/{maintenanceId}")
+	public String appoint(@PathVariable("maintenanceId") String maintenanceId, Model model) {
+		MaintenanceOrder maintenance = maintenanceService.selectByMaintenanceId(maintenanceId);
+		model.addAttribute("maintenance", maintenance);
+		model.addAttribute("nextState", MaintenanceOrderStatusEnum.DBY.getValue());
+		return "maintenance/maintenance-appoint";
+	}
+	
+	@PutMapping("/appoint")
+	@ResponseBody
+	public ResultBean appoint(MaintenanceOrder maintenance) {
+		maintenanceService.appoint(maintenance);
+		return ResultBean.success();
+	}
+	
+	@OperationLog("删除保养单")
+	@DeleteMapping("/{maintenanceId}")
+	@ResponseBody
+	public ResultBean delete(@PathVariable("maintenanceId") String maintenanceId) {
+		maintenanceService.delete(maintenanceId);
 		return ResultBean.success();
 	}
 }
