@@ -109,9 +109,9 @@ public class WebExceptionHandler {
 	@ExceptionHandler
 	public String lockedAccount(DuplicateNameException e) {
 		if (log.isDebugEnabled()) {
-			log.debug("用户名已存在");
+			log.debug(e.getMessage());
 		}
-		return generateErrorInfo(ResultBean.FAIL, "用户名已存在");
+		return generateErrorInfo(ResultBean.FAIL, e.getMessage());
 	}
 	
 	@ExceptionHandler

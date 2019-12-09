@@ -133,13 +133,13 @@ public class UserService {
 	 */
 	public void checkUserNameExistOnCreate(String username) {
 		if (userMapper.countByUserName(username) > 0) {
-			throw new DuplicateNameException();
+			throw new DuplicateNameException("用户名已存在");
 		}
 	}
 	
 	public void checkUserNameExistOnUpdate(User user) {
 		if (userMapper.countByUserNameNotIncludeUserId(user.getUsername(), user.getUserId()) > 0) {
-			throw new DuplicateNameException();
+			throw new DuplicateNameException("用户名已存在");
 		}
 	}
 	

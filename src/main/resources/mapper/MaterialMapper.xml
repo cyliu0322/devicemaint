@@ -139,4 +139,22 @@
       ggxh = #{ggxh,jdbcType=VARCHAR}
     where material_id = #{materialId,jdbcType=VARCHAR}
   </update>
+  
+  <select id="selectAllWithQuery" resultMap="BaseResultMap">
+    select 
+    	<include refid="Base_Column_List" />
+    from tbl_material
+    <where>
+		<if test="materialName != null and materialName != ''">
+			AND material_name like CONCAT('%', #{materialName, jdbcType=VARCHAR}, '%')
+		</if>
+	</where>
+  </select>
+  
+  <select id="countByMaterialNameNotIncludeMaterialId" resultType="java.lang.Integer">
+        select count(*)
+        from tbl_material
+        where material_name = #{materialName}
+          and material_id != #{materialId}
+    </select>
 </mapper>
