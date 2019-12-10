@@ -76,10 +76,11 @@
     <script>
 		layui.config({
 			base: '/lib/layui/extend/'
-		}).use(['table', 'element', 'form'], function () {
-			var table = layui.table;
+		}).use(['table', 'element', 'form', 'soulTable'], function () {
 			var $ = layui.$;
+			var table = layui.table;
 			var form = layui.form;
+			var soulTable = layui.soulTable;
 			
 			table.render({
 				elem: '#brand-table',
@@ -89,12 +90,59 @@
 				page: true,
 				cols: [
 					[
-						{type: 'numbers', title: '序号', width: "5%"},
+						{title: '#', width: "4%", collapse: true, children:[
+							{
+								title: '维修流程',
+								url: function(row) {
+									return '/device/list/' + row.companyId;
+								},
+								height: 180,
+								page: false,
+								overflow: {
+									type: 'title',
+									hoverTime: 500
+								},
+								cols: [
+									[
+										{field: 'serialNumber', title: '设备编号', width: "10%"},
+										{field: 'deviceName', title: '设备名称', width: "15%"},
+										{field: 'brandName', title: '品牌', width: "10%"},
+										{field: 'code', title: '型号', width: "10%"},
+										{field: 'address', title: '设备地址', width: "25%"},
+										{field: 'years', title: '使用年数', width: "8%"},
+										{field: 'lastMaintenanceTime', title: '上次维护', width: "10%",
+											templet: function(d) {
+												return d.lastMaintenanceTime.substr(0, 10);
+											}
+										},
+										{title: '操作', fixed: 'right', align: 'center', toolbar: '#children-column-toolbar', width: "12%"}
+									]
+								],
+								toolEvent: function(obj, pobj) {
+									// obj 子表当前行对象
+									// pobj 父表当前行对象
+									var childId = this.id; // 通过 this 对象获取当前子表的id
+									if (obj.event === 'keepFit') {
+										keepFit(obj.data.deviceId, childId);
+			                        } else if (obj.event === 'childEdit') {
+			                        	childEdit(obj.data.deviceId, childId);
+			                        } else if (obj.event === 'childDel') {
+			                        	childDel(obj.data.deviceId, childId);
+			                        }
+								},
+								done: function() {
+									soulTable.render(this);
+								}
+							}
+						]},
 						{field: 'brandId', title: 'ID', hide: true},
-						{field: 'brandName', title: '客户', width: "10%"},
-						{title: '操作', fixed: 'right', align: 'center', toolbar: '#column-toolbar'}
+						{field: 'brandName', title: '品牌', width: "46%"},
+						{title: '操作', fixed: 'right', align: 'center', toolbar: '#column-toolbar', width: '50%'}
 					]
-				]
+				],
+				done: function() {
+					soulTable.render(this);
+				}
 			});
 			
 			// 单元格点击事件
@@ -111,7 +159,7 @@
 			});
 			
 			form.on('submit(search)', function (form) {
-				table.reload('maint-table', {
+				table.reload('brand-table', {
 					where: form.field
 				});
 				return false;
