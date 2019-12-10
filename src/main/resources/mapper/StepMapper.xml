@@ -6,10 +6,11 @@
     <result column="step_name" property="stepName" jdbcType="VARCHAR" />
     <result column="step_description" property="stepDescription" jdbcType="VARCHAR" />
     <result column="brand_id" property="brandId" jdbcType="VARCHAR" />
+    <result column="step_type" property="stepType" jdbcType="INTEGER" />
     <result column="weight" property="weight" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    step_id, step_name, step_description, brand_id, weight
+    step_id, step_name, step_description, brand_id, step_type, weight
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 

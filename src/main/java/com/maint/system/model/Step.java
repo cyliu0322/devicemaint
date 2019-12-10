@@ -8,6 +8,8 @@ public class Step {
     private String stepDescription;
 
     private String brandId;
+    
+    private int stepType;
 
     private Integer weight;
 
@@ -43,7 +45,15 @@ public class Step {
         this.brandId = brandId == null ? null : brandId.trim();
     }
 
-    public Integer getWeight() {
+    public int getStepType() {
+		return stepType;
+	}
+
+	public void setStepType(int stepType) {
+		this.stepType = stepType;
+	}
+
+	public Integer getWeight() {
         return weight;
     }
 
