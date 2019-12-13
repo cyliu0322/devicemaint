@@ -2,9 +2,6 @@ package com.maint.system.model;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.maint.system.enums.MaintainOrderStatusEnum;
-
 public class MaintainOrder {
     private String maintainOrderId;
 
@@ -224,6 +221,18 @@ public class MaintainOrder {
 
 	public void setDeptname(String deptname) {
 		this.deptname = deptname;
+	}
+
+	@Override
+	public String toString() {
+		return "MaintainOrder [maintainOrderId=" + maintainOrderId + ", companyName=" + companyName + ", companyId="
+				+ companyId + ", companyAddress=" + companyAddress + ", companyContact=" + companyContact
+				+ ", companyPhone=" + companyPhone + ", companyEmail=" + companyEmail + ", deviceName=" + deviceName
+				+ ", deviceCode=" + deviceCode + ", deviceBrand=" + deviceBrand + ", deviceAddr=" + deviceAddr
+				+ ", deviceYears=" + deviceYears + ", state=" + state + ", stateDesc=" + stateDesc + ", deptId="
+				+ deptId + ", faultDescription=" + faultDescription + ", webUserId=" + webUserId + ", createDate="
+				+ createDate + ", score=" + score + ", userId=" + userId + ", nickname=" + nickname + ", deptname="
+				+ deptname + "]";
 	}
     
 }

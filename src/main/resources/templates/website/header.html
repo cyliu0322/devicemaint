@@ -1,0 +1,64 @@
+<header th:fragment="header" class="header" style="height:40px;background-color:#eee;">
+  	<div class="layui-container">
+  		<div class="layui-row">
+  			<div style="float:right; height:40px;line-height:40px;">
+  				<div id="noLoginHeader">
+  					<span class="layui-breadcrumb" lay-separator="|">
+					  <a href="/website/view/toLogin">登录</a>
+					  <a href="/website/view/toRegister">注册</a>
+					</span>
+  				</div>
+  				<div id="LoginedHeader" style="display:none;">
+  					<ul class="layui-nav" style="position:static;background-color:#eee;">
+					  <li class="layui-nav-item" style="height:40px;line-height:40px;">
+					    <a href="/website/user/userCenter">个人中心<span class="layui-badge-dot"></span></a>
+					  </li>
+					  <li class="layui-nav-item" style="height:40px;line-height:40px;">
+					    <a href="">我</a>
+					    <dl class="layui-nav-child">
+					      <dd><a href="/website/user/userCenter">账号管理</a></dd>
+					      <dd><a href="/website/user/userCenter">订单管理</a></dd>
+					      <dd><a href="/website/user/logout">退了</a></dd>
+					    </dl>
+					  </li>
+					</ul>
+  				</div>
+  			</div>
+	  	</div>
+  	</div>
+  	
+  	<script type="text/javascript">
+		
+		$(function () {
+			$.ajax({
+		        type: "POST",
+			    dataType: "json",
+		        url: "/website/view/isLogin",
+		        success: function (data) {
+		        	if(window.location.pathname == '/website/view/toLogin'){
+		        		showHeader(3);
+		        	}else{
+		        		showHeader(data.code);
+		        	}
+		        },
+		        error: function() {
+		        	
+		        }
+		    });
+		});
+		
+		function showHeader(code){
+			if(code == -1){
+				$("#noLoginHeader").css('display', 'block');
+	    		$("#LoginedHeader").css('display', 'none');
+			}else if(code == 0){
+				$("#LoginedHeader").css('display', 'block');
+	    		$("#noLoginHeader").css('display', 'none');
+			}else{
+				$("#LoginedHeader").css('display', 'none');
+	    		$("#noLoginHeader").css('display', 'none');
+			}
+		}
+		
+	</script>
+</header>

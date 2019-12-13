@@ -10,7 +10,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +24,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
+import com.maint.common.constants.LoginType;
+import com.maint.common.shiro.token.UserPasswordToken;
 import com.maint.common.util.ResultBean;
 import com.maint.common.util.StringUtil;
 import com.maint.system.enums.MaintainOrderStatusEnum;
@@ -44,6 +45,11 @@ public class MobileLoginController {
 	
 	@Resource
 	MobileLoginService mobileService;
+	
+	@GetMapping(value = "test")
+	public String test() {
+		return "mobile/jquery-file-upload";
+	}
 	
 	@GetMapping(value = "toLogin")
 	public String toLogin() {
@@ -131,8 +137,10 @@ public class MobileLoginController {
 		JSONObject jsonParam = JSONObject.parseObject(data);
 		
 		Subject subject = SecurityUtils.getSubject();
-		UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(
-				jsonParam.getString("mobileAccount"), jsonParam.getString("mobilePassword"));
+		UserPasswordToken usernamePasswordToken = new UserPasswordToken(
+				jsonParam.getString("mobileAccount"), 
+				jsonParam.getString("mobilePassword").toCharArray(), 
+				LoginType.MOBILE.toString());
 		
 		ResultBean resultBean = null;
 		try {
@@ -145,6 +153,7 @@ public class MobileLoginController {
 		} catch (LockedAccountException le) {
 			resultBean = ResultBean.error("账号被锁定");
 		}catch (Exception e) {
+			log.error(e.getMessage());
 			resultBean = ResultBean.error(e.getMessage());
 		}
 		

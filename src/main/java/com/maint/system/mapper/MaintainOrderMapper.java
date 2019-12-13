@@ -1,6 +1,7 @@
 package com.maint.system.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -24,6 +25,8 @@ public interface MaintainOrderMapper {
 	
 	@Select(value = "SELECT * FROM tbl_maintain_order WHERE maintain_order_id = #{orderId} AND user_id = #{userId} limit 1")
 	List<MaintainOrder> selectOrder(@Param("orderId") String orderId, @Param("userId") int userId);
+	
+	List<MaintainOrder> selectOrderByConditions(Map<String, Object> paraMap);
 	
     int deleteByPrimaryKey(String maintainOrderId);
 

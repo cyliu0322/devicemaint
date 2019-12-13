@@ -1,8 +1,10 @@
 package com.maint.system.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class WebUser {
+@SuppressWarnings("serial")
+public class WebUser implements Serializable{
     private Integer webUserId;
 
     private String username;

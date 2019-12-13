@@ -6,6 +6,13 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.session.SessionListener;
+import org.apache.shiro.session.mgt.SessionManager;
+import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
+import org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator;
+import org.apache.shiro.session.mgt.eis.SessionDAO;
+import org.apache.shiro.session.mgt.eis.SessionIdGenerator;
+import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.crazycake.shiro.RedisCacheManager;
@@ -17,17 +24,22 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
 import com.maint.common.shiro.EnhanceModularRealmAuthenticator;
+import com.maint.common.shiro.ModelRealmAuthenticator;
 import com.maint.common.shiro.OAuth2Helper;
 import com.maint.common.shiro.RestShiroFilterFactoryBean;
 import com.maint.common.shiro.ShiroActionProperties;
 import com.maint.common.shiro.credential.RetryLimitHashedCredentialsMatcher;
 import com.maint.common.shiro.filter.KickoutSessionFilter;
+import com.maint.common.shiro.filter.MobileFormAuthenticationFilter;
 import com.maint.common.shiro.filter.OAuth2AuthenticationFilter;
 import com.maint.common.shiro.filter.RestAuthorizationFilter;
 import com.maint.common.shiro.filter.RestFormAuthenticationFilter;
+import com.maint.common.shiro.filter.WebFormAuthenticationFilter;
 import com.maint.common.shiro.realm.OAuth2GiteeRealm;
 import com.maint.common.shiro.realm.OAuth2GithubRealm;
-import com.maint.common.shiro.realm.UserNameRealm;
+import com.maint.common.shiro.realm.ManageRealm;
+import com.maint.common.shiro.realm.MobileRealm;
+import com.maint.common.shiro.realm.WebRealm;
 import com.maint.system.service.ShiroService;
 
 import javax.annotation.Resource;
@@ -66,12 +78,11 @@ public class ShiroConfig {
 		RestShiroFilterFactoryBean shiroFilterFactoryBean = new RestShiroFilterFactoryBean();
 		shiroFilterFactoryBean.setSecurityManager(securityManager);
 		
-//		shiroFilterFactoryBean.setLoginUrl("/login");
-		shiroFilterFactoryBean.setUnauthorizedUrl("/403");
-		
 		Map<String, Filter> filters = shiroFilterFactoryBean.getFilters();
 		filters.put("kickout", kickoutSessionFilter());
 		filters.put("authc", new RestFormAuthenticationFilter());
+		filters.put("webAuthc", webAuthenticationFiler());
+		filters.put("mobileAuthc", mobileAuthenticationFiler());
 		filters.put("perms", new RestAuthorizationFilter());
 		filters.put("oauth2Authc", new OAuth2AuthenticationFilter(oAuth2Helper));
 		
@@ -87,12 +98,28 @@ public class ShiroConfig {
 	public SecurityManager securityManager() {
 		DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 		securityManager.setSessionManager(sessionManager());
-		securityManager.setRealms(Arrays.asList(userNameRealm(), oAuth2GithubRealm(), oAuth2GiteeRealm()));
-		ModularRealmAuthenticator authenticator = new EnhanceModularRealmAuthenticator();
+		securityManager.setRealms(Arrays.asList(userNameRealm(), webUserRealm(), mobileRealm(), oAuth2GithubRealm(), oAuth2GiteeRealm()));
+		ModularRealmAuthenticator authenticator = new ModelRealmAuthenticator();
 		securityManager.setAuthenticator(authenticator);
-		authenticator.setRealms(Arrays.asList(userNameRealm(), oAuth2GithubRealm(), oAuth2GiteeRealm()));
+		authenticator.setRealms(Arrays.asList(userNameRealm(), webUserRealm(), mobileRealm(), oAuth2GithubRealm(), oAuth2GiteeRealm()));
 		SecurityUtils.setSecurityManager(securityManager);
 		return securityManager;
+	}
+	
+	public WebFormAuthenticationFilter webAuthenticationFiler() {
+		WebFormAuthenticationFilter webFormAuthenticationFilter = new WebFormAuthenticationFilter();
+		webFormAuthenticationFilter.setLoginUrl("/website/view/toLogin");
+		webFormAuthenticationFilter.setUsernameParam("username");
+		webFormAuthenticationFilter.setPasswordParam("password");
+		return webFormAuthenticationFilter;
+	}
+	
+	public MobileFormAuthenticationFilter mobileAuthenticationFiler() {
+		MobileFormAuthenticationFilter mobileFormAuthenticationFilter = new MobileFormAuthenticationFilter();
+		mobileFormAuthenticationFilter.setLoginUrl("/mobile/toLogin");
+		mobileFormAuthenticationFilter.setUsernameParam("username");
+		mobileFormAuthenticationFilter.setPasswordParam("password");
+		return mobileFormAuthenticationFilter;
 	}
 	
 	/**
@@ -115,12 +142,34 @@ public class ShiroConfig {
 	 * 用户名密码登录 Realm
 	 */
 	@Bean
-	public UserNameRealm userNameRealm() {
-		UserNameRealm userNameRealm = new UserNameRealm();
+	public ManageRealm userNameRealm() {
+		ManageRealm userNameRealm = new ManageRealm();
 		userNameRealm.setCredentialsMatcher(hashedCredentialsMatcher());
 		userNameRealm.setCacheManager(redisCacheManager());
 //		userNameRealm.setCacheManager(ehCacheManager());
 		return userNameRealm;
+	}
+	
+	/**
+	 * WebRealm
+	 */
+	@Bean
+	public WebRealm webUserRealm() {
+		WebRealm webRealm = new WebRealm();
+		webRealm.setCredentialsMatcher(hashedCredentialsMatcher());
+		webRealm.setCacheManager(redisCacheManager());
+		return webRealm;
+	}
+	
+	/**
+	 * MobileRealm
+	 */
+	@Bean
+	public MobileRealm mobileRealm() {
+		MobileRealm mobileRealm = new MobileRealm();
+		mobileRealm.setCredentialsMatcher(hashedCredentialsMatcher());
+		mobileRealm.setCacheManager(redisCacheManager());
+		return mobileRealm;
 	}
 	
 	/**
@@ -142,7 +191,7 @@ public class ShiroConfig {
 		redisCacheManager.setRedisManager(redisManager());
 		redisCacheManager.setExpire(shiroActionProperties.getPermsCacheTimeout() == null ? 3600
 				: shiroActionProperties.getPermsCacheTimeout());
-		redisCacheManager.setPrincipalIdFieldName("userId");
+		redisCacheManager.setPrincipalIdFieldName("username");
 		return redisCacheManager;
 	}
 	

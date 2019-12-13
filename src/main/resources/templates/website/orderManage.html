@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" th:href="@{/lib/layui/css/layui.css}">
+</head>
+
+<body>
+	<div style="margin:10px;padding:10px;border:1px solid black;">
+		<div class="reloadCondition">
+		  <div class="layui-inline">
+		      <label class="layui-form-label">订单号：</label>
+		      <div class="layui-input-inline">
+		        <input type="text" name="orderId" id="orderId" autocomplete="off" placeholder="订单号" class="layui-input">
+		      </div>
+		  </div>
+		  <div class="layui-inline">
+		      <label class="layui-form-label">设备名：</label>
+		      <div class="layui-input-inline">
+		        <input type="text" name="deviceName" id="deviceName" autocomplete="off" placeholder="设备名" class="layui-input">
+		      </div>
+		  </div>
+		  <button class="layui-btn" data-type="reload">搜索</button>
+		</div>
+		
+		<table class="layui-hide" id="order-table" lay-filter="orderTableFilter"></table>
+	</div>
+	
+	<script type="text/html" id="barDemo">
+  		<a class="layui-btn layui-btn-xs" lay-event="orderTrace">订单跟踪</a>
+	</script>
+	
+	<script th:src="@{/lib/jquery/jquery.min.js}"></script>
+	<script th:src="@{/lib/layui/layui.js}"></script>
+	
+    <script>
+		layui.config({
+			base: '/lib/layui/extend/'
+		}).use(['table', 'element'], function () {
+			var table = layui.table;
+			var $ = layui.$;
+			
+			table.render({
+				elem: '#order-table',
+				url: '/website/user/getOrders',
+				page: true,
+				id: 'orderTableId',
+				cellMinWidth: 80,
+				cols: [
+					[
+						{type: 'numbers', title: '序号', width: "5%", fixed:'left'},
+						{field: 'maintainOrderId', title: '订单号', width: "10%" ,align:'center'},
+						{field: 'deviceName', title: '设备名', width: "15%",align:'center'},
+						{field: 'deviceAddr', title: '设备地址', width: "20%",align:'center'},
+						{field: 'faultDescription', title: '故障描述', width: "20%",align:'center'},
+						{field: 'state', title: '状态', width: "10%",align:'center',
+							templet: function(d) {
+								if(d.state == '0'){
+									return '维修申请';
+								}else if(d.state == '1'){
+									return '待首检';
+								}else if(d.state == '2'){
+									return '已首检';
+								}else if(d.state == '3'){
+									return '待维修';
+								}else if(d.state == '4'){
+									return '维修中';
+								}else if(d.state == '5'){
+									return '维修完成';
+								}else if(d.state == '6'){
+									return '待回访';
+								}else if(d.state == '7'){
+									return '已回访';
+								}
+							}
+						},
+						{field: 'createDate', title: '申请时间', width: "10%",align:'center'},
+						{fixed: 'right', title: '操作', width:"10%", align:'center', toolbar: '#barDemo'}
+					]
+				]
+			});
+			
+			//监听工具条
+			table.on('tool(orderTableFilter)', function(obj){
+			    var data = obj.data;
+			    if(obj.event === 'orderTrace'){
+			      layer.msg('ID：'+ data.maintainOrderId + ' 的跟踪操作');
+			    }
+			});
+			
+			var $ = layui.$, active = {
+				reload: function(){
+					var orderId = $('#orderId');
+				      
+				    //执行重载
+					table.reload('orderTableId', {
+					    page: {
+					    	curr: 1 //重新从第 1 页开始
+					    }
+					    ,where: {
+					    	orderId: $('#orderId').val(),
+					    	deviceName: $('#deviceName').val()
+					    }
+				    }, 'data');
+				}
+			};
+				  
+			$('.reloadCondition .layui-btn').on('click', function(){
+				var type = $(this).data('type');
+				active[type] ? active[type].call(this) : '';
+			});
+		});
+	</script>
+</body>
+
+</html>

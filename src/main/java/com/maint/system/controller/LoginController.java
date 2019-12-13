@@ -15,8 +15,10 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import com.maint.common.annotation.OperationLog;
+import com.maint.common.constants.LoginType;
 import com.maint.common.exception.CaptchaIncorrectException;
 import com.maint.common.shiro.ShiroActionProperties;
+import com.maint.common.shiro.token.UserPasswordToken;
 import com.maint.common.util.CaptchaUtil;
 import com.maint.common.util.ResultBean;
 import com.maint.system.model.User;
@@ -71,7 +73,10 @@ public class LoginController {
 			}
 		}
 		
-		UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword());
+		UserPasswordToken token = new UserPasswordToken(
+				user.getUsername(), 
+				user.getPassword().toCharArray(),
+				LoginType.MANAGE.toString());
 		subject.login(token);
 		userService.updateLastLoginTimeByUsername(user.getUsername());
 		return ResultBean.success("登录成功");
@@ -84,17 +89,6 @@ public class LoginController {
 		SecurityUtils.getSubject().logout();
 		return "redirect:login";
 	}
-	
-	// 移动端注销
-	@OperationLog("注销")
-	@GetMapping("/mobilelogout")
-	public String mobileLogout() {
-		SecurityUtils.getSubject().logout();
-		return "";
-	}
-	
-	//门户网站注销
-	
 	
 //	@PostMapping("/register")
 //	@ResponseBody

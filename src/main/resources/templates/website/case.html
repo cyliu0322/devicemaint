@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+  <title>网络公司-案例</title>
+  <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet">
+  <link th:href="@{/css/index.css}" rel="stylesheet">
+  
+  <script th:src="@{/js/jquery.js}"></script>
+  <script th:src="@{/lib/layui/layui.js}"></script>
+</head>
+<body>
+  <div th:replace="~{website/header::header}"></div>
+  <!-- nav部分 -->
+  <div class="nav" style="position:static;">
+    <div class="layui-container">
+      <!-- 公司logo -->
+      <div class="nav-logo">
+        <a href="index.html">
+          <img src="/images/website/logo.png" alt="网络公司">
+        </a>
+      </div>
+      <div class="nav-list">
+        <button>
+          <span></span><span></span><span></span>
+        </button>
+        <ul class="layui-nav" lay-filter="">
+          <li class="layui-nav-item"><a href="/website/view/index">首页</a></li>
+          <li class="layui-nav-item"><a href="/website/view/product">产品</a></li>
+          <li class="layui-nav-item"><a href="/website/view/news">动态</a></li>
+          <li class="layui-nav-item layui-this"><a href="/website/view/toCase">案例</a></li>
+          <li class="layui-nav-item"><a href="/website/view/about">关于</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- banner部分 -->
+  <div class="banner case">
+    <div class="title">
+      <p>成功案例</p>
+      <p class="en">Successful Case</p>
+    </div>
+  </div>
+  <!-- main部分 -->
+  <div class="main-case">
+    <div class="layui-container">
+      <div class="layui-row">
+        <div class="layui-inline content">
+          <div class="layui-inline case-img"><img src="/images/website/case1.jpg"></div>
+          <p class="lable">名牌工厂店</p>
+          <p>一家工厂企业的商品展示网站，主要以卖高端服饰为主。主要以卖高端服饰为主。主要以卖高端服饰为主。</p>
+        </div>
+        <div class="layui-inline content even center">
+          <div class="layui-inline case-img"><img src="/images/website/case2.jpg"></div>
+          <p class="lable">名牌工厂店</p>
+          <p>一家工厂企业的商品展示网站，主要以卖高端服饰为主。主要以卖高端服饰为主。主要以卖高端服饰为主。</p>
+        </div>
+        <div class="layui-inline content">
+          <div class="layui-inline case-img"><img src="/images/website/case3.jpg"></div>
+          <p class="lable">名牌工厂店</p>
+          <p>一家工厂企业的商品展示网站，主要以卖高端服饰为主。主要以卖高端服饰为主。主要以卖高端服饰为主。</p>
+        </div>
+        <div class="layui-inline content even">
+          <div class="layui-inline case-img"><img src="/images/website/case4.jpg"></div>
+          <p class="lable">名牌工厂店</p>
+          <p>一家工厂企业的商品展示网站，主要以卖高端服饰为主。主要以卖高端服饰为主。主要以卖高端服饰为主。</p>
+        </div>
+        <div class="layui-inline content center">
+          <div class="layui-inline case-img"><img src="/images/website/case5.jpg"></div>
+          <p class="lable">名牌工厂店</p>
+          <p>一家工厂企业的商品展示网站，主要以卖高端服饰为主。主要以卖高端服饰为主。主要以卖高端服饰为主。</p>
+        </div>
+        <div class="layui-inline content even">
+          <div class="layui-inline case-img"><img src="/images/website/case6.jpg"></div>
+          <p class="lable">名牌工厂店</p>
+          <p>一家工厂企业的商品展示网站，主要以卖高端服饰为主。主要以卖高端服饰为主。主要以卖高端服饰为主。</p>
+        </div>
+        <div class="layui-inline content">
+          <div class="layui-inline case-img"><img src="/images/website/case7.jpg"></div>
+          <p class="lable">名牌工厂店</p>
+          <p>一家工厂企业的商品展示网站，主要以卖高端服饰为主。主要以卖高端服饰为主。主要以卖高端服饰为主。</p>
+        </div>
+        <div class="layui-inline content even center">
+          <div class="layui-inline case-img"><img src="/images/website/case8.jpg"></div>
+          <p class="lable">名牌工厂店</p>
+          <p>一家工厂企业的商品展示网站，主要以卖高端服饰为主。主要以卖高端服饰为主。主要以卖高端服饰为主。</p>
+        </div>
+        <div class="layui-inline content">
+          <div class="layui-inline case-img"><img src="/images/website/case9.jpg"></div>
+          <p class="lable">名牌工厂店</p>
+          <p>一家工厂企业的商品展示网站，主要以卖高端服饰为主。主要以卖高端服饰为主。主要以卖高端服饰为主。</p>
+        </div>
+      </div>
+      <div id="casePage"></div>
+    </div>
+  </div>
+  <!-- footer部分 -->
+  <div th:replace="~{website/footer::footer}"></div>
+<script>
+  layui.config({
+    base: '/js/' 
+  }).use('firm'); 
+</script>
+</body>
+</html>

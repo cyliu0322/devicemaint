@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+  <title>网络公司-登录</title>
+  <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet">
+  <link th:href="@{/css/index.css}" rel="stylesheet">
+  
+  <script th:src="@{/js/jquery.js}"></script>
+  <script th:src="@{/lib/layui/layui.js}"></script>
+  <script th:src="@{/js/common.js}"></script>
+  
+  <style>
+	.site-block {
+	    padding: 20px;
+	    border: 1px solid #eee;
+	}
+	.site-title {
+	    font-size: 22px;
+	    font-weight: 300;
+	    border-bottom: 1px solid #eee;
+	    text-align:center;
+	    padding-bottom:20px;
+	    margin-bottom:30px;
+	}
+	.label-style{
+		width:20px;
+	}
+	.input-div{
+		margin-left:50px;
+	}
+  </style>
+</head>
+<body>
+  <div class="nav" style="position:static;">
+    <div class="layui-container">
+      <!-- 公司logo -->
+      <div class="nav-logo">
+        <a href="index.html">
+          <img src="/images/website/logo.png" alt="网络公司">
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="loginBodyDiv" style="height:400px;padding-top:60px;padding-bottom:100px;">
+  	<div class="layui-container">
+  	  <div class="loginPanel layui-col-md4 layui-col-gl4 layui-col-md-offset7 layui-col-gl-offset7" style="clear:both;">
+	      <div class="site-block">
+	      	  <div class="site-title">账号登录</div>
+		      <form class="layui-form" action="">
+		        <div class="layui-form-item">
+		          <label class="layui-form-label label-style"><i class="layui-icon layui-icon-username"></i></label>
+		          <div class="layui-input-block input-div">
+		            <input type="text" name="username" required lay-verify="required" placeholder="手机号/用户名" autocomplete="off" class="layui-input">
+		          </div>
+		        </div>
+		        <div class="layui-form-item">
+		          <label class="layui-form-label label-style"><i class="layui-icon layui-icon-password"></i></label>
+		          <div class="layui-input-block input-div">
+		            <input type="password" name="password" required lay-verify="required" placeholder="密码" autocomplete="off" class="layui-input">
+		          </div>
+		        </div>
+		        <div style="height:40px;">
+			      	<div style="float:right;height:40px;line-height:40px;">
+			      		<a style="cursor:pointer;">忘记密码</a>
+			      	</div>
+			    </div>
+		        <div class="layui-form-item">
+		          <div class="layui-input-block input-div">
+		            <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="formLogin">登录</button>
+		          </div>
+		        </div>
+		      </form>
+		      <div style="height:30px;">
+		      	<div style="float:right; padding-top:10px;height:20px;line-height:20px;">
+		      		<a href="/website/view/toRegister" style="cursor:pointer;">免费注册</a>
+		      	</div>
+		      </div>
+	    	</div>
+  	  </div>
+    </div>
+  </div>
+  <!-- footer部分 -->
+  <div th:replace="~{website/footer::footer}"></div>
+  <script th:inline="javascript">
+  	layui.use('form', function(){
+	  var form = layui.form;
+	  
+	  //监听提交
+	  form.on('submit(formLogin)', function(data){
+		$.post('/website/view/login', data.field, function (result) {
+			if(result.code === 0){
+				window.location.href = "/website/view/index";
+			}else{
+				showError(result.msg);
+			}
+		});
+	    return false;
+	  });
+	});
+  </script>
+</body>
+</html>

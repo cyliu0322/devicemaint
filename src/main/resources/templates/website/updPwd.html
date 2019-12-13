@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+  <title>网络公司-个人中心</title>
+  <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet">
+  <link th:href="@{/css/index.css}" rel="stylesheet">
+  
+  <script th:src="@{/js/jquery.js}"></script>
+  <script th:src="@{/lib/layui/layui.js}"></script>
+  <script th:src="@{/js/common.js}"></script>
+  
+  <style>
+  	.layui-iframe {
+	    position: absolute;
+	    width: 100%;
+	    height: calc(100%) !important;
+	    left: 0;
+	    right: 0;
+	    bottom: 0;
+	    border: none;
+	}
+	.site-block {
+	    padding: 20px;
+	    border: 1px solid #eee;
+	}
+	.site-title {
+	    font-size: 22px;
+	    font-weight: 300;
+	    border-bottom: 1px solid #eee;
+	    text-align:center;
+	    padding-bottom:20px;
+	    margin-bottom:30px;
+	}
+	.label-style{
+		width:20px;
+	}
+	.input-div{
+		margin-left:50px;
+	}
+  </style>
+  
+</head>
+<body>
+  <div class="layui-container" style="height:500px;padding-top:60px;padding-bottom:100px;">
+  	  <div class="updPwdPanel layui-col-md5 layui-col-gl5 layui-col-md-offset2 layui-col-gl-offset2" style="clear:both;">
+	      <div class="site-block">
+	      	  <div class="site-title">密码修改</div>
+		      <form class="layui-form">
+		        <div class="layui-form-item">
+		          <label class="layui-form-label label-style"><i class="layui-icon layui-icon-password"></i></label>
+		          <div class="layui-input-block input-div">
+		            <input type="password" name="oldPassword" required lay-verify="required" placeholder="原密码" autocomplete="off" class="layui-input">
+		          </div>
+		        </div>
+		        <div class="layui-form-item">
+		          <label class="layui-form-label label-style"><i class="layui-icon layui-icon-password"></i></label>
+		          <div class="layui-input-block input-div">
+		            <input type="password" name="newPassword" required lay-verify="required" placeholder="新密码" autocomplete="off" class="layui-input">
+		          </div>
+		        </div>
+		        <div class="layui-form-item">
+		          <label class="layui-form-label label-style"><i class="layui-icon layui-icon-password"></i></label>
+		          <div class="layui-input-block input-div">
+		            <input type="password" name="passwordCheck" required lay-verify="required" placeholder="请再输入一次新密码" autocomplete="off" class="layui-input">
+		          </div>
+		        </div>
+		        <div class="layui-form-item">
+		          <div class="layui-input-block input-div">
+		            <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="formUpdPwd">确认修改</button>
+		          </div>
+		        </div>
+		      </form>
+	    	</div>
+  	  </div>
+  </div>
+  
+  <script th:inline="javascript">
+    layui.use('form', function(){
+	  var form = layui.form;
+	  
+	  form.verify({
+		 newPassword: [
+		    /^[\S]{6,20}$/
+		    ,'密码必须6到20位，且不能出现空格'
+		 ],
+		 passwordCheck: [
+			/^[\S]{6,20}$/
+			,'密码必须6到20位，且不能出现空格'
+		 ],
+		 oldPassword: [
+			/^[\S]{6,20}$/
+			,'密码必须6到20位，且不能出现空格'
+		 ]
+	  });
+	  
+	  //监听提交
+	  form.on('submit(formUpdPwd)', function(data){
+		if(data.field.newPassword != data.field.passwordCheck){
+			layer.msg("输入的两次新密码不一致", {icon: 2});
+			return false;
+		}
+		$.post('/website/user/updPwd', data.field, function (result) {
+			if(result.code === 0){
+				top.location.href = "/website/user/logout";
+			}else{
+				showError(result.msg);
+			}
+		});
+	    return false;
+	  });
+	});
+  </script>
+</body>
+</html>

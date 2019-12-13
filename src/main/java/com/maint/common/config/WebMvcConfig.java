@@ -25,7 +25,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(shiroMDCInterceptor).excludePathPatterns(
-				Arrays.asList("/css/**", "/fonts/**", "/images/**", "/js/**", "/lib/**", "/error"));
+				Arrays.asList("/css/**", "/fonts/**", "/images/**", "/js/**", "/lib/**", "/error", "/website/**", "/iconfont/**"));
 		
 		registry.addInterceptor(logHandlerInterceptor).excludePathPatterns(
 				Arrays.asList("/css/**", "/fonts/**", "/images/**", "/js/**", "/lib/**", "/error"));

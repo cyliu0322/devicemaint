@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import com.maint.common.shiro.realm.UserNameRealm;
+import com.maint.common.shiro.realm.ManageRealm;
 import com.maint.system.model.Menu;
 import com.maint.system.model.Operator;
 
@@ -39,7 +39,7 @@ public class ShiroService {
 	private OperatorService operatorService;
 	
 	@Resource
-	private UserNameRealm userNameRealm;
+	private ManageRealm userNameRealm;
 	
 	/**
 	 * 从数据库加载用户拥有的菜单权限和 API 权限.
@@ -58,18 +58,18 @@ public class ShiroService {
 		filterChainDefinitionMap.put("/login", "anon");			// 后台管理登录页面
 		filterChainDefinitionMap.put("/mobile/toLogin", "anon");	// 移动端登录页面
 		filterChainDefinitionMap.put("/mobile/login", "anon");	// 移动端登录认证路径
-		filterChainDefinitionMap.put("/web/toLogin", "anon");	// 门户网站登录页面
-		filterChainDefinitionMap.put("/web/login", "anon");	// 门户网站登录认证路径
 		filterChainDefinitionMap.put("/register", "anon");
 		filterChainDefinitionMap.put("/403", "anon");
 		filterChainDefinitionMap.put("/404", "anon");
 		filterChainDefinitionMap.put("/500", "anon");
 		filterChainDefinitionMap.put("/error", "anon");
-		filterChainDefinitionMap.put("/oauth2/callback/*", "oauth2Authc");
-		filterChainDefinitionMap.put("/oauth2/render/*", "anon");
+		filterChainDefinitionMap.put("/oauth2/callback/**", "oauth2Authc");
+		filterChainDefinitionMap.put("/oauth2/render/**", "anon");
 		filterChainDefinitionMap.put("/oauth2/error", "anon");
 		filterChainDefinitionMap.put("/captcha", "anon");
-		//filterChainDefinitionMap.put("/mobile/*", "anon");
+		filterChainDefinitionMap.put("/mobile/**", "mobileAuthc");
+		filterChainDefinitionMap.put("/website/view/**", "anon");
+		filterChainDefinitionMap.put("/website/user/**", "webAuthc");
 		
 		List<Menu> menuList = menuService.getLeafNodeMenu();
 		for (Menu menu : menuList) {

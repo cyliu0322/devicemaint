@@ -1,8 +1,9 @@
 package com.maint.common.constants;
 
 public enum LoginType {
-
-	WEB("Web"),  MOBILE("Mobile");
+	MANAGE("Manage"),
+	WEB("Web"),  
+	MOBILE("Mobile");
     private String type;
     private LoginType(String type) {
         this.type = type;

@@ -27,6 +27,22 @@
     company_email, device_name, device_code, device_brand, device_addr, device_years, 
     state, dept_id, fault_description, web_user_id, create_date, score, user_id
   </sql>
+  
+  <select id="selectOrderByConditions" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_maintain_order
+        <where>
+        	web_user_id = #{webUserId, jdbcType=INTEGER}
+        	<if test="orderId != null and orderId != ''">
+                AND maintain_order_id = #{orderId, jdbcType=VARCHAR}
+            </if>
+            <if test="deviceName != null and deviceName != ''">
+                AND device_name like CONCAT('%', #{deviceName, jdbcType=VARCHAR}, '%')
+            </if>
+        </where>
+    </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />

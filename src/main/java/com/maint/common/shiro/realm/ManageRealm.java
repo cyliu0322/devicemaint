@@ -28,9 +28,9 @@ import java.util.Set;
  * 根据用户名密码校验的 Realm.
  */
 @Component
-public class UserNameRealm extends AuthorizingRealm {
+public class ManageRealm extends AuthorizingRealm {
 
-    private static final Logger log = LoggerFactory.getLogger(UserNameRealm.class);
+    private static final Logger log = LoggerFactory.getLogger(ManageRealm.class);
 
     @Resource
     private UserService userService;

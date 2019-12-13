@@ -5,6 +5,8 @@ import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.maint.common.constants.LoginType;
+import com.maint.common.shiro.token.UserPasswordToken;
 import com.maint.common.util.IPUtils;
 import com.maint.common.util.ResultBean;
 import com.maint.common.util.WebHelper;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 public class RestFormAuthenticationFilter extends FormAuthenticationFilter {
 
 	private static final Logger log = LoggerFactory.getLogger(RestFormAuthenticationFilter.class);
+	public static final String LOGIN_TYPE = LoginType.MANAGE.toString();
 	
 	@Override
 	protected boolean pathsMatch(String path, ServletRequest request) {
@@ -39,7 +42,7 @@ public class RestFormAuthenticationFilter extends FormAuthenticationFilter {
 		}
 
 		if (flag) {
-			log.debug("URL : [{}] matching authc filter : [{}]", requestURI, path);
+			log.debug("URL : [{}] matching manageAuthc filter : [{}]", requestURI, path);
 		}
 		return flag;
 	}
@@ -84,23 +87,23 @@ public class RestFormAuthenticationFilter extends FormAuthenticationFilter {
 		}
 	}
 	
-//	@Override
-//	protected UserPasswordToken createToken(ServletRequest request, ServletResponse response) {
-//		String username = getUsername(request);
-//		String password = getPassword(request);
-//		return new UserPasswordToken(username, password.toCharArray(), "");
-//	}
+	@Override
+	protected UserPasswordToken createToken(ServletRequest request, ServletResponse response) {
+		String username = getUsername(request);
+		String password = getPassword(request);
+		return new UserPasswordToken(username, password.toCharArray(), LOGIN_TYPE);
+	}
 	
 	@Override
 	protected void saveRequestAndRedirectToLogin(ServletRequest request, ServletResponse response) throws IOException {
 		WebUtils.saveRequest(request);
-		String requestURI = this.getPathWithinApplication(request);
-		if (requestURI.contains("mobile")) { // 移动端
-			WebUtils.issueRedirect(request, response, "/mobile/toLogin");
-		} else if (requestURI.contains("web")) { // 门户
-			WebUtils.issueRedirect(request, response, "/web/toLogin");
-		} else { // 后台管理
-			WebUtils.issueRedirect(request, response, "/login");
-		}
+		WebUtils.issueRedirect(request, response, "/login");
+		/*
+		 * String requestURI = this.getPathWithinApplication(request); if
+		 * (requestURI.contains("mobile")) { // 移动端 WebUtils.issueRedirect(request,
+		 * response, "/mobile/toLogin"); } else if (requestURI.contains("web")) { // 门户
+		 * WebUtils.issueRedirect(request, response, "/web/toLogin"); } else { // 后台管理
+		 * WebUtils.issueRedirect(request, response, "/login"); }
+		 */
 	}
 }

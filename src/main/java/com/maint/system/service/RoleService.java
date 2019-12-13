@@ -1,7 +1,7 @@
 package com.maint.system.service;
 
 import com.github.pagehelper.PageHelper;
-import com.maint.common.shiro.realm.UserNameRealm;
+import com.maint.common.shiro.realm.ManageRealm;
 import com.maint.system.mapper.RoleMapper;
 import com.maint.system.mapper.RoleMenuMapper;
 import com.maint.system.mapper.RoleOperatorMapper;
@@ -29,7 +29,7 @@ public class RoleService {
 	private RoleMenuMapper roleMenuMapper;
 	
 	@Resource
-	private UserNameRealm userNameRealm;
+	private ManageRealm userNameRealm;
 	
 	@Resource
 	private RoleOperatorMapper roleOperatorMapper;

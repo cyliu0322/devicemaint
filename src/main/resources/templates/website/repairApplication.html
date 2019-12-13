@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+  <title>个人中心-维修申请</title>
+  <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet">
+  <link th:href="@{/css/index.css}" rel="stylesheet">
+  
+  <script th:src="@{/js/jquery.js}"></script>
+  <script th:src="@{/lib/layui/layui.js}"></script>
+  <script th:src="@{/js/common.js}"></script>
+  
+</head>
+<body>
+  <div class="layui-container" style="padding-top:40px;">
+  	  <div class="personInfoPanel layui-col-md7 layui-col-gl7 layui-col-md-offset2 layui-col-gl-offset2">
+  	  	<fieldset class="layui-elem-field layui-field-title">
+		  <legend>维修申请</legend>
+		</fieldset>
+  	  	<form class="layui-form">
+		  <div class="layui-form-item">
+		    <div class="layui-inline">
+		      <label class="layui-form-label">设备名</label>
+		      <div class="layui-input-inline">
+		        <input type="text" name="deviceName" lay-verify="required" autocomplete="off" placeholder="设备名" class="layui-input">
+		      </div>
+		    </div>
+		    <div class="layui-inline">
+		      <label class="layui-form-label">设备编码</label>
+		      <div class="layui-input-inline">
+		        <input type="text" name="deviceCode" lay-verify="required" autocomplete="off" placeholder="设备编码" class="layui-input">
+		      </div>
+		    </div>
+		    <div class="layui-inline">
+		      <label class="layui-form-label">设备品牌</label>
+		      <div class="layui-input-inline">
+		        <select name="deviceBrand" lay-verify="required">
+			        <option value=""></option>
+			        <option value="0">北京</option>
+			        <option value="1">上海</option>
+			        <option value="2">广州</option>
+			        <option value="3">深圳</option>
+			        <option value="4">杭州</option>
+			     </select>
+		      </div>
+		    </div>
+		    <div class="layui-inline">
+		      <label class="layui-form-label">使用年限</label>
+		      <div class="layui-input-inline">
+		        <input type="text" name="deviceYears" lay-verify="number" autocomplete="off" placeholder="使用年限" class="layui-input">
+		      </div>
+		    </div>
+		    <div class="layui-inline">
+		      <label class="layui-form-label">维修地点</label>
+		      <div class="layui-input-inline">
+		        <input type="text" name="deviceAddr" lay-verify="required" autocomplete="off" placeholder="维修地点" class="layui-input">
+		      </div>
+		    </div>
+		  </div>
+		  
+		  <div class="layui-form-item">
+		    <div class="layui-inline">
+		      <label class="layui-form-label">公司名称</label>
+		      <div class="layui-input-inline">
+		        <input type="text" name="companyName" lay-verify="required" autocomplete="off" placeholder="公司名称" class="layui-input">
+		      </div>
+		    </div>
+		    <div class="layui-inline">
+		      <label class="layui-form-label">公司联系人</label>
+		      <div class="layui-input-inline">
+		        <input type="text" name="companyContact" lay-verify="required" autocomplete="off" placeholder="公司联系人" class="layui-input">
+		      </div>
+		    </div>
+		    <div class="layui-inline">
+		      <label class="layui-form-label">公司电话</label>
+		      <div class="layui-input-inline">
+		        <input type="text" name="companyPhone" lay-verify="required" autocomplete="off" placeholder="公司电话" class="layui-input">
+		      </div>
+		    </div>
+		    <div class="layui-inline">
+		      <label class="layui-form-label">公司邮箱</label>
+		      <div class="layui-input-inline">
+		        <input type="text" name="companyEmail" lay-verify="required" autocomplete="off" placeholder="公司邮箱" class="layui-input">
+		      </div>
+		    </div>
+		    <div class="layui-inline">
+		      <label class="layui-form-label">公司地址</label>
+		      <div class="layui-input-inline">
+		        <input type="text" name="companyAddress" lay-verify="required" autocomplete="off" placeholder="公司地址" class="layui-input">
+		      </div>
+		    </div>
+		  </div>
+		  
+		  <div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">故障描述</label>
+		    <div class="layui-input-block">
+		      <textarea name="faultDescription" placeholder="请输入内容" class="layui-textarea"></textarea>
+		    </div>
+		  </div>
+		  
+		  <div class="layui-form-item">
+		    <div class="layui-input-block">
+		      <button type="submit" class="layui-btn" lay-submit lay-filter="repairApplicationForm">立即申请</button>
+		    </div>
+		  </div>
+		</form>
+  	  </div>
+  </div>
+  
+  <script th:inline="javascript">
+    layui.use('form', function(){
+	  var form = layui.form;
+	  
+	  form.verify({
+	  });
+	  
+	  //监听提交
+	  form.on('submit(repairApplicationForm)', function(data){
+		  $.ajax({
+		        type: "POST",
+			    data: JSON.stringify(data.field),
+			    dataType: "json",
+		        url: "/website/user/repairApplicationSave",
+		        async: false,
+		        contentType: "application/json",
+		        success:function(data){
+		        	if(data.code == 0){
+		        		layer.msg(result.msg, {icon: 1});
+		        		window.location.href="/website/user/toRepairApplication";
+		        	}else{
+		        		showError(result.msg);
+		        	}
+		     	},
+		     	error: function () {
+		     		layer.msg("维修申请失败", {icon: 2});
+			 	}
+		    });
+		/* $.post('/website/user/repairApplicationSave', data.field, function (result) {
+			if(result.code === 0){
+				layer.msg(result.msg, {icon: 1});
+				window.location.href = "/website/user/toRepairApplication";
+			}else{
+				showError(result.msg);
+			}
+		}); */
+	    return false;
+	  });
+	});
+  </script>
+</body>
+</html>

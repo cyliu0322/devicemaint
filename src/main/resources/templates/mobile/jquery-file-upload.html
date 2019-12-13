@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Test Jquery File Upload</title>
+	<link th:href="@{/lib/jquery/fileupload/jquery.fileupload.css}" rel="stylesheet">
+</head>
+<body>
+	<div id="fileUploadDiv">
+		<input id="fileupload" type="file" name="files[]" multiple>
+		<div id="progressDiv">
+			<div class="progressBar" style="width: 0%;"></div>
+		</div>
+	</div>
+	
+	<script th:src="@{//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js}"></script>
+	<script th:src="@{/lib/jquery/fileupload/jquery.fileupload.js}"></script>
+	<script th:src="@{/lib/jquery/fileupload/jquery.iframe-transport.js}"></script>
+	<script th:src="@{/lib/jquery/fileupload/jquery.ui.widget.js}"></script>
+	
+	<script th:inline="javascript">
+		$(function () {
+			$('#fileupload').fileupload({
+				url:'/mobile/uploadFile',
+				dataType: 'json',
+				type:'POST',
+				autoUpload:true,
+				acceptFileTypes:'/^image\/(gif|jpeg|png)$/',
+				maxFileSize:10485760,
+				done: function (e, data) {
+					$.each(data.result.files, function (index, file) {
+						$('<p/>').text(file.name).appendTo(document.body);
+					});
+				},
+				progressall: function (e, data) {
+					　var progress = parseInt(data.loaded / data.total * 100, 10);
+					　$('#progressDiv .progressBar').css(
+					　'width',
+					　progress + '%'
+					 );
+				}
+			});
+		});
+	</script>
+</body>
+</html>
