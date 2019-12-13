@@ -51,12 +51,10 @@
 	</script>
 	
 	<script type="text/html" id="column-toolbar">
-		<shiro:hasPermission name="maint:appoint">
-			{{# if(d.state == 0 || d.state == 2) { }}
-				<a lay-event="appoint">
-					<i class="zadmin-icon zadmin-icon-edit-square zadmin-oper-area zadmin-blue" title="派单"></i>
-				</a>
-			{{# } }}
+		<shiro:hasPermission name="maint:edit">
+			<a lay-event="edit">
+				<i class="zadmin-icon zadmin-icon-edit-square zadmin-oper-area zadmin-blue" title="编辑"></i>
+			</a>
 		</shiro:hasPermission>
 		<shiro:hasPermission name="maint:delete">
 			<a lay-event="del">
@@ -67,6 +65,36 @@
 		<shiro:lacksPermission name="maint:appoint">
 			<i class="zadmin-icon zadmin-icon-wuquanxian zadmin-oper-area zadmin-red" title="无权限"></i>
 		</shiro:lacksPermission>
+	</script>
+	
+	<script type="text/html" id="childToolbar">
+		<shiro:hasPermission name="maint:add">
+			<div>
+				<a class="layui-btn layui-btn-normal layui-btn-sm" lay-event="addStep">添加步骤</a>
+			</div>
+		</shiro:hasPermission>
+	</script>
+	
+	<script type="text/html" id="column-toolbar-sort">
+		<i class="zadmin-icon zadmin-icon-shangyimian zadmin-oper-area zadmin-blue" lay-event="up" title="上移"></i>
+		<i class="zadmin-icon zadmin-icon-xiayimian zadmin-oper-area zadmin-blue" lay-event="down" title="下移"></i>
+	</script>
+	
+	<script type="text/html" id="children-column-toolbar">
+		<shiro:hasPermission name="user:update">
+			<a lay-event="childEdit">
+				<i class="zadmin-icon zadmin-icon-edit-square zadmin-oper-area zadmin-blue" title="编辑"></i>
+			</a>
+		</shiro:hasPermission>
+		<shiro:hasPermission name="user:delete">
+			<a lay-event="childDel">
+				<i class="zadmin-icon zadmin-icon-delete zadmin-oper-area zadmin-red" title="删除"></i>
+			</a>
+		</shiro:hasPermission>
+		
+		<shiro:lacksPermission  name="user:update,user:delete">
+			<i class="zadmin-icon zadmin-icon-wuquanxian zadmin-oper-area zadmin-red"></i>无权限
+			</shiro:lacksPermission>
 	</script>
 	
 	<script th:src="@{/lib/jquery/jquery.min.js}"></script>
@@ -94,50 +122,151 @@
 							{
 								title: '维修流程',
 								url: function(row) {
-									return '/device/list/' + row.companyId;
+									return '/brand/step/' + row.brandId + '/' + 0;
 								},
-								height: 180,
+								height: 280,
 								page: false,
+								toolbar: '#childToolbar',
+								defaultToolbar: null,
 								overflow: {
 									type: 'title',
 									hoverTime: 500
 								},
 								cols: [
 									[
-										{field: 'serialNumber', title: '设备编号', width: "10%"},
-										{field: 'deviceName', title: '设备名称', width: "15%"},
-										{field: 'brandName', title: '品牌', width: "10%"},
-										{field: 'code', title: '型号', width: "10%"},
-										{field: 'address', title: '设备地址', width: "25%"},
-										{field: 'years', title: '使用年数', width: "8%"},
-										{field: 'lastMaintenanceTime', title: '上次维护', width: "10%",
-											templet: function(d) {
-												return d.lastMaintenanceTime.substr(0, 10);
-											}
-										},
-										{title: '操作', fixed: 'right', align: 'center', toolbar: '#children-column-toolbar', width: "12%"}
+										{field: 'stepId', title: 'ID', hide: true},
+										{field: 'stepName', title: '步骤', width: "5%"},
+										{field: 'stepDescription', title: '描述', width: "65%"},
+										{title: '排序', fixed: 'right', align: 'center', width: "15%", toolbar: '#column-toolbar-sort'},
+										{title: '操作', fixed: 'right', align: 'center', toolbar: '#children-column-toolbar', width: "15%"}
 									]
 								],
 								toolEvent: function(obj, pobj) {
 									// obj 子表当前行对象
 									// pobj 父表当前行对象
 									var childId = this.id; // 通过 this 对象获取当前子表的id
-									if (obj.event === 'keepFit') {
-										keepFit(obj.data.deviceId, childId);
-			                        } else if (obj.event === 'childEdit') {
-			                        	childEdit(obj.data.deviceId, childId);
-			                        } else if (obj.event === 'childDel') {
-			                        	childDel(obj.data.deviceId, childId);
-			                        }
+									switch (obj.event) {
+										case 'up':
+											swapId = $(obj.tr).prev().find("td[data-field='stepId'] div").html();
+											currentId = obj.data.stepId;
+											if (typeof swapId == 'undefined') {
+												layer.msg("已是第一层");
+												return;
+											}
+											swapSort(currentId, swapId, childId);
+											break;
+										case 'down':
+											swapId = $(obj.tr).next().find("td[data-field='stepId'] div").html();
+											currentId = obj.data.stepId;
+											if (typeof swapId == 'undefined') {
+												layer.msg("已是最后一层");
+												return;
+											}
+											swapSort(currentId, swapId, childId);
+											break;
+										/* case 'top':
+											swapId = $("tr[data-index='0']").first().parent().children().first().find("td[data-field='id'] div").html();
+											currentId = data.id;
+											swapSort(currentId, swapId);
+											break;
+										case 'bottom':
+											swapId = $("tr[data-index='0']").first().parent().children().last().find("td[data-field='id'] div").html();
+											currentId = data.id;
+											swapSort(currentId, swapId);
+											break; */
+										case 'childEdit':
+											childEdit(obj.data.stepId, 0, childId);
+											break;
+										case 'childDel':
+											childDel(obj.data.stepId, childId);
+											break;
+										default:
+											break;
+									}
 								},
+								toolbarEvent: function (obj, pobj) {
+									// obj 子表当前行对象
+									// pobj 父表当前行对象
+									switch (obj.event) {
+										case 'addStep':
+											alert('新增');
+											break;
+										default:
+											break;
+									}
+			                    },
+								done: function() {
+									soulTable.render(this);
+								}
+							},
+							{
+								title: '保养流程',
+								url: function(row) {
+									return '/brand/step/' + row.brandId + '/' + 1;
+								},
+								height: 280,
+								page: false,
+								toolbar: '#childToolbar',
+								defaultToolbar: null,
+								overflow: {
+									type: 'title',
+									hoverTime: 500
+								},
+								cols: [
+									[
+										{field: 'stepId', title: 'ID', hide: true},
+										{field: 'stepName', title: '步骤', width: "5%"},
+										{field: 'stepDescription', title: '描述', width: "65%"},
+										{field: 'stepDescription', title: '排序', align: 'center', width: "15%", toolbar: '#column-toolbar-sort'},
+										{title: '操作', fixed: 'right', align: 'center', toolbar: '#children-column-toolbar', width: "15%"}
+									]
+								],
+								toolEvent: function(obj, pobj) {
+									// obj 子表当前行对象
+									// pobj 父表当前行对象
+									var childId = this.id; // 通过 this 对象获取当前子表的id
+									switch (obj.event) {
+										case 'up':
+											swapId = $(obj.tr).prev().find("td[data-field='stepId'] div").html();
+											currentId = obj.data.stepId;
+											if (typeof swapId == 'undefined') {
+												layer.msg("已是第一层");
+												return;
+											}
+											swapSort(currentId, swapId, childId);
+											break;
+										case 'down':
+											swapId = $(obj.tr).next().find("td[data-field='stepId'] div").html();
+											currentId = obj.data.stepId;
+											if (typeof swapId == 'undefined') {
+												layer.msg("已是最后一层");
+												return;
+											}
+											swapSort(currentId, swapId, childId);
+											break;
+										default:
+											break;
+									}
+								},
+								toolbarEvent: function (obj, pobj) {
+									// obj 子表当前行对象
+									// pobj 父表当前行对象
+									switch (obj.event) {
+										case 'addStep':
+											alert('新增');
+											break;
+										default:
+											break;
+									}
+			                    },
 								done: function() {
 									soulTable.render(this);
 								}
 							}
 						]},
 						{field: 'brandId', title: 'ID', hide: true},
-						{field: 'brandName', title: '品牌', width: "46%"},
-						{title: '操作', fixed: 'right', align: 'center', toolbar: '#column-toolbar', width: '50%'}
+						{field: 'brandName', title: '品牌', width: "81%"},
+						{title: '操作', fixed: 'right', align: 'center', toolbar: '#column-toolbar', width: '15%'}
 					]
 				],
 				done: function() {
@@ -145,18 +274,118 @@
 				}
 			});
 			
-			// 单元格点击事件
-			table.on('tool(bandTable)', function (obj) {
+			// 工具条点击事件
+			table.on('toolbar', function (obj) {
 				var data = obj.data;
 				var event = obj.event;
-				if(event === 'appoint') {
-					if(data.state == '0') {
-						appointPrior(data.maintainOrderId);
-					} else if(data.state == '2') {
-						appointMp(data.maintainOrderId);
-					}
+				
+				if (event === 'add') {
+					add();
 				}
 			});
+			
+			// 单元格点击事件
+			table.on('tool(brandTable)', function (obj) {
+				var data = obj.data;
+				switch (obj.event) {
+					case 'edit':
+						edit(data.brandId);
+						break;
+					case 'del':
+						del(obj);
+						break;
+					default:
+						break;
+				}
+			});
+			
+			function add() {
+				layer.open({
+					content: "/brand",
+					title: "新增品牌",
+					area: ['45%', '85%'],
+					type: 2,
+					maxmin: true,
+					shadeClose: true,
+					end: function () {
+						table.reload('brand-table');
+					}
+				});
+			}
+			
+			function edit(id) {
+				layer.open({
+					content: "/brand/" + id,
+					title: "编辑品牌",
+					area: ['40%', '85%'],
+					type: 2,
+					maxmin: true,
+					shadeClose: true,
+					end: function () {
+						table.reload('brand-table');
+					}
+				});
+			}
+			
+			function del(obj) {
+				layer.confirm("确定删除品牌信息吗？其流程信息则一并删除！", {icon: 3, title: '提示'},
+					function (index) {//确定回调
+						var id = obj.data.brandId;
+						$.post('/brand/' + id, {_method: "DELETE"}, function (data) {
+							layer.close(index);
+							handlerResult(data, deleteDone);
+						});
+					}, function (index) {//取消回调
+						layer.close(index);
+					}
+				);
+			}
+			
+			function swapSort(currentId, swapId, tableId) {
+				$.post('/brand/step/swap', {currentId: currentId, swapId: swapId}, function (data) {
+					layer.msg("交换成功");
+					handlerResult(data, function () {
+						refresh(tableId);
+					});
+				});
+            }
+			
+			function childEdit(id, type, tableId) {
+				layer.open({
+					content: '/brand/step/edit/' + type + '/' + id,
+					title: "编辑流程",
+					area: ['40%', '85%'],
+					type: 2,
+					maxmin: true,
+					shadeClose: true,
+					end: function () {
+						table.reload(tableId);
+					}
+				});
+			}
+			
+			function childDel(id, tableId) {
+				childTableId = tableId;
+				layer.confirm("确定删除流程信息吗？", {icon: 3, title: '提示'},
+					function (index) {//确定回调
+						$.post('/brand/step/edit/' + type + '/' + id, {_method: "DELETE"}, function (data) {
+							layer.close(index);
+							handlerResult(data, delChildDone);
+						});
+					}, function (index) {//取消回调
+						layer.close(index);
+					}
+				);
+			}
+			
+			function refresh(id) {
+                table.reload(id);
+            }
+			
+			function deleteDone(data) {
+				parent.layer.msg("删除成功", {icon: 6});
+				table.reload('brand-table');
+			}
 			
 			form.on('submit(search)', function (form) {
 				table.reload('brand-table', {

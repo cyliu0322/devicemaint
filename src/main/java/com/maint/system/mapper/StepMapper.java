@@ -12,13 +12,22 @@ public interface StepMapper {
 	List<Step> selectSteps(@Param("brandId") String brandId);
 	
     int deleteByPrimaryKey(String stepId);
+    
+    int deleteByBrandId(@Param("brandId") String brandId);
 
     int insert(Step record);
 
     int insertSelective(Step record);
 
     Step selectByPrimaryKey(String stepId);
+    
+    List<Step> selectByBrandIdAndType(@Param("brandId") String brandId, @Param("type") Integer type);
 
+    /**
+     * 交换两个步骤的顺序
+     */
+    int swapSort(@Param("currentId") String currentId, @Param("swapId") String swapId);
+    
     int updateByPrimaryKeySelective(Step record);
 
     int updateByPrimaryKey(Step record);

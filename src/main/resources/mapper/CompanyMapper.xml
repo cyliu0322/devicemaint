@@ -125,4 +125,17 @@
 		</if>
 	</where>
   </select>
+  
+  <select id="countByCompanyName" resultType="java.lang.Integer">
+        select count(*)
+        from tbl_company
+        where company_name = #{companyName}
+  </select>
+  
+  <select id="countByCompanyNameNotIncludeCompanyId" resultType="java.lang.Integer">
+        select count(*)
+        from tbl_company
+        where company_name = #{companyName}
+          and company_id != #{companyId}
+  </select>
 </mapper>

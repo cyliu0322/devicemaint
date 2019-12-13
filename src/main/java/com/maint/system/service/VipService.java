@@ -6,11 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
+import com.maint.common.exception.DuplicateNameException;
 import com.maint.common.util.StringUtil;
 import com.maint.system.mapper.CompanyMapper;
 import com.maint.system.mapper.DeviceMapper;
 import com.maint.system.model.Company;
-import com.maint.system.model.Device;
 
 import java.util.List;
 
@@ -41,12 +41,14 @@ public class VipService {
 	
 	@Transactional
 	public int add(Company company) {
+		checkCompanyNameExistOnCreate(company.getCompanyName());
 		company.setCompanyId(generateCode(10));
 		return companyMapper.insert(company);
 	}
 	
 	@Transactional
 	public boolean update(Company company) {
+		checkCompanyNameExistOnUpdate(company);
 		return companyMapper.updateByPrimaryKey(company) == 1 ? true : false;
 	}
 	
@@ -55,6 +57,22 @@ public class VipService {
 		//删除其设备信息
 		deviceService.delByCompanyId(companyId);
 		companyMapper.deleteByPrimaryKey(companyId);
+	}
+	
+	/**
+	 * 新增时校验大客户名称是否重复
+	 * @param companyName
+	 */
+	public void checkCompanyNameExistOnCreate(String companyName) {
+		if (companyMapper.countByCompanyName(companyName) > 0) {
+			throw new DuplicateNameException("大客户名称已存在");
+		}
+	}
+	
+	public void checkCompanyNameExistOnUpdate(Company company) {
+		if (companyMapper.countByCompanyNameNotIncludeCompanyId(company.getCompanyName(), company.getCompanyId()) > 0) {
+			throw new DuplicateNameException("大客户名称已存在");
+		}
 	}
 	
 	private String generateCode(int length) {

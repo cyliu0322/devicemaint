@@ -32,14 +32,14 @@ public class MaterialService {
 	
 	@Transactional
 	public Integer add(Material material) {
-		checkNameExistOnCreate(material.getMaterialName());
+		checkMaterialNameExistOnCreate(material.getMaterialName());
 		material.setMaterialId(generateCode(10));
 		return materialMapper.insert(material);
 	}
 	
 	@Transactional
 	public boolean update(Material material) {
-		checkUserNameExistOnUpdate(material);
+		checkMaterialNameExistOnUpdate(material);
 		return materialMapper.updateByPrimaryKeySelective(material) == 1;
 	}
 	
@@ -54,17 +54,15 @@ public class MaterialService {
 	
 	/**
 	 * 新增时校验材料名称是否重复
-	 * 
-	 * @param username
-	 *            用户名
+	 * @param materialName
 	 */
-	public void checkNameExistOnCreate(String materialName) {
+	public void checkMaterialNameExistOnCreate(String materialName) {
 		if (materialMapper.countByMaterialName(materialName) > 0) {
 			throw new DuplicateNameException("材料名称已存在");
 		}
 	}
 	
-	public void checkUserNameExistOnUpdate(Material material) {
+	public void checkMaterialNameExistOnUpdate(Material material) {
 		if (materialMapper.countByMaterialNameNotIncludeMaterialId(material.getMaterialName(), material.getMaterialId()) > 0) {
 			throw new DuplicateNameException("材料名称已存在");
 		}

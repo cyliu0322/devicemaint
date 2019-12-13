@@ -9,7 +9,6 @@ import com.maint.system.model.PointDetail;
 import com.maint.system.model.User;
 
 import javax.annotation.Resource;
-import javax.jws.soap.SOAPBinding.Use;
 
 import java.util.ArrayList;
 import java.util.List;

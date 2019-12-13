@@ -22,14 +22,14 @@ public class Step {
     }
 
     public String getStepName() {
-        return stepName;
-    }
+		return stepName;
+	}
 
-    public void setStepName(String stepName) {
-        this.stepName = stepName == null ? null : stepName.trim();
-    }
+	public void setStepName(String stepName) {
+		this.stepName = stepName;
+	}
 
-    public String getStepDescription() {
+	public String getStepDescription() {
         return stepDescription;
     }
 

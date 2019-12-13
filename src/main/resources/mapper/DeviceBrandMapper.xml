@@ -66,4 +66,17 @@
 		</if>
 	</where>
   </select>
+  
+  <select id="countByBrandName" resultType="java.lang.Integer">
+        select count(*)
+        from tbl_device_brand
+        where brand_name = #{brandName}
+  </select>
+  
+  <select id="countByBrandNameNotIncludeBrandId" resultType="java.lang.Integer">
+        select count(*)
+        from tbl_device_brand
+        where brand_name = #{brandName}
+          and brand_id != #{brandId}
+  </select>
 </mapper>

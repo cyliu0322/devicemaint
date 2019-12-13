@@ -95,6 +95,13 @@ public class BrandController {
 		return ResultBean.success(brandService.getStepsByBrandIdAndType(brandId, type));
 	}
 	
+	@GetMapping("/step/edit/{type}/{stepId}")
+	public String updateStep(@PathVariable("type") int type, @PathVariable("stepId") String stepId, Model model) {
+		model.addAttribute("step", brandService.selectStepById(stepId));
+		model.addAttribute("type", type == 0 ? "维修" : "保养");
+		return "brand/step-edit";
+	}
+	
 	@OperationLog("调整维修/保养步骤排序")
     @PostMapping("/step/swap")
     @ResponseBody

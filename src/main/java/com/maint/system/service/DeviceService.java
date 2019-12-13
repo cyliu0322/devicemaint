@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.maint.common.util.StringUtil;
-import com.maint.system.mapper.CompanyMapper;
 import com.maint.system.mapper.DeviceMapper;
-import com.maint.system.model.Company;
 import com.maint.system.model.Device;
 
 import java.util.List;

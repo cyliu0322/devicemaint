@@ -151,10 +151,16 @@
 	</where>
   </select>
   
+  <select id="countByMaterialName" resultType="java.lang.Integer">
+        select count(*)
+        from tbl_material
+        where material_name = #{materialName}
+  </select>
+  
   <select id="countByMaterialNameNotIncludeMaterialId" resultType="java.lang.Integer">
         select count(*)
         from tbl_material
         where material_name = #{materialName}
           and material_id != #{materialId}
-    </select>
+  </select>
 </mapper>
