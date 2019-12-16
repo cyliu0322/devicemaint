@@ -31,4 +31,6 @@ public interface StepMapper {
     int updateByPrimaryKeySelective(Step record);
 
     int updateByPrimaryKey(Step record);
+    
+    int selectMaxWeight(@Param("brandId") String brandId, @Param("type") Integer type);
 }

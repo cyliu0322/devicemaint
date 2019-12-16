@@ -207,7 +207,6 @@
         from menu
     </select>
 
-
     <select id="selectAllTree" resultMap="TreeBaseResultMap">
         select
         <include refid="Base_Column_List"/>

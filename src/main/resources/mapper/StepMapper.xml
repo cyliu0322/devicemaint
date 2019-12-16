@@ -109,13 +109,16 @@
                         OR
                         (per.`step_id` = #{swapId} AND next.`step_id` = #{currentId})
         SET per.`weight`  = next.`weight`,
-            next.`weight` = per.`weight`,
-            per.`step_name`  = next.`step_name`,
-            next.`step_name` = per.`step_name`
+            next.`weight` = per.`weight`
     </update>
     
     <delete id="deleteByBrandId" parameterType="java.lang.String" >
       delete from tbl_step
       where brand_id = #{brandId,jdbcType=VARCHAR}
     </delete>
+    
+    <select id="selectMaxWeight" resultType="java.lang.Integer">
+        select ifnull(max(weight), 0)
+        from tbl_step where brand_id = #{brandId,jdbcType=VARCHAR} and step_type = #{type,jdbcType=INTEGER}
+    </select>
 </mapper>

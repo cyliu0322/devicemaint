@@ -69,7 +69,7 @@
 		
 		<shiro:lacksPermission  name="user:update,user:delete">
 			<i class="zadmin-icon zadmin-icon-wuquanxian zadmin-oper-area zadmin-red"></i>无权限
-			</shiro:lacksPermission>
+		</shiro:lacksPermission>
 	</script>
 	
 	<script type="text/html" id="children-column-toolbar">
@@ -99,6 +99,7 @@
 	<script th:src="@{/js/common.js}"></script>
 	
     <script>
+		var childId;
 		layui.config({
 			base: '/lib/layui/extend/'
 		}).use(['table', 'element', 'form', 'soulTable'], function () {
@@ -151,7 +152,7 @@
 								toolEvent: function(obj, pobj) {
 									// obj 子表当前行对象
 									// pobj 父表当前行对象
-									var childId = this.id; // 通过 this 对象获取当前子表的id
+									childId = this.id; // 通过 this 对象获取当前子表的id
 									if (obj.event === 'keepFit') {
 										keepFit(obj.data.deviceId, childId);
 			                        } else if (obj.event === 'childEdit') {
@@ -252,7 +253,7 @@
 					maxmin: true,
 					shadeClose: true,
 					end: function () {
-						table.reload('vip-table' + index + '0');
+						table.reload(childId);
 					}
 				});
 			}
@@ -306,7 +307,7 @@
 			
 			function delChildDone(data) {
 				parent.layer.msg("删除成功", {icon: 6});
-				
+				table.reload(childId);
 			}
 			
 			form.on('submit(search)', function (form) {

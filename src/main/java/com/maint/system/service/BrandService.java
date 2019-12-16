@@ -14,6 +14,7 @@ import com.maint.system.model.BrandAndStep;
 import com.maint.system.model.DeviceBrand;
 import com.maint.system.model.Step;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -61,12 +62,11 @@ public class BrandService {
 			List<String> maints = brandAndStep.getMaintSteps();
 			for (int i = 0; i < mIndex; i++) {	//小于mIndex表示后续空步骤不记录
 				Step step = new Step();
-				step.setStepDescription(maints.get(i));
+				step.setStepId("wx" + brandId + num);
+				step.setStepName(maints.get(i));
+				step.setBrandId(brandId);
 				step.setStepType(0);
 				step.setWeight(num);
-				step.setBrandId(brandId);
-				step.setStepName(num + "");
-				step.setStepId("wx" + brandId + num);
 				
 				stepMapper.insert(step);
 				num++;
@@ -79,12 +79,11 @@ public class BrandService {
 			List<String> keeps = brandAndStep.getKeepSteps();
 			for (int i = 0; i < kIndex; i++) {
 				Step step = new Step();
-				step.setStepDescription(keeps.get(i));
+				step.setStepId("by" + brandId + num);
+				step.setStepName(keeps.get(i));
+				step.setBrandId(brandId);
 				step.setStepType(1);
 				step.setWeight(num);
-				step.setBrandId(brandId);
-				step.setStepName(num + "");
-				step.setStepId("by" + brandId + num);
 				
 				stepMapper.insert(step);
 				num++;
@@ -115,6 +114,64 @@ public class BrandService {
 	
 	public List<Step> getStepsByBrandIdAndType(String brandId, int type) {
 		return stepMapper.selectByBrandIdAndType(brandId, type);
+	}
+	
+	@Transactional
+	public int add(String brandId, int type, BrandAndStep brandAndStep) {
+		int maxWeight = stepMapper.selectMaxWeight(brandId, type);
+		List<String> steps = new ArrayList<String>();
+		int index;
+		int result = 0;
+		switch (type) {
+			case 0:
+				steps = brandAndStep.getMaintSteps();
+				index = brandAndStep.getMaintIndex();
+				for (int i = 0; i < index; i++) {
+					Step step = new Step();
+					step.setStepId("wx" + brandId + (maxWeight + 1));
+					step.setStepName(steps.get(i));
+					step.setBrandId(brandId);
+					step.setStepType(0);
+					step.setWeight(maxWeight + 1);
+					
+					stepMapper.insert(step);
+					
+					result++;
+					maxWeight++;
+				}
+				break;
+			case 1:
+				steps = brandAndStep.getKeepSteps();
+				index = brandAndStep.getKeepIndex();
+				for (int i = 0; i < index; i++) {
+					Step step = new Step();
+					step.setStepId("by" + brandId + (maxWeight + 1));
+					step.setStepName(steps.get(i));
+					step.setBrandId(brandId);
+					step.setStepType(1);
+					step.setWeight(maxWeight + 1);
+					
+					stepMapper.insert(step);
+					
+					result++;
+					maxWeight++;
+				}
+				break;
+			default:
+				break;
+		}
+		
+		return result;
+	}
+	
+	@Transactional
+	public boolean update(Step step) {
+		return stepMapper.updateByPrimaryKeySelective(step) == 1;
+	}
+	
+	@Transactional
+	public void deleteStep(String stepId) {
+		stepMapper.deleteByPrimaryKey(stepId);
 	}
 	
 	public void swapSort(String currentId, String swapId) {

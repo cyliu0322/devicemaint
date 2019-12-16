@@ -94,7 +94,7 @@
 		
 		<shiro:lacksPermission  name="user:update,user:delete">
 			<i class="zadmin-icon zadmin-icon-wuquanxian zadmin-oper-area zadmin-red"></i>无权限
-			</shiro:lacksPermission>
+		</shiro:lacksPermission>
 	</script>
 	
 	<script th:src="@{/lib/jquery/jquery.min.js}"></script>
@@ -102,6 +102,7 @@
 	<script th:src="@{/js/common.js}"></script>
 	
     <script>
+		var childId;
 		layui.config({
 			base: '/lib/layui/extend/'
 		}).use(['table', 'element', 'form', 'soulTable'], function () {
@@ -134,9 +135,10 @@
 								},
 								cols: [
 									[
+										{type: 'checkbox', title: '#', 'LAY_CHECKED': true, hide: true},
+										{type: 'numbers', title: '序号', width: "5%"},
 										{field: 'stepId', title: 'ID', hide: true},
-										{field: 'stepName', title: '步骤', width: "5%"},
-										{field: 'stepDescription', title: '描述', width: "65%"},
+										{field: 'stepName', title: '流程', width: "65%"},
 										{title: '排序', fixed: 'right', align: 'center', width: "15%", toolbar: '#column-toolbar-sort'},
 										{title: '操作', fixed: 'right', align: 'center', toolbar: '#children-column-toolbar', width: "15%"}
 									]
@@ -144,7 +146,8 @@
 								toolEvent: function(obj, pobj) {
 									// obj 子表当前行对象
 									// pobj 父表当前行对象
-									var childId = this.id; // 通过 this 对象获取当前子表的id
+									childId = this.id; // 通过 this 对象获取当前子表的id
+									var index = obj.tr.data('index');	//当前行索引
 									switch (obj.event) {
 										case 'up':
 											swapId = $(obj.tr).prev().find("td[data-field='stepId'] div").html();
@@ -153,7 +156,7 @@
 												layer.msg("已是第一层");
 												return;
 											}
-											swapSort(currentId, swapId, childId);
+											swapSort(currentId, swapId);
 											break;
 										case 'down':
 											swapId = $(obj.tr).next().find("td[data-field='stepId'] div").html();
@@ -162,23 +165,13 @@
 												layer.msg("已是最后一层");
 												return;
 											}
-											swapSort(currentId, swapId, childId);
-											break;
-										/* case 'top':
-											swapId = $("tr[data-index='0']").first().parent().children().first().find("td[data-field='id'] div").html();
-											currentId = data.id;
 											swapSort(currentId, swapId);
 											break;
-										case 'bottom':
-											swapId = $("tr[data-index='0']").first().parent().children().last().find("td[data-field='id'] div").html();
-											currentId = data.id;
-											swapSort(currentId, swapId);
-											break; */
 										case 'childEdit':
-											childEdit(obj.data.stepId, 0, childId);
+											childEdit(obj.data.stepId, 0, index);
 											break;
 										case 'childDel':
-											childDel(obj.data.stepId, childId);
+											childDel(obj.data.stepId);
 											break;
 										default:
 											break;
@@ -187,9 +180,12 @@
 								toolbarEvent: function (obj, pobj) {
 									// obj 子表当前行对象
 									// pobj 父表当前行对象
+									childId = this.id; // 通过 this 对象获取当前子表的id
+									var checkStatus = table.checkStatus(obj.config.id);
+									var rowNum = checkStatus.data.length;	//行数
 									switch (obj.event) {
 										case 'addStep':
-											alert('新增');
+											addStep(pobj.brandId, 0, rowNum);
 											break;
 										default:
 											break;
@@ -214,9 +210,10 @@
 								},
 								cols: [
 									[
+										{type: 'checkbox', title: '#', 'LAY_CHECKED': true, hide: true},
+										{type: 'numbers', title: '序号', width: "5%"},
 										{field: 'stepId', title: 'ID', hide: true},
-										{field: 'stepName', title: '步骤', width: "5%"},
-										{field: 'stepDescription', title: '描述', width: "65%"},
+										{field: 'stepName', title: '描述', width: "65%"},
 										{field: 'stepDescription', title: '排序', align: 'center', width: "15%", toolbar: '#column-toolbar-sort'},
 										{title: '操作', fixed: 'right', align: 'center', toolbar: '#children-column-toolbar', width: "15%"}
 									]
@@ -224,7 +221,8 @@
 								toolEvent: function(obj, pobj) {
 									// obj 子表当前行对象
 									// pobj 父表当前行对象
-									var childId = this.id; // 通过 this 对象获取当前子表的id
+									childId = this.id; // 通过 this 对象获取当前子表的id
+									var index = obj.tr.data('index');	//当前行索引
 									switch (obj.event) {
 										case 'up':
 											swapId = $(obj.tr).prev().find("td[data-field='stepId'] div").html();
@@ -233,7 +231,7 @@
 												layer.msg("已是第一层");
 												return;
 											}
-											swapSort(currentId, swapId, childId);
+											swapSort(currentId, swapId);
 											break;
 										case 'down':
 											swapId = $(obj.tr).next().find("td[data-field='stepId'] div").html();
@@ -242,7 +240,13 @@
 												layer.msg("已是最后一层");
 												return;
 											}
-											swapSort(currentId, swapId, childId);
+											swapSort(currentId, swapId);
+											break;
+										case 'childEdit':
+											childEdit(obj.data.stepId, 1, index);
+											break;
+										case 'childDel':
+											childDel(obj.data.stepId);
 											break;
 										default:
 											break;
@@ -251,9 +255,12 @@
 								toolbarEvent: function (obj, pobj) {
 									// obj 子表当前行对象
 									// pobj 父表当前行对象
+									childId = this.id; // 通过 this 对象获取当前子表的id
+									var checkStatus = table.checkStatus(obj.config.id);
+									var rowNum = checkStatus.data.length;	//行数
 									switch (obj.event) {
 										case 'addStep':
-											alert('新增');
+											addStep(pobj.brandId, 1, rowNum);
 											break;
 										default:
 											break;
@@ -341,34 +348,38 @@
 				);
 			}
 			
-			function swapSort(currentId, swapId, tableId) {
-				$.post('/brand/step/swap', {currentId: currentId, swapId: swapId}, function (data) {
-					layer.msg("交换成功");
-					handlerResult(data, function () {
-						refresh(tableId);
-					});
-				});
-            }
-			
-			function childEdit(id, type, tableId) {
+			function addStep(brandId, type, rowNum) {
 				layer.open({
-					content: '/brand/step/edit/' + type + '/' + id,
+					content: "/brand/step/" + brandId + "/" + type + "/" + rowNum,
+					title: "新增流程",
+					area: ['45%', '85%'],
+					type: 2,
+					maxmin: true,
+					shadeClose: true,
+					end: function () {
+						table.reload(childId);
+					}
+				});
+			}
+			
+			function childEdit(id, type, index) {
+				layer.open({
+					content: '/brand/step/edit/' + type + '/' + id + '/' + index,
 					title: "编辑流程",
 					area: ['40%', '85%'],
 					type: 2,
 					maxmin: true,
 					shadeClose: true,
 					end: function () {
-						table.reload(tableId);
+						table.reload(childId);
 					}
 				});
 			}
 			
 			function childDel(id, tableId) {
-				childTableId = tableId;
-				layer.confirm("确定删除流程信息吗？", {icon: 3, title: '提示'},
+				layer.confirm("确定删除该流程？", {icon: 3, title: '提示'},
 					function (index) {//确定回调
-						$.post('/brand/step/edit/' + type + '/' + id, {_method: "DELETE"}, function (data) {
+						$.post('/brand/step/' + id, {_method: "DELETE"}, function (data) {
 							layer.close(index);
 							handlerResult(data, delChildDone);
 						});
@@ -378,6 +389,15 @@
 				);
 			}
 			
+			function swapSort(currentId, swapId) {
+				$.post('/brand/step/swap', {currentId: currentId, swapId: swapId}, function (data) {
+					layer.msg("交换成功");
+					handlerResult(data, function () {
+						refresh(childId);
+					});
+				});
+            }
+			
 			function refresh(id) {
                 table.reload(id);
             }
@@ -385,6 +405,11 @@
 			function deleteDone(data) {
 				parent.layer.msg("删除成功", {icon: 6});
 				table.reload('brand-table');
+			}
+			
+			function delChildDone(data) {
+				parent.layer.msg("删除成功", {icon: 6});
+				table.reload(childId);
 			}
 			
 			form.on('submit(search)', function (form) {

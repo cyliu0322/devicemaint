@@ -34,21 +34,21 @@
 				<fieldset><legend><a name="config">维修流程</a></legend></fieldset>
 			</div>
 			<div class="layui-form-item">
-				<label for="maintStep1" class="layui-form-label">步骤1</label>
+				<label for="maintStep1" class="layui-form-label">流程1</label>
 				<div class="layui-input-block">
 					<input type="text" value='' th:field="*{maintSteps[0]}" lay-verify=""
 						lay-vertype="tips" autocomplete="off" placeholder="" class="layui-input">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label for="maintStep2" class="layui-form-label">步骤2</label>
+				<label for="maintStep2" class="layui-form-label">流程2</label>
 				<div class="layui-input-block">
 					<input type="text" value='' th:field="*{maintSteps[1]}" lay-verify=""
 						lay-vertype="tips" autocomplete="off" placeholder="" class="layui-input">
 				</div>
 			</div>
-			<div id="maintPlus3" class="layui-form-item">
-				<label for="maintStep3" class="layui-form-label">步骤3</label>
+			<div class="layui-form-item">
+				<label for="maintStep3" class="layui-form-label">流程3</label>
 				<div class="layui-input-block">
 					<input type="text" value='' th:field="*{maintSteps[2]}" lay-verify=""
 						lay-vertype="tips" autocomplete="off" placeholder="" class="layui-input">
@@ -64,21 +64,21 @@
 				<fieldset><legend><a name="config">保养流程</a></legend></fieldset>
 			</div>
 			<div class="layui-form-item">
-				<label for="keepStep1" class="layui-form-label">步骤1</label>
+				<label for="keepStep1" class="layui-form-label">流程1</label>
 				<div class="layui-input-block">
 					<input type="text" value='' th:field="*{keepSteps[0]}" lay-verify=""
 						lay-vertype="tips" autocomplete="off" placeholder="" class="layui-input">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label for="keepStep2" class="layui-form-label">步骤2</label>
+				<label for="keepStep2" class="layui-form-label">流程2</label>
 				<div class="layui-input-block">
 					<input type="text" value='' th:field="*{keepSteps[1]}" lay-verify=""
 						lay-vertype="tips" autocomplete="off" placeholder="" class="layui-input">
 				</div>
 			</div>
 			<div id='' class="layui-form-item">
-				<label for="keepStep3" class="layui-form-label">步骤3</label>
+				<label for="keepStep3" class="layui-form-label">流程3</label>
 				<div class="layui-input-block">
 					<input type="text" value='' th:field="*{keepSteps[2]}" lay-verify=""
 						lay-vertype="tips" autocomplete="off" placeholder="" class="layui-input">
@@ -118,7 +118,7 @@
 			
 			$('#addMaintStep').on('click', function() {
 				var innerHtml = "<div class='layui-form-item'>\n" +
-				"<label for='maintStep" + (maintStepIndex + 1) +"' class='layui-form-label'>步骤" + (maintStepIndex + 1) + "</label>\n" +
+				"<label for='maintStep" + (maintStepIndex + 1) +"' class='layui-form-label'>流程" + (maintStepIndex + 1) + "</label>\n" +
 				"<div class='layui-input-block'>" +
 				"<input type='text' value='' lay-verify=''\n" +
 				"lay-vertype='tips' autocomplete='off' placeholder='' class='layui-input'\n" +
@@ -132,7 +132,7 @@
 			
 			$('#addKeepStep').on('click', function() {
 				var innerHtml = "<div class='layui-form-item'>\n" +
-				"<label for='keepStep" + (keepStepIndex + 1) + "' class='layui-form-label'>步骤" + (keepStepIndex + 1) + "</label>\n" +
+				"<label for='keepStep" + (keepStepIndex + 1) + "' class='layui-form-label'>流程" + (keepStepIndex + 1) + "</label>\n" +
 				"<div class='layui-input-block'>" +
 				"<input type='text' value='' th:field=\"*{keepSteps[" + keepStepIndex + "]}\" lay-verify=''\n" +
 				"lay-vertype='tips' autocomplete='off' placeholder='' class='layui-input'\n" +
@@ -149,14 +149,14 @@
 				//维修流程校验
 				var maintResult = checkForm(data, "maintSteps", maintStepIndex);
 				if (maintResult[0] == -1) {
-					alert("维修流程步骤" + maintResult[1] + "前有步骤无内容");
+					alert("维修流程" + maintResult[1] + "前有流程内容为空");
 					return false;
 				}
 				
 				//保养流程校验
 				var keepResult = checkForm(data, "keepSteps", keepStepIndex);
 				if (keepResult[0] == -1) {
-					alert("保养流程步骤" + keepResult[1] + "前有步骤无内容");
+					alert("保养流程" + keepResult[1] + "前有流程内容为空");
 					return false;
 				}
 				
@@ -174,10 +174,10 @@
 				if ((num - 1) < 1) {
 					if (data[index].trim() == "") {
 						resultArr[0] = 0;	//校验通过
-						resultArr[1] = -1;	//-1表示当前流程所有步骤均为空
+						resultArr[1] = -1;	//-1表示当前流程所有流程均为空
 					} else {
 						resultArr[0] = 0;	//校验通过
-						resultArr[1] = num;	//num表示到步骤num皆有内容
+						resultArr[1] = num;	//num表示到流程num皆有内容
 					}
 				} else {
 					if (data[index].trim() == "") {
@@ -185,10 +185,10 @@
 					} else {
 						if (noEmpty(data, step, (num - 1))) {
 							resultArr[0] = 0;
-							resultArr[1] = num;	//num表示至少步骤num皆有内容
+							resultArr[1] = num;	//num表示至少流程num皆有内容
 						} else {
 							resultArr[0] = -1;
-							resultArr[1] = num;	//num表示至少步骤num前有空内容
+							resultArr[1] = num;	//num表示至少流程num前有空内容
 						}
 					}
 				}
@@ -214,17 +214,17 @@
 				if (data[index].trim() == "") {
 					if ((num - 1) < 1) {
 						resultArr[0] = 0;	//校验通过
-						resultArr[1] = -1;	//-1表示当前流程所有步骤均为空
+						resultArr[1] = -1;	//-1表示当前流程所有流程均为空
 					} else {
 						resultArr = check(data, step, (num -1));
 					}
 				} else {
 					if (noEmpty(data, step, (num - 1))) {
 						resultArr[0] = 0;
-						resultArr[1] = num;	//num表示至少步骤num皆有内容
+						resultArr[1] = num;	//num表示至少流程num皆有内容
 					} else {
 						resultArr[0] = -1;	//校验未通过
-						resultArr[1] = num;	//num表示至少步骤num前有空内容
+						resultArr[1] = num;	//num表示至少流程num前有空内容
 					}
 				}
 				return resultArr;
