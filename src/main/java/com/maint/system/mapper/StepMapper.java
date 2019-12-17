@@ -8,8 +8,8 @@ import org.apache.ibatis.annotations.Select;
 import com.maint.system.model.Step;
 
 public interface StepMapper {
-	@Select(value = "SELECT * FROM tbl_step WHERE brand_id=#{brandId} ORDER BY weight ASC")
-	List<Step> selectSteps(@Param("brandId") String brandId);
+	@Select(value = "SELECT * FROM tbl_step WHERE brand_id=#{brandId} AND step_type=#{stepType} ORDER BY weight ASC")
+	List<Step> selectSteps(@Param("brandId") String brandId, @Param("stepType") int stepType);
 	
     int deleteByPrimaryKey(String stepId);
     

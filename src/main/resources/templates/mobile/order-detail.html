@@ -183,9 +183,9 @@
 		      		<p th:text="'订单号：' + *{maintainOrderId}"/>
 		      		<p th:text="'订单类型：设备维修'"/>
 		      		<p th:text="'下单时间：' + *{#dates.format(createDate, 'yyyy/MM/dd HH:mm:ss')}"/>
-		      		<p th:text="'联系人：' + *{companyContact}"/>
-		      		<p th:text="'联系电话：' + *{companyPhone}"/>
-		      		<p th:text="'服务地址：' + *{deviceAddr}"/>
+		      		<p th:text="'联系人：' + *{contact}"/>
+		      		<p th:text="'联系电话：' + *{phone}"/>
+		      		<p th:text="'服务地址：' + *{address}"/>
 		      		<p th:text="'故障描述：' + *{faultDescription}"/>
 	      		</div>
 	      		
@@ -227,9 +227,9 @@
 		      		<p th:text="'订单号：' + *{maintenanceOrderId}"/>
 		      		<p th:text="'订单类型：设备保养'"/>
 		      		<p th:text="'下单时间：' + *{#dates.format(createDate, 'yyyy/MM/dd HH:mm:ss')}"/>
-		      		<p th:text="'联系人：' + *{companyContact}"/>
-		      		<p th:text="'联系电话：' + *{companyPhone}"/>
-		      		<p th:text="'服务地址：' + *{deviceAddr}"/>
+		      		<p th:text="'联系人：' + *{contact}"/>
+		      		<p th:text="'联系电话：' + *{phone}"/>
+		      		<p th:text="'服务地址：' + *{address}"/>
 	      		</div>
 	      		
 	      		<hr class="divider" style="height:15px;background-color:#eee;margin-right:-10px;">

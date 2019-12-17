@@ -1,11 +1,11 @@
 package com.maint.system.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.slf4j.Logger;
@@ -14,10 +14,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
+import com.maint.common.util.DateUtils;
+import com.maint.common.util.StringUtil;
 import com.maint.common.util.UUID19;
+import com.maint.system.enums.MaintainOrderStatusEnum;
+import com.maint.system.mapper.DeviceBrandMapper;
+import com.maint.system.mapper.MaintStepTraceMapper;
 import com.maint.system.mapper.MaintainOrderMapper;
+import com.maint.system.mapper.MaintainTraceMapper;
 import com.maint.system.mapper.WebUserMapper;
+import com.maint.system.model.DeviceBrand;
+import com.maint.system.model.MaintStepTrace;
 import com.maint.system.model.MaintainOrder;
+import com.maint.system.model.MaintainTrace;
+import com.maint.system.model.OrderStatusBean;
 import com.maint.system.model.WebUser;
 
 @Service
@@ -28,6 +38,12 @@ public class WebUserService {
 	private WebUserMapper webUserMapper;
 	@Autowired
 	private MaintainOrderMapper maintainOrderMapper;
+	@Autowired
+	private DeviceBrandMapper deviceBrandMapper;
+	@Autowired
+	private MaintainTraceMapper maintainTraceMapper;
+	@Autowired
+	private MaintStepTraceMapper maintStepTraceMapper;
 	
 	public WebUser getWebUserByUserNameOrPhone(String userNameOrPhone) {
 		return webUserMapper.selectWebUserByUserNameOrPhone(userNameOrPhone);
@@ -116,11 +132,48 @@ public class WebUserService {
 	
 	public String repairApplicationSave(MaintainOrder order) {
 		
+		//判断用户是否录入了企业信息
+		
+		
 		MaintainOrder maintainOrder = order;
 		maintainOrder.setMaintainOrderId("WX"+UUID19.uuid().substring(0, 18));
+		WebUser webUser = (WebUser) SecurityUtils.getSubject().getPrincipal();
+		maintainOrder.setWebUserId(webUser.getWebUserId());
+		maintainOrder.setState(MaintainOrderStatusEnum.WXSQ.getValue());
+		maintainOrder.setCreateDate(new Date());
 		maintainOrderMapper.insert(maintainOrder);
 		
 		return "维修申请成功";
+	}
+	
+	public List<DeviceBrand> getDeviceBrands(){
+		
+		return deviceBrandMapper.selectAllWithQuery(new DeviceBrand());
+	}
+	
+	public List<OrderStatusBean> getOrderTraceStatus(String orderId){
+		
+		List<MaintainTrace> maintainTraces = maintainTraceMapper.selectOrderTraceByOrderId(orderId);
+		List<OrderStatusBean> orderStatuss = new ArrayList<OrderStatusBean>();
+		
+		maintainTraces.forEach(maintainTrace -> {
+			OrderStatusBean orderStatusBean = new OrderStatusBean();
+			orderStatusBean.setDate(DateUtils.parseDateToStr("yyyy/MM/dd HH:mm:ss", maintainTrace.getMaintainDate()));
+			orderStatusBean.setFaultCause(maintainTrace.getFaultCause());
+			orderStatusBean.setOrderStatusDescription(
+					MaintainOrderStatusEnum.getvalueOf(maintainTrace.getOrderStatus()).getTxt());
+			if(MaintainOrderStatusEnum.WXZ.getValue().equals(maintainTrace.getOrderStatus())) {
+				//获取维修步骤信息
+				List<MaintStepTrace> maintStepTraces = maintStepTraceMapper.selectMaintStepTracesByOrderTreaceId(maintainTrace.getMaintainTraceId());
+				if (!StringUtil.isNull(maintStepTraces)) {
+					orderStatusBean.setMaintStepTraces(maintStepTraces);
+				}
+			}
+			
+			orderStatuss.add(orderStatusBean);
+		});
+		
+		return orderStatuss;
 	}
 
 }

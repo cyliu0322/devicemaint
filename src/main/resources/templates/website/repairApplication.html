@@ -35,13 +35,10 @@
 		    <div class="layui-inline">
 		      <label class="layui-form-label">设备品牌</label>
 		      <div class="layui-input-inline">
-		        <select name="deviceBrand" lay-verify="required">
-			        <option value=""></option>
-			        <option value="0">北京</option>
-			        <option value="1">上海</option>
-			        <option value="2">广州</option>
-			        <option value="3">深圳</option>
-			        <option value="4">杭州</option>
+		        <select name="deviceBrand" id="deviceBrand" lay-verify="required" lay-search>
+			        <option value="">请选择设备品牌</option>
+			        <option th:each="brand:${brands}" th:value="${brand.brandId}"
+							th:text="${brand.brandName}"></option>
 			     </select>
 		      </div>
 		    </div>
@@ -51,12 +48,13 @@
 		        <input type="text" name="deviceYears" lay-verify="number" autocomplete="off" placeholder="使用年限" class="layui-input">
 		      </div>
 		    </div>
-		    <div class="layui-inline">
+		  </div>
+		  
+		  <div class="layui-form-item">
 		      <label class="layui-form-label">维修地点</label>
-		      <div class="layui-input-inline">
+		      <div class="layui-input-block">
 		        <input type="text" name="deviceAddr" lay-verify="required" autocomplete="off" placeholder="维修地点" class="layui-input">
 		      </div>
-		    </div>
 		  </div>
 		  
 		  <div class="layui-form-item">
@@ -84,12 +82,13 @@
 		        <input type="text" name="companyEmail" lay-verify="required" autocomplete="off" placeholder="公司邮箱" class="layui-input">
 		      </div>
 		    </div>
-		    <div class="layui-inline">
+		  </div>
+		  
+		  <div class="layui-form-item">
 		      <label class="layui-form-label">公司地址</label>
-		      <div class="layui-input-inline">
+		      <div class="layui-input-block">
 		        <input type="text" name="companyAddress" lay-verify="required" autocomplete="off" placeholder="公司地址" class="layui-input">
 		      </div>
-		    </div>
 		  </div>
 		  
 		  <div class="layui-form-item layui-form-text">

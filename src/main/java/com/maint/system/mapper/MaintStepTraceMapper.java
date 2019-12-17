@@ -10,6 +10,9 @@ import com.maint.system.model.MaintStepTrace;
 
 public interface MaintStepTraceMapper {
 	
+	@Select(value="SELECT * FROM tbl_maint_step_trace WHERE order_trace_id = #{orderTraceId}")
+	List<MaintStepTrace> selectMaintStepTracesByOrderTreaceId(@Param("orderTraceId") String orderTraceId);
+	
 	@Select(value="SELECT id FROM tbl_maint_step_trace WHERE order_id = #{orderId} AND step_id = #{stepId}")
 	String selectId(@Param("orderId") String orderId, @Param("stepId") String stepId);
 	

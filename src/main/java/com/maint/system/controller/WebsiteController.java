@@ -32,7 +32,7 @@ import com.maint.common.util.ResultBean;
 import com.maint.common.util.StringUtil;
 import com.maint.system.mapper.WebUserMapper;
 import com.maint.system.model.MaintainOrder;
-import com.maint.system.model.User;
+import com.maint.system.model.OrderStatusBean;
 import com.maint.system.model.WebUser;
 import com.maint.system.service.WebUserService;
 
@@ -116,6 +116,17 @@ public class WebsiteController {
 		return "website/orderManage";
 	}
 	
+	@GetMapping(value = "/user/toOrderTrace")
+	public String toOrderTrace(Model model,
+			@RequestParam(value="orderId", required = true) String orderId) {
+		
+		List<OrderStatusBean> orderStatuss = webUserService.getOrderTraceStatus(orderId);
+		
+		model.addAttribute("orderStatuss", orderStatuss);
+		
+		return "website/orderTrace";
+	}
+	
 	@GetMapping(value = "/user/toPersonInfo")
 	public String toPersonInfo(Model model) {
 		
@@ -126,6 +137,8 @@ public class WebsiteController {
 	
 	@GetMapping(value = "/user/toRepairApplication")
 	public String toRepairApplication(Model model) {
+		
+		model.addAttribute("brands", webUserService.getDeviceBrands());
 		
 		return "website/repairApplication";
 	}

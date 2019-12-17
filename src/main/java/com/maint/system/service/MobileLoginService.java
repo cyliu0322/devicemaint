@@ -111,6 +111,7 @@ public class MobileLoginService {
 					maintStepTraceId = UUID19.uuid();
 					maintStepTrace.setId(maintStepTraceId);
 					maintStepTrace.setOrderId(orderId);
+					maintStepTrace.setOrderTraceId(maintainTraceId);
 					maintStepTrace.setStepId(maintStepJsonObject.getString("stepId"));
 					maintStepTrace.setStepName(maintStepJsonObject.getString("stepName"));
 					if("1".equals(maintStepJsonObject.getString("isComplete"))) {
@@ -180,6 +181,7 @@ public class MobileLoginService {
 					maintStepTraceId = UUID19.uuid();
 					maintStepTrace.setId(maintStepTraceId);
 					maintStepTrace.setOrderId(orderId);
+					maintStepTrace.setOrderTraceId(maintenanceTraceId);
 					maintStepTrace.setStepId(maintStepJsonObject.getString("stepId"));
 					maintStepTrace.setStepName(maintStepJsonObject.getString("stepName"));
 					if("1".equals(maintStepJsonObject.getString("isComplete"))) {
@@ -226,9 +228,9 @@ public class MobileLoginService {
 		}
 	}
 	
-	public List<MaintStepAidBean> getBrandStep(Map<String, String[]> dataMap){
-		
-		List<Step> steps = stepMapper.selectSteps(dataMap.get("deviceBrand")[0]);
+	public List<MaintStepAidBean> getBrandStep(Map<String, String[]> dataMap) throws Exception{
+		String orderType = getOrderTypeByOrderId(dataMap.get("orderId")[0]).getValue();
+		List<Step> steps = stepMapper.selectSteps(dataMap.get("deviceBrand")[0], Integer.parseInt(orderType));
 		List<MaintStepTrace> maintStepTraces = maintStepTraceMapper.selectMaintStepTracesByOrderId(dataMap.get("orderId")[0]);
 		
 		List<MaintStepAidBean> maintStepAidBeans = new ArrayList<MaintStepAidBean>();
@@ -419,7 +421,7 @@ public class MobileLoginService {
 				orderAidBean.setOrderStatus(MaintainOrderStatusEnum.getvalueOf(maintainOrder.getState()).getTxt());
 				orderAidBean.setOrderType(OrderTypeEnum.WX.getTxt());
 				orderAidBean.setDeviceName(maintainOrder.getDeviceName());
-				orderAidBean.setDeviceAddr(maintainOrder.getDeviceAddr());
+				orderAidBean.setDeviceAddr(maintainOrder.getAddress());
 				orders.add((E) orderAidBean);
 			});
 		}else {
@@ -432,7 +434,7 @@ public class MobileLoginService {
 				orderAidBean.setOrderStatus(MaintenanceOrderStatusEnum.getvalueOf(maintenanceOrder.getState()).getTxt());
 				orderAidBean.setOrderType(OrderTypeEnum.BY.getTxt());
 				orderAidBean.setDeviceName(maintenanceOrder.getDeviceName());
-				orderAidBean.setDeviceAddr(maintenanceOrder.getDeviceAddr());
+				orderAidBean.setDeviceAddr(maintenanceOrder.getAddress());
 				orders.add((E) orderAidBean);
 			});
 		}

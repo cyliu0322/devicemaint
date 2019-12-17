@@ -17,15 +17,13 @@ public class MaintenanceOrder {
 
     private String deviceBrand;
 
-    private String deviceAddr;
+    private String address;
 
     private Integer deviceYears;
 
-    private String companyContact;
+    private String contact;
 
-    private String companyPhone;
-
-    private String companyEmail;
+    private String phone;
 
     private String state;
 
@@ -40,13 +38,7 @@ public class MaintenanceOrder {
     private String maintenanceTime;
 
     private String bz;
-    
-    private String stateDesc;
 
-    private String nickname;
-    
-    private String deptname;
-    
     public String getMaintenanceOrderId() {
         return maintenanceOrderId;
     }
@@ -103,12 +95,12 @@ public class MaintenanceOrder {
         this.deviceBrand = deviceBrand == null ? null : deviceBrand.trim();
     }
 
-    public String getDeviceAddr() {
-        return deviceAddr;
+    public String getAddress() {
+        return address;
     }
 
-    public void setDeviceAddr(String deviceAddr) {
-        this.deviceAddr = deviceAddr == null ? null : deviceAddr.trim();
+    public void setAddress(String address) {
+        this.address = address == null ? null : address.trim();
     }
 
     public Integer getDeviceYears() {
@@ -119,28 +111,20 @@ public class MaintenanceOrder {
         this.deviceYears = deviceYears;
     }
 
-    public String getCompanyContact() {
-        return companyContact;
+    public String getContact() {
+        return contact;
     }
 
-    public void setCompanyContact(String companyContact) {
-        this.companyContact = companyContact == null ? null : companyContact.trim();
+    public void setContact(String contact) {
+        this.contact = contact == null ? null : contact.trim();
     }
 
-    public String getCompanyPhone() {
-        return companyPhone;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setCompanyPhone(String companyPhone) {
-        this.companyPhone = companyPhone == null ? null : companyPhone.trim();
-    }
-
-    public String getCompanyEmail() {
-        return companyEmail;
-    }
-
-    public void setCompanyEmail(String companyEmail) {
-        this.companyEmail = companyEmail == null ? null : companyEmail.trim();
+    public void setPhone(String phone) {
+        this.phone = phone == null ? null : phone.trim();
     }
 
     public String getState() {
@@ -198,29 +182,4 @@ public class MaintenanceOrder {
     public void setBz(String bz) {
         this.bz = bz == null ? null : bz.trim();
     }
-
-	public String getStateDesc() {
-		return stateDesc;
-	}
-
-	public void setStateDesc(String stateDesc) {
-		this.stateDesc = stateDesc;
-	}
-
-	public String getNickname() {
-		return nickname;
-	}
-
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
-	}
-
-	public String getDeptname() {
-		return deptname;
-	}
-
-	public void setDeptname(String deptname) {
-		this.deptname = deptname;
-	}
-    
 }

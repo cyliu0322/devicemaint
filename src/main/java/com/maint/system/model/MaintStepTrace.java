@@ -7,6 +7,8 @@ public class MaintStepTrace {
 
     private String orderId;
 
+    private String orderTraceId;
+
     private String stepName;
 
     private String stepId;
@@ -31,6 +33,14 @@ public class MaintStepTrace {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId == null ? null : orderId.trim();
+    }
+
+    public String getOrderTraceId() {
+        return orderTraceId;
+    }
+
+    public void setOrderTraceId(String orderTraceId) {
+        this.orderTraceId = orderTraceId == null ? null : orderTraceId.trim();
     }
 
     public String getStepName() {
