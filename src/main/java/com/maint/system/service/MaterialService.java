@@ -33,7 +33,7 @@ public class MaterialService {
 	@Transactional
 	public Integer add(Material material) {
 		checkMaterialNameExistOnCreate(material.getMaterialName());
-		material.setMaterialId(generateCode(10));
+		material.setMaterialId(generateCode("MT"));
 		return materialMapper.insert(material);
 	}
 	
@@ -68,11 +68,11 @@ public class MaterialService {
 		}
 	}
 	
-	private String generateCode(int length) {
-		String code = StringUtil.generateCode(length, "");
+	private String generateCode(String prefix) {
+		String code = StringUtil.generateCode(prefix);
 		//校验是否重复
 		if (materialMapper.selectByPrimaryKey(code) != null) {
-			code = generateCode(length);
+			code = generateCode(prefix);
 		}
 		return code;
 	}

@@ -86,9 +86,11 @@
 				</a>
 			</shiro:hasPermission>
 		{{# } }}
-		<shiro:lacksPermission name="maint:appoint">
-			<i class="zadmin-icon zadmin-icon-wuquanxian zadmin-oper-area zadmin-red" title="无权限"></i>
-		</shiro:lacksPermission>
+		<shiro:hasPermission name="maint:score">
+			<a lay-event="star">
+				<i class="layui-icon layui-icon-rate-half zadmin-blue" title="评分"></i>
+			</a>
+		</shiro:hasPermission>
 	</script>
 	
 	<script th:src="@{/lib/jquery/jquery.min.js}"></script>
@@ -168,6 +170,16 @@
 				}
 			});
 			
+			// 工具条点击事件
+			table.on('toolbar', function (obj) {
+				var data = obj.data;
+				var event = obj.event;
+				
+				if (event === 'add') {
+					add();
+				}
+			});
+			
 			// 单元格点击事件
 			table.on('tool(maintTable)', function (obj) {
 				var data = obj.data;
@@ -178,10 +190,26 @@
 					} else if (data.state == '2') {
 						appointMp(data.maintainOrderId);
 					}
+				} else if (event === 'star') {
+					star();
 				} else if (event === 'del') {
 					del(data.maintainOrderId);
 				}
 			});
+			
+			function add() {
+				layer.open({
+					content: "/maint",
+					title: "新增维修单",
+					area: ['40%', '85%'],
+					type: 2,
+					maxmin: true,
+					shadeClose: true,
+					end: function () {
+						table.reload('maint-table');
+					}
+				});
+			}
 			
 			function appointPrior(maintid) {
 				layer.open({
@@ -201,6 +229,20 @@
 				layer.open({
                     content: '/maint/mp/' + maintid,
                     title: "派单",
+                    area: ['40%', '85%'],
+                    type: 2,
+                    maxmin: true,
+                    shadeClose: true,
+                    end: function () {
+                        table.reload('maint-table');
+                    }
+                });
+			}
+			
+			function star() {
+				layer.open({
+                    content: '/maint/star/',
+                    title: "评分",
                     area: ['40%', '85%'],
                     type: 2,
                     maxmin: true,

@@ -14,7 +14,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/vip")
@@ -39,6 +43,14 @@ public class VipController {
 		List<Company> vips = vipService.selectAllWithQuery(page, limit, companyQuery);
 		PageInfo<Company> userPageInfo = new PageInfo<>(vips);
 		return new PageResultBean<>(userPageInfo.getTotal(), userPageInfo.getList());
+	}
+	
+	@GetMapping("/companies")
+    @ResponseBody
+    public ResultBean getName(@RequestParam(defaultValue = "") String keyword) {
+		List<Company> companies = new ArrayList<Company>();
+		companies = vipService.selectByKeyWord(keyword);
+		return ResultBean.success(companies);
 	}
 	
 	@GetMapping

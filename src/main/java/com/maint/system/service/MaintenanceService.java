@@ -41,12 +41,12 @@ public class MaintenanceService {
 	
 	@Transactional
 	public boolean add(MaintenanceOrder maintenance) {
-		String maintenanceId = generateCode(8, 0, "BY");
+		String maintenanceId = generateCode(0, "BY");
 		//当前用户
 		User currentUser = (User) SecurityUtils.getSubject().getPrincipal();
 		MaintenanceTrace trace = new MaintenanceTrace();
 		
-		trace.setMaintenanceTraceId(generateCode(10, 1, ""));
+		trace.setMaintenanceTraceId(generateCode(1, "BT"));
 		trace.setMaintenanceOrderId(maintenanceId);
 		trace.setUserId(currentUser.getUserId());
 		trace.setOrderStatus(MaintenanceOrderStatusEnum.BYDSC.getValue());
@@ -75,7 +75,7 @@ public class MaintenanceService {
 		
 		MaintenanceTrace trace = new MaintenanceTrace();
 		
-		trace.setMaintenanceTraceId(generateCode(10, 1, ""));
+		trace.setMaintenanceTraceId(generateCode(1, "TE"));
 		trace.setMaintenanceOrderId(maintenance.getMaintenanceOrderId());
 		trace.setOrderStatus(maintenance.getState());
 		trace.setUserId(currentUser.getUserId());
@@ -93,18 +93,18 @@ public class MaintenanceService {
 		maintenanceMapper.deleteByPrimaryKey(maintenanceId);
 	}
 	
-	private String generateCode(int length, int flag, String prefix) {
-		String code = StringUtil.generateCode(length, prefix);
+	private String generateCode(int flag, String prefix) {
+		String code = StringUtil.generateCode(prefix);
 		//校验是否重复
 		if (flag == 0) {	//保养单
 			MaintenanceOrder maintenance = maintenanceMapper.selectByPrimaryKey(code);
 			if (maintenance != null) {
-				code = generateCode(length, flag, prefix);
+				code = generateCode(flag, prefix);
 			}
 		} else {	//跟踪
 			MaintenanceTrace trace = traceMapper.selectByPrimaryKey(code);
 			if (trace != null) {
-				code = generateCode(length, flag, prefix);
+				code = generateCode(flag, prefix);
 			}
 		}
 		

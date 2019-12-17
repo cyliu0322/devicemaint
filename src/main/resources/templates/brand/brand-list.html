@@ -42,7 +42,7 @@
 	</div>
 	
 	<script type="text/html" id="toolbar">
-		<shiro:hasPermission name="maint:add">
+		<shiro:hasPermission name="brand:add">
 			<button type="button" class="layui-btn layui-btn-xs layui-btn-normal" lay-event="add">
 				<i class="zadmin-icon zadmin-icon-xinzeng zadmin-oper-area"></i>
 					新增
@@ -51,24 +51,24 @@
 	</script>
 	
 	<script type="text/html" id="column-toolbar">
-		<shiro:hasPermission name="maint:edit">
+		<shiro:hasPermission name="brand:update">
 			<a lay-event="edit">
 				<i class="zadmin-icon zadmin-icon-edit-square zadmin-oper-area zadmin-blue" title="编辑"></i>
 			</a>
 		</shiro:hasPermission>
-		<shiro:hasPermission name="maint:delete">
+		<shiro:hasPermission name="brand:delete">
 			<a lay-event="del">
 				<i class="zadmin-icon zadmin-icon-delete zadmin-oper-area zadmin-red" title="删除"></i>
 			</a>
 		</shiro:hasPermission>
 		
-		<shiro:lacksPermission name="maint:appoint">
+		<shiro:lacksPermission name="brand:add,brand:delete">
 			<i class="zadmin-icon zadmin-icon-wuquanxian zadmin-oper-area zadmin-red" title="无权限"></i>
 		</shiro:lacksPermission>
 	</script>
 	
 	<script type="text/html" id="childToolbar">
-		<shiro:hasPermission name="maint:add">
+		<shiro:hasPermission name="step:add">
 			<div>
 				<a class="layui-btn layui-btn-normal layui-btn-sm" lay-event="addStep">添加步骤</a>
 			</div>
@@ -76,25 +76,23 @@
 	</script>
 	
 	<script type="text/html" id="column-toolbar-sort">
-		<i class="zadmin-icon zadmin-icon-shangyimian zadmin-oper-area zadmin-blue" lay-event="up" title="上移"></i>
-		<i class="zadmin-icon zadmin-icon-xiayimian zadmin-oper-area zadmin-blue" lay-event="down" title="下移"></i>
+		<shiro:hasPermission name="step:swap">
+			<i class="zadmin-icon zadmin-icon-shangyimian zadmin-oper-area zadmin-blue" lay-event="up" title="上移"></i>
+			<i class="zadmin-icon zadmin-icon-xiayimian zadmin-oper-area zadmin-blue" lay-event="down" title="下移"></i>
+		</shiro:hasPermission>
 	</script>
 	
 	<script type="text/html" id="children-column-toolbar">
-		<shiro:hasPermission name="user:update">
+		<shiro:hasPermission name="step:update">
 			<a lay-event="childEdit">
 				<i class="zadmin-icon zadmin-icon-edit-square zadmin-oper-area zadmin-blue" title="编辑"></i>
 			</a>
 		</shiro:hasPermission>
-		<shiro:hasPermission name="user:delete">
+		<shiro:hasPermission name="step:delete">
 			<a lay-event="childDel">
 				<i class="zadmin-icon zadmin-icon-delete zadmin-oper-area zadmin-red" title="删除"></i>
 			</a>
 		</shiro:hasPermission>
-		
-		<shiro:lacksPermission  name="user:update,user:delete">
-			<i class="zadmin-icon zadmin-icon-wuquanxian zadmin-oper-area zadmin-red"></i>无权限
-		</shiro:lacksPermission>
 	</script>
 	
 	<script th:src="@{/lib/jquery/jquery.min.js}"></script>

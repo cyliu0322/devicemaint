@@ -35,6 +35,12 @@ public class VipService {
 		return companyMapper.selectAllWithQuery(company);
 	}
 	
+	public List<Company> selectByKeyWord(String companyName) {
+		Company company = new Company();
+		company.setCompanyName(companyName);
+		return companyMapper.selectAllWithQuery(company);
+	}
+	
 	public Company selectOne(String companyId) {
 		return companyMapper.selectByPrimaryKey(companyId);
 	}
@@ -42,7 +48,7 @@ public class VipService {
 	@Transactional
 	public int add(Company company) {
 		checkCompanyNameExistOnCreate(company.getCompanyName());
-		company.setCompanyId(generateCode(10));
+		company.setCompanyId(generateCode("VP"));
 		return companyMapper.insert(company);
 	}
 	
@@ -75,11 +81,11 @@ public class VipService {
 		}
 	}
 	
-	private String generateCode(int length) {
-		String code = StringUtil.generateCode(length, "");
+	private String generateCode(String prefix) {
+		String code = StringUtil.generateCode(prefix);
 		//校验是否重复
 		if (companyMapper.selectByPrimaryKey(code) != null) {
-			code = generateCode(length);
+			code = generateCode(prefix);
 		}
 		return code;
 	}

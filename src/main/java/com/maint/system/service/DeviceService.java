@@ -31,7 +31,7 @@ public class DeviceService {
 	
 	@Transactional
 	public int add(Device device) {
-		device.setDeviceId(generateCode(10));
+		device.setDeviceId(generateCode("DV"));
 		return deviceMapper.insert(device);
 	}
 	
@@ -50,11 +50,11 @@ public class DeviceService {
 		deviceMapper.delByCompanyId(companyId);
 	}
 	
-	private String generateCode(int length) {
-		String code = StringUtil.generateCode(length, "");
+	private String generateCode(String prefix) {
+		String code = StringUtil.generateCode(prefix);
 		//校验是否重复
 		if (deviceMapper.selectByPrimaryKey(code) != null) {
-			code = generateCode(length);
+			code = generateCode(prefix);
 		}
 		return code;
 	}

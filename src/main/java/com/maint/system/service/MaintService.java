@@ -54,7 +54,7 @@ public class MaintService {
 		MaintainTrace trace = new MaintainTrace();
 		//当前用户
 		User currentUser = (User) SecurityUtils.getSubject().getPrincipal();
-		trace.setMaintainTraceId(generateCode(10));
+		trace.setMaintainTraceId(generateCode("WT"));
 		trace.setMaintainOrderId(maint.getMaintainOrderId());
 		trace.setOrderStatus(maint.getState());
 		trace.setUserId(currentUser.getUserId());
@@ -75,12 +75,12 @@ public class MaintService {
 		maintMapper.deleteByPrimaryKey(maintId);
 	}
 		
-	private String generateCode(int length) {
-		String code = StringUtil.generateCode(length, "");
+	private String generateCode(String prefix) {
+		String code = StringUtil.generateCode(prefix);
 		//校验是否重复
 		MaintainTrace trace = traceMapper.selectByPrimaryKey(code);
 		if (trace != null) {
-			code = generateCode(length);
+			code = generateCode(prefix);
 		}
 		return code;
 	}

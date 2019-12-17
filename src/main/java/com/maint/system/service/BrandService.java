@@ -54,7 +54,7 @@ public class BrandService {
 		
 		checkBrandNameExistOnCreate(brandAndStep.getBrandName());
 		
-		String brandId = generateCode(10);	//品牌Id
+		String brandId = generateCode("BD");	//品牌Id
 		
 		// 维修流程
 		if (mIndex > 0) {	//维修流程有内容
@@ -62,7 +62,7 @@ public class BrandService {
 			List<String> maints = brandAndStep.getMaintSteps();
 			for (int i = 0; i < mIndex; i++) {	//小于mIndex表示后续空步骤不记录
 				Step step = new Step();
-				step.setStepId("wx" + brandId + num);
+				step.setStepId("W" + brandId + num);
 				step.setStepName(maints.get(i));
 				step.setBrandId(brandId);
 				step.setStepType(0);
@@ -79,7 +79,7 @@ public class BrandService {
 			List<String> keeps = brandAndStep.getKeepSteps();
 			for (int i = 0; i < kIndex; i++) {
 				Step step = new Step();
-				step.setStepId("by" + brandId + num);
+				step.setStepId("B" + brandId + num);
 				step.setStepName(keeps.get(i));
 				step.setBrandId(brandId);
 				step.setStepType(1);
@@ -128,7 +128,7 @@ public class BrandService {
 				index = brandAndStep.getMaintIndex();
 				for (int i = 0; i < index; i++) {
 					Step step = new Step();
-					step.setStepId("wx" + brandId + (maxWeight + 1));
+					step.setStepId("W" + brandId + (maxWeight + 1));
 					step.setStepName(steps.get(i));
 					step.setBrandId(brandId);
 					step.setStepType(0);
@@ -145,7 +145,7 @@ public class BrandService {
 				index = brandAndStep.getKeepIndex();
 				for (int i = 0; i < index; i++) {
 					Step step = new Step();
-					step.setStepId("by" + brandId + (maxWeight + 1));
+					step.setStepId("B" + brandId + (maxWeight + 1));
 					step.setStepName(steps.get(i));
 					step.setBrandId(brandId);
 					step.setStepType(1);
@@ -194,11 +194,11 @@ public class BrandService {
 		}
 	}
 	
-	private String generateCode(int length) {
-		String code = StringUtil.generateCode(length, "");
+	private String generateCode(String prefix) {
+		String code = StringUtil.generateCode(prefix);
 		//校验是否重复
 		if (brandMapper.selectByPrimaryKey(code) != null) {
-			code = generateCode(length);
+			code = generateCode(prefix);
 		}
 		return code;
 	}	

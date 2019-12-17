@@ -10,12 +10,8 @@ import com.maint.common.constants.RoleEnum;
 import com.maint.common.util.PageResultBean;
 import com.maint.common.util.ResultBean;
 import com.maint.system.enums.MaintainOrderStatusEnum;
-import com.maint.system.model.Dept;
 import com.maint.system.model.MaintainOrder;
-import com.maint.system.model.MaintainTrace;
-import com.maint.system.model.PointDetail;
 import com.maint.system.model.User;
-import com.maint.system.service.DeptService;
 import com.maint.system.service.MaintService;
 import com.maint.system.service.UserService;
 
@@ -42,6 +38,11 @@ public class MaintController {
 		return "maint/maint-list";
 	}
 	
+	@GetMapping("/star")
+	public String star() {
+		return "maint/star";
+	}
+	
 	@OperationLog("获取维修单列表")
 	@GetMapping("/list")
 	@ResponseBody
@@ -50,6 +51,11 @@ public class MaintController {
 		List<MaintainOrder> maints = maintService.selectAllWithQuery(page, limit, maintQuery);
 		PageInfo<MaintainOrder> maintPageInfo = new PageInfo<>(maints);
 		return new PageResultBean<>(maintPageInfo.getTotal(), maintPageInfo.getList());
+	}
+	
+	@GetMapping
+	public String add() {
+		return "maint/maint-add";
 	}
 	
 	@GetMapping("/trace/{maintId}")

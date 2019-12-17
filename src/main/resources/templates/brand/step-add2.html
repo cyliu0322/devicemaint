@@ -89,7 +89,7 @@
 			form.on('submit(add)', function (form) {
 				console.log(234234);
 				var data = form.field;
-				//维修流程校验
+				//保养流程校验
 				var result = checkForm(data, "keepSteps", stepIndex);
 				if (result[0] == -1) {
 					alert("保养流程" + (result[1] + [[${rowNum}]]) + "前有流程内容为空");
@@ -109,7 +109,7 @@
 				if ((num - 1) < 1) {
 					if (data[index].trim() == "") {
 						resultArr[0] = 0;	//校验通过
-						resultArr[1] = -1;	//-1表示当前流程所有流程均为空
+						resultArr[1] = -1;	//-1表示所有流程均为空
 					} else {
 						resultArr[0] = 0;	//校验通过
 						resultArr[1] = num;	//num表示到流程num皆有内容

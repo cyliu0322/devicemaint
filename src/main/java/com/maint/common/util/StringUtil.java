@@ -1,7 +1,9 @@
 package com.maint.common.util;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -14,18 +16,22 @@ public class StringUtil {
 	private static final String NULLSTR = "";
 	
 	/**
-	 * 生成指定前缀的随机字符串
+	 * 字符串规则：prefix(2位) + yyyyMMdd + 6位随机数字字符串
 	 */
-	public static String generateCode(int length, String prefix) {
-		String str = "ABCDEFGHJKLMNPQRTVWY0123456789";
+	public static String generateCode(String prefix) {
+		String str = "0123456789";
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String date = sdf.format(new Date());
+		
 		Random random = new Random();
 		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < 6; i++) {
 			int number = random.nextInt(str.length());
 			sb.append(str.charAt(number));
 		}
 		
-		return prefix + sb.toString();
+		return prefix + date + sb.toString();
 	}
 	
 	/**
