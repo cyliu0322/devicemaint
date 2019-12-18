@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.maint.system.mapper.MaintenanceOrderMapper" >
   <resultMap id="BaseResultMap" type="com.maint.system.model.MaintenanceOrder" >
-    <result column="maintenance_order_id" property="maintenanceOrderId" jdbcType="VARCHAR" />
+    <id column="maintenance_order_id" property="maintenanceOrderId" jdbcType="VARCHAR" />
     <result column="company_id" property="companyId" jdbcType="VARCHAR" />
     <result column="company_name" property="companyName" jdbcType="VARCHAR" />
     <result column="device_name" property="deviceName" jdbcType="VARCHAR" />
@@ -21,19 +21,34 @@
     <result column="maintenance_time" property="maintenanceTime" jdbcType="VARCHAR" />
     <result column="bz" property="bz" jdbcType="VARCHAR" />
   </resultMap>
+  <sql id="Base_Column_List" >
+    maintenance_order_id, company_id, company_name, device_name, device_id, device_code, 
+    device_brand, address, device_years, contact, phone, state, dept_id, create_date, 
+    score, user_id, maintenance_time, bz
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_maintenance_order
+    where maintenance_order_id = #{maintenanceOrderId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from tbl_maintenance_order
+    where maintenance_order_id = #{maintenanceOrderId,jdbcType=VARCHAR}
+  </delete>
   <insert id="insert" parameterType="com.maint.system.model.MaintenanceOrder" >
     insert into tbl_maintenance_order (maintenance_order_id, company_id, company_name, 
       device_name, device_id, device_code, 
       device_brand, address, device_years, 
       contact, phone, state, 
-      dept_id, create_date, score, 
+      dept_id, score, 
       user_id, maintenance_time, bz
       )
     values (#{maintenanceOrderId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
       #{deviceName,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, #{deviceCode,jdbcType=VARCHAR}, 
       #{deviceBrand,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{deviceYears,jdbcType=INTEGER}, 
       #{contact,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{state,jdbcType=CHAR}, 
-      #{deptId,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{score,jdbcType=DOUBLE}, 
+      #{deptId,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
       #{userId,jdbcType=INTEGER}, #{maintenanceTime,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR}
       )
   </insert>
@@ -78,9 +93,6 @@
       </if>
       <if test="deptId != null" >
         dept_id,
-      </if>
-      <if test="createDate != null" >
-        create_date,
       </if>
       <if test="score != null" >
         score,
@@ -135,9 +147,6 @@
       <if test="deptId != null" >
         #{deptId,jdbcType=INTEGER},
       </if>
-      <if test="createDate != null" >
-        #{createDate,jdbcType=TIMESTAMP},
-      </if>
       <if test="score != null" >
         #{score,jdbcType=DOUBLE},
       </if>
@@ -152,4 +161,103 @@
       </if>
     </trim>
   </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maint.system.model.MaintenanceOrder" >
+    update tbl_maintenance_order
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null" >
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null" >
+        device_name = #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceId != null" >
+        device_id = #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceCode != null" >
+        device_code = #{deviceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceBrand != null" >
+        device_brand = #{deviceBrand,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceYears != null" >
+        device_years = #{deviceYears,jdbcType=INTEGER},
+      </if>
+      <if test="contact != null" >
+        contact = #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=CHAR},
+      </if>
+      <if test="deptId != null" >
+        dept_id = #{deptId,jdbcType=INTEGER},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=DOUBLE},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="maintenanceTime != null" >
+        maintenance_time = #{maintenanceTime,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        bz = #{bz,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where maintenance_order_id = #{maintenanceOrderId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maint.system.model.MaintenanceOrder" >
+    update tbl_maintenance_order
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      device_name = #{deviceName,jdbcType=VARCHAR},
+      device_id = #{deviceId,jdbcType=VARCHAR},
+      device_code = #{deviceCode,jdbcType=VARCHAR},
+      device_brand = #{deviceBrand,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      device_years = #{deviceYears,jdbcType=INTEGER},
+      contact = #{contact,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      state = #{state,jdbcType=CHAR},
+      dept_id = #{deptId,jdbcType=INTEGER},
+      score = #{score,jdbcType=DOUBLE},
+      user_id = #{userId,jdbcType=INTEGER},
+      maintenance_time = #{maintenanceTime,jdbcType=VARCHAR},
+      bz = #{bz,jdbcType=VARCHAR}
+    where maintenance_order_id = #{maintenanceOrderId,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectAllWithQuery" resultMap="BaseResultMap">
+    select 
+    	mo.maintenance_order_id,
+    	mo.company_name,
+    	mo.company_id,
+    	mo.device_name,
+    	mo.state,
+    	mo.create_date,
+    	mo.maintenance_time,
+    	u.nickname,
+    	d.dept_name
+    from tbl_maintenance_order mo left join user u on mo.user_id = u.user_id left join dept d on mo.dept_id = d.dept_id
+    <where>
+    	<if test="maintenanceOrderId != null and maintenanceOrderId != ''">
+			AND mo.maintenance_order_id = #{maintenanceOrderId, jdbcType=VARCHAR}
+		</if>
+		<if test="companyName != null and companyName != ''">
+			AND mo.company_name like CONCAT('%', #{companyName, jdbcType=VARCHAR}, '%')
+		</if>
+		<if test="state != null and state != ''">
+			AND mo.state = #{state}
+		</if>
+	</where>
+  </select>
 </mapper>

@@ -36,6 +36,12 @@ public class MaintainOrder {
     private Double score;
 
     private Integer userId;
+    
+    private String stateDesc;
+    
+    private String nickname;
+    
+    private String deptname;
 
     public String getMaintainOrderId() {
         return maintainOrderId;
@@ -172,4 +178,29 @@ public class MaintainOrder {
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
+
+	public String getStateDesc() {
+		return stateDesc;
+	}
+
+	public void setStateDesc(String stateDesc) {
+		this.stateDesc = stateDesc;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public String getDeptname() {
+		return deptname;
+	}
+
+	public void setDeptname(String deptname) {
+		this.deptname = deptname;
+	}
+    
 }
