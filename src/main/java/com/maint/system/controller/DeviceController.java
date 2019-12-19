@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.maint.common.annotation.OperationLog;
@@ -45,6 +46,12 @@ public class DeviceController {
 	@ResponseBody
 	public ResultBean selectDeviceByVip(@PathVariable("companyId") String companyId) {
 		return ResultBean.success(deviceService.selectByCompanyId(companyId));
+	}
+	
+	@GetMapping("/{companyId}/keyword")
+	@ResponseBody
+	public ResultBean selectByKeyword(@PathVariable("companyId") String companyId, @RequestParam(defaultValue = "") String keyword) {
+		return ResultBean.success(deviceService.selectByCompanyIdAndKeyword(companyId, keyword));
 	}
 	
 	@OperationLog("新增设备")

@@ -6,7 +6,7 @@ import com.maint.common.util.PageResultBean;
 import com.maint.common.util.ResultBean;
 import com.maint.system.model.DeviceBrand;
 import com.maint.system.model.Step;
-import com.maint.system.model.BrandAndStep;
+import com.maint.system.model.vo.BrandStepVO;
 import com.maint.system.service.BrandService;
 
 import org.springframework.stereotype.Controller;
@@ -43,7 +43,7 @@ public class BrandController {
 	@GetMapping
 	public String add(Model model) {
 		//Form表单绑定对象 必须初始化值
-		BrandAndStep brandAndStep = new BrandAndStep();
+		BrandStepVO brandAndStep = new BrandStepVO();
 		List<String> maints = new ArrayList<String>();
 		List<String> keeps = new ArrayList<String>();
 		for (int i = 0; i < 10; i++) {
@@ -66,7 +66,7 @@ public class BrandController {
 	@OperationLog("新增品牌")
 	@PostMapping
 	@ResponseBody
-	public ResultBean add(@ModelAttribute(value = "brandAndStep") BrandAndStep brandAndStep) {
+	public ResultBean add(@ModelAttribute(value = "brandAndStep") BrandStepVO brandAndStep) {
 		return ResultBean.success(brandService.add(brandAndStep));
 	}
 	
@@ -101,7 +101,7 @@ public class BrandController {
 			@PathVariable("rowNum") Integer rowNum, Model model) {
 		String res = null;
 		//Form表单绑定对象 必须初始化值
-		BrandAndStep brandAndStep = new BrandAndStep();
+		BrandStepVO brandAndStep = new BrandStepVO();
 		List<String> steps = new ArrayList<String>();
 		for (int i = 0; i < 10; i++) {
 			steps.add("");
@@ -139,7 +139,7 @@ public class BrandController {
 	@PostMapping("/step/add/{brandId}/{type}")
 	@ResponseBody
 	public ResultBean add(@PathVariable("brandId") String brandId, @PathVariable("type") Integer type,
-			BrandAndStep brandAndStep) {
+			BrandStepVO brandAndStep) {
 		return ResultBean.success(brandService.add(brandId, type, brandAndStep));
 	}
 	

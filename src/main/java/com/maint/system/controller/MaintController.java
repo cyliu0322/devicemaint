@@ -12,6 +12,8 @@ import com.maint.common.util.ResultBean;
 import com.maint.system.enums.MaintainOrderStatusEnum;
 import com.maint.system.model.MaintainOrder;
 import com.maint.system.model.User;
+import com.maint.system.model.vo.MaintVO;
+import com.maint.system.service.BrandService;
 import com.maint.system.service.MaintService;
 import com.maint.system.service.UserService;
 
@@ -32,6 +34,9 @@ public class MaintController {
 	
 	@Resource
 	private UserService userService;
+	
+	@Resource
+	private BrandService brandService;
 	
 	@GetMapping("/index")
 	public String index() {
@@ -54,7 +59,8 @@ public class MaintController {
 	}
 	
 	@GetMapping
-	public String add() {
+	public String add(Model model) {
+		model.addAttribute("brands", brandService.selectAll());
 		return "maint/maint-add";
 	}
 	
@@ -80,6 +86,13 @@ public class MaintController {
 		model.addAttribute("maint", maint);
 		model.addAttribute("nextState", MaintainOrderStatusEnum.DWX.getValue());
 		return "maint/maint-mp";
+	}
+	
+	@OperationLog("新增维修单")
+	@PostMapping
+	@ResponseBody
+	public ResultBean add(MaintVO maintVO) {
+		return ResultBean.success(maintService.add(maintVO));
 	}
 	
 	@PutMapping("/appoint")

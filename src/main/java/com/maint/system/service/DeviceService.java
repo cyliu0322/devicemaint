@@ -25,6 +25,10 @@ public class DeviceService {
 		return deviceMapper.selectByCompanyId(companyId);
 	}
 	
+	public List<Device> selectByCompanyIdAndKeyword(String companyId, String keyword) {
+		return deviceMapper.selectByCompanyIdAndKeyword(companyId, keyword);
+	}
+	
 	public Device selectOne(String deviceId) {
 		return deviceMapper.selectByPrimaryKey(deviceId);
 	}

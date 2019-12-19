@@ -150,6 +150,17 @@
     	d.last_maintenance_time,
     	b.brand_name
     from tbl_device d left join tbl_device_brand b on d.brand_id = b.brand_id
-    where company_id = #{companyId,jdbcType=VARCHAR}
+    where d.company_id = #{companyId,jdbcType=VARCHAR}
   </select>
+  
+  <select id="selectByCompanyIdAndKeyword" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_device
+    where company_id = #{companyId,jdbcType=VARCHAR}
+    <if test="keyword != null and keyword != ''">
+		AND device_name like CONCAT('%', #{keyword, jdbcType=VARCHAR}, '%')
+	</if>
+  </select>
+  
 </mapper>

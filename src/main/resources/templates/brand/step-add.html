@@ -91,7 +91,7 @@
 				//维修流程校验
 				var result = checkForm(data, "maintSteps", stepIndex);
 				if (result[0] == -1) {
-					alert("维修流程" + (result[1] + [[${rowNum}]]) + "前有流程内容为空");
+					layer.alert("维修流程" + (result[1] + [[${rowNum}]]) + "前有流程内容为空");
 					return false;
 				}
 				

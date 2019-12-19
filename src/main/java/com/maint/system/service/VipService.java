@@ -52,6 +52,19 @@ public class VipService {
 		return companyMapper.insert(company);
 	}
 	
+	/**
+	 * 新增并返回主键
+	 * @param company
+	 * @return
+	 */
+	@Transactional
+	public String insert(Company company) {
+		checkCompanyNameExistOnCreate(company.getCompanyName());
+		company.setCompanyId(generateCode("VP"));
+		companyMapper.insert(company);
+		return company.getCompanyId();
+	}
+	
 	@Transactional
 	public boolean update(Company company) {
 		checkCompanyNameExistOnUpdate(company);

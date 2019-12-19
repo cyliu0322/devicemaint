@@ -1,4 +1,4 @@
-package com.maint.system.model;
+package com.maint.system.model.vo;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import java.util.List;
  * @author aisino
  *
  */
-public class BrandAndStep {
+public class BrandStepVO {
 	private String brandName;		//品牌名称
 	private List<String> maintSteps;	//维修流程
 	private List<String> keepSteps;		//保养流程
