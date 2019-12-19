@@ -3,10 +3,14 @@ package com.maint.system.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import com.maint.system.model.Company;
 
 public interface CompanyMapper {
+	@Select("SELECT '1' FROM tbl_company WHERE company_name=#{companyName} LIMIT 1")
+	String isExistCompany(@Param("companyName")String companyName);
+	
     int deleteByPrimaryKey(String companyId);
 
     int insert(Company record);

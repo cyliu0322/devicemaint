@@ -4,11 +4,15 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.maint.system.model.Device;
 
 public interface DeviceMapper {
+	@Select("SELECT '1' FROM tbl_device WHERE company_id=#{companyId} AND device_name=#{deviceName}")
+	String isExistDevice(@Param("companyId") String companyId, @Param("deviceName") String deviceName);
+	
 	/**
 	 * 更改设备保养时间
 	 * @param deviceId 设备id

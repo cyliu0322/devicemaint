@@ -31,6 +31,8 @@ import com.maint.common.util.PageResultBean;
 import com.maint.common.util.ResultBean;
 import com.maint.common.util.StringUtil;
 import com.maint.system.mapper.WebUserMapper;
+import com.maint.system.model.Company;
+import com.maint.system.model.Device;
 import com.maint.system.model.MaintainOrder;
 import com.maint.system.model.OrderStatusBean;
 import com.maint.system.model.WebUser;
@@ -261,16 +263,52 @@ public class WebsiteController {
 	
 	@PostMapping(value="/user/repairApplicationSave")
 	@ResponseBody
-	public ResultBean repairApplicationSave(HttpServletRequest request, @RequestBody MaintainOrder order) {
+	public ResultBean repairApplicationSave(HttpServletRequest request, @RequestBody String paramData) {
 		
-		System.out.println(order);
+		System.out.println(paramData);
 		
 		ResultBean resultBean = null;
 		try {
-			String updMsg = webUserService.repairApplicationSave(order);
+			String updMsg = webUserService.repairApplicationSave(paramData);
 			
 			resultBean = ResultBean.success(updMsg);
 			log.info(updMsg);
+		}catch (Exception e) {
+			log.error(e.getMessage());
+			resultBean = ResultBean.error(e.getMessage());
+		}
+		
+		return resultBean;
+	}
+	
+	@PostMapping(value="/user/getCompanies")
+	@ResponseBody
+	public ResultBean getCompanies() {
+		
+		ResultBean resultBean = null;
+		try {
+			List<Company> companies = webUserService.getCompanies();
+			
+			resultBean = ResultBean.success(companies);
+			log.info(companies.toString());
+		}catch (Exception e) {
+			log.error(e.getMessage());
+			resultBean = ResultBean.error(e.getMessage());
+		}
+		
+		return resultBean;
+	}
+	
+	@PostMapping(value="/user/getDevices")
+	@ResponseBody
+	public ResultBean getDevices(@RequestParam(value="companyId" ) String companyId) {
+		
+		ResultBean resultBean = null;
+		try {
+			List<Device> devices = webUserService.getDevices(companyId);
+			
+			resultBean = ResultBean.success(devices);
+			log.info(devices.toString());
 		}catch (Exception e) {
 			log.error(e.getMessage());
 			resultBean = ResultBean.error(e.getMessage());

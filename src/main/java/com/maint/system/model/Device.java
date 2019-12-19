@@ -1,14 +1,19 @@
 package com.maint.system.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-public class Device {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@SuppressWarnings("serial")
+public class Device implements Serializable{
     private String deviceId;
     
     private String serialNumber;
 
+    @JsonProperty("label")
     private String deviceName;
     
     private String companyId;
@@ -115,6 +120,14 @@ public class Device {
 
 	public void setBrandName(String brandName) {
 		this.brandName = brandName;
+	}
+
+	@Override
+	public String toString() {
+		return "Device [deviceId=" + deviceId + ", serialNumber=" + serialNumber + ", deviceName=" + deviceName
+				+ ", companyId=" + companyId + ", code=" + code + ", brandId=" + brandId + ", firstTime=" + firstTime
+				+ ", years=" + years + ", address=" + address + ", lastMaintenanceTime=" + lastMaintenanceTime
+				+ ", brandName=" + brandName + "]";
 	}
     
 }

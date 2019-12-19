@@ -12,17 +12,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.maint.common.util.DateUtils;
 import com.maint.common.util.StringUtil;
 import com.maint.common.util.UUID19;
 import com.maint.system.enums.MaintainOrderStatusEnum;
+import com.maint.system.mapper.CompanyMapper;
 import com.maint.system.mapper.DeviceBrandMapper;
+import com.maint.system.mapper.DeviceMapper;
 import com.maint.system.mapper.MaintStepTraceMapper;
 import com.maint.system.mapper.MaintainOrderMapper;
 import com.maint.system.mapper.MaintainTraceMapper;
 import com.maint.system.mapper.WebUserMapper;
+import com.maint.system.model.Company;
+import com.maint.system.model.Device;
 import com.maint.system.model.DeviceBrand;
 import com.maint.system.model.MaintStepTrace;
 import com.maint.system.model.MaintainOrder;
@@ -44,6 +50,10 @@ public class WebUserService {
 	private MaintainTraceMapper maintainTraceMapper;
 	@Autowired
 	private MaintStepTraceMapper maintStepTraceMapper;
+	@Autowired
+	private CompanyMapper companyMapper;
+	@Autowired
+	private DeviceMapper deviceMapper;
 	
 	public WebUser getWebUserByUserNameOrPhone(String userNameOrPhone) {
 		return webUserMapper.selectWebUserByUserNameOrPhone(userNameOrPhone);
@@ -130,18 +140,83 @@ public class WebUserService {
 		
 	}
 	
-	public String repairApplicationSave(MaintainOrder order) {
+	public List<Company> getCompanies(){
+		return companyMapper.selectAllWithQuery(new Company());
+	}
+	
+	public List<Device> getDevices(String companyId){
+		return deviceMapper.selectByCompanyId(companyId);
+	}
+	
+	@Transactional(rollbackFor=Exception.class)
+	public String repairApplicationSave(String paramData) throws Exception {
+		JSONObject jsonObject = JSONObject.parseObject(paramData);
 		
-		//判断用户是否录入了企业信息
+		String companyId = jsonObject.getString("companyId");
+		if(StringUtil.isEmpty(companyId)) {
+			//校验企业名称是否存在
+			String companyFlag = companyMapper.isExistCompany(jsonObject.getString("companyName"));
+			if (!"1".equals(companyFlag)) {
+				//加入企业信息
+				Company company = new Company();
+				companyId = UUID19.uuid();
+				company.setCompanyId(companyId);
+				company.setCompanyName(jsonObject.getString("companyName"));
+				company.setCompanyAddress(jsonObject.getString("companyAddress"));
+				company.setContact(jsonObject.getString("companyContact"));
+				company.setEmail(jsonObject.getString("companyEmail"));
+				company.setPhone(jsonObject.getString("companyPhone"));
+				companyMapper.insert(company);
+			}
+		}
+		//插入设备信息
+		if(StringUtil.isEmpty(jsonObject.getString("deviceId"))) {
+			//判断该企业下面此设备是否存在
+			String deviceFlag = deviceMapper.isExistDevice(companyId, jsonObject.getString("deviceName"));
+			if (!"1".equals(deviceFlag)) {
+				Device device = new Device();
+				device.setAddress(jsonObject.getString("address"));
+				device.setBrandId(jsonObject.getString("deviceBrand"));
+				device.setCode(jsonObject.getString("deviceCode"));
+				device.setCompanyId(companyId);
+				device.setDeviceId(UUID19.uuid());
+				device.setDeviceName(jsonObject.getString("deviceName"));
+				device.setFirstTime(new Date());
+				device.setLastMaintenanceTime(new Date());
+				device.setSerialNumber(jsonObject.getString("serialNumber"));
+				device.setYears(jsonObject.getInteger("deviceYears"));
+				deviceMapper.insert(device);
+			}
+		}
 		
-		
-		MaintainOrder maintainOrder = order;
-		maintainOrder.setMaintainOrderId("WX"+UUID19.uuid().substring(0, 18));
+		//插入订单信息
+		MaintainOrder maintainOrder = new MaintainOrder();
+		maintainOrder.setCompanyId(companyId);
+		maintainOrder.setCompanyName(jsonObject.getString("companyName"));
+		maintainOrder.setDeviceBrand(jsonObject.getString("deviceBrand"));
+		maintainOrder.setDeviceCode(jsonObject.getString("deviceCode"));
+		maintainOrder.setDeviceName(jsonObject.getString("deviceName"));
+		maintainOrder.setDeviceYears(jsonObject.getInteger("deviceYears"));
+		maintainOrder.setPhone(jsonObject.getString("phone"));
+		maintainOrder.setFaultDescription(jsonObject.getString("faultDescription"));
+		maintainOrder.setAddress(jsonObject.getString("address"));
+		maintainOrder.setContact(jsonObject.getString("contact"));
+		String orderId = "WX"+UUID19.uuid().substring(0, 18);
+		maintainOrder.setMaintainOrderId(orderId);
 		WebUser webUser = (WebUser) SecurityUtils.getSubject().getPrincipal();
 		maintainOrder.setWebUserId(webUser.getWebUserId());
 		maintainOrder.setState(MaintainOrderStatusEnum.WXSQ.getValue());
 		maintainOrder.setCreateDate(new Date());
 		maintainOrderMapper.insert(maintainOrder);
+		
+		//插入订单追踪表
+		MaintainTrace maintainTrace = new MaintainTrace();
+		maintainTrace.setFaultCause(jsonObject.getString("faultDescription"));
+		maintainTrace.setMaintainDate(new Date());
+		maintainTrace.setMaintainOrderId(orderId);
+		maintainTrace.setMaintainTraceId(UUID19.uuid());
+		maintainTrace.setOrderStatus(MaintainOrderStatusEnum.WXSQ.getValue());
+		maintainTraceMapper.insert(maintainTrace);
 		
 		return "维修申请成功";
 	}

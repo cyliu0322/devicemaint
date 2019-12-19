@@ -6,8 +6,10 @@
   <title>个人中心-维修申请</title>
   <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet">
   <link th:href="@{/css/index.css}" rel="stylesheet">
+  <link th:href="@{/css/jquery-ui.css}" rel="stylesheet">
   
   <script th:src="@{/js/jquery.js}"></script>
+  <script th:src="@{/js/jquery-ui.js}"></script>
   <script th:src="@{/lib/layui/layui.js}"></script>
   <script th:src="@{/js/common.js}"></script>
   
@@ -19,17 +21,62 @@
 		  <legend>维修申请</legend>
 		</fieldset>
   	  	<form class="layui-form">
-		  <div class="layui-form-item">
+  	  	  <div class="layui-form-item">
+  	  	    <div class="layui-input-inline">
+		        <input type="hidden" id="companyId" name="companyId" placeholder="公司ID" class="layui-input">
+		    </div>
 		    <div class="layui-inline">
-		      <label class="layui-form-label">设备名</label>
+		      <label class="layui-form-label">公司名称</label>
 		      <div class="layui-input-inline">
-		        <input type="text" name="deviceName" lay-verify="required" autocomplete="off" placeholder="设备名" class="layui-input">
+		        <input type="text" id="companyName" name="companyName" lay-verify="required" autocomplete="off" placeholder="公司名称" class="layui-input">
 		      </div>
 		    </div>
 		    <div class="layui-inline">
-		      <label class="layui-form-label">设备编码</label>
+		      <label class="layui-form-label">公司联系人</label>
 		      <div class="layui-input-inline">
-		        <input type="text" name="deviceCode" lay-verify="required" autocomplete="off" placeholder="设备编码" class="layui-input">
+		        <input type="text" id="companyContact" name="companyContact" lay-verify="required" autocomplete="off" placeholder="公司联系人" class="layui-input">
+		      </div>
+		    </div>
+		    <div class="layui-inline">
+		      <label class="layui-form-label">公司电话</label>
+		      <div class="layui-input-inline">
+		        <input type="text" id="companyPhone" name="companyPhone" lay-verify="required" autocomplete="off" placeholder="公司电话" class="layui-input">
+		      </div>
+		    </div>
+		    <div class="layui-inline">
+		      <label class="layui-form-label">公司邮箱</label>
+		      <div class="layui-input-inline">
+		        <input type="text" id="companyEmail" name="companyEmail" lay-verify="required" autocomplete="off" placeholder="公司邮箱" class="layui-input">
+		      </div>
+		    </div>
+		  </div>
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">公司地址</label>
+		      <div class="layui-input-block">
+		        <input type="text" id="companyAddress" name="companyAddress" lay-verify="required" autocomplete="off" placeholder="公司地址" class="layui-input">
+		      </div>
+		  </div>
+		  
+		  <div class="layui-form-item">
+		    <div class="layui-input-inline">
+		        <input type="hidden" id="deviceId" name="deviceId" placeholder="设备ID" class="layui-input">
+		    </div>
+		    <div class="layui-inline">
+		      <label class="layui-form-label">设备名</label>
+		      <div class="layui-input-inline">
+		        <input type="text" id="deviceName" name="deviceName" lay-verify="required" autocomplete="off" placeholder="设备名" class="layui-input">
+		      </div>
+		    </div>
+		    <div class="layui-inline">
+		      <label class="layui-form-label">设备型号</label>
+		      <div class="layui-input-inline">
+		        <input type="text" id="serialNumber" name="serialNumber" lay-verify="required" autocomplete="off" placeholder="设备型号" class="layui-input">
+		      </div>
+		    </div>
+		    <div class="layui-inline">
+		      <label class="layui-form-label">设备编号</label>
+		      <div class="layui-input-inline">
+		        <input type="text" id="deviceCode" name="deviceCode" lay-verify="required" autocomplete="off" placeholder="设备编码" class="layui-input">
 		      </div>
 		    </div>
 		    <div class="layui-inline">
@@ -45,49 +92,27 @@
 		    <div class="layui-inline">
 		      <label class="layui-form-label">使用年限</label>
 		      <div class="layui-input-inline">
-		        <input type="text" name="deviceYears" lay-verify="number" autocomplete="off" placeholder="使用年限" class="layui-input">
+		        <input type="text" id="deviceYears" name="deviceYears" lay-verify="number" autocomplete="off" placeholder="使用年限" class="layui-input">
 		      </div>
 		    </div>
 		  </div>
 		  
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">联系人</label>
+		      <div class="layui-input-block">
+		        <input type="text" name="contact" lay-verify="required" autocomplete="off" placeholder="维修地点" class="layui-input">
+		      </div>
+		  </div>
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">联系电话</label>
+		      <div class="layui-input-block">
+		        <input type="text" name="phone" lay-verify="required" autocomplete="off" placeholder="维修地点" class="layui-input">
+		      </div>
+		  </div>
 		  <div class="layui-form-item">
 		      <label class="layui-form-label">维修地点</label>
 		      <div class="layui-input-block">
-		        <input type="text" name="deviceAddr" lay-verify="required" autocomplete="off" placeholder="维修地点" class="layui-input">
-		      </div>
-		  </div>
-		  
-		  <div class="layui-form-item">
-		    <div class="layui-inline">
-		      <label class="layui-form-label">公司名称</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="companyName" lay-verify="required" autocomplete="off" placeholder="公司名称" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">公司联系人</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="companyContact" lay-verify="required" autocomplete="off" placeholder="公司联系人" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">公司电话</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="companyPhone" lay-verify="required" autocomplete="off" placeholder="公司电话" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">公司邮箱</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="companyEmail" lay-verify="required" autocomplete="off" placeholder="公司邮箱" class="layui-input">
-		      </div>
-		    </div>
-		  </div>
-		  
-		  <div class="layui-form-item">
-		      <label class="layui-form-label">公司地址</label>
-		      <div class="layui-input-block">
-		        <input type="text" name="companyAddress" lay-verify="required" autocomplete="off" placeholder="公司地址" class="layui-input">
+		        <input type="text" name="address" lay-verify="required" autocomplete="off" placeholder="维修地点" class="layui-input">
 		      </div>
 		  </div>
 		  
@@ -108,11 +133,90 @@
   </div>
   
   <script th:inline="javascript">
-    layui.use('form', function(){
-	  var form = layui.form;
+  $(document).ready(function() {
+	  $( "#deviceName" ).autocomplete({
+  		minLength: 1,
+  	    source: [],
+  	    focus: function( event, ui ) {
+  	        $( this ).val( ui.item.label );
+  	        return false;
+  	    },
+  	    select: function (event, ui) {
+  	    	event.preventDefault();
+  	    	$( this ).val( ui.item.label );
+  	    	$("#deviceId").val(ui.item.deviceId);
+  	    	$("#serialNumber").val(ui.item.serialNumber);
+  	    	$("#deviceCode").val(ui.item.code);
+    	    //$("#deviceBrand option[value="+ui.item.brandId+"]").prop("selected", true);
+    	    $("#deviceYears").val(ui.item.years);
+    	    $("#address").val(ui.item.address);
+			
+  	        return false;
+  	    }
+  	  }).autocomplete( "instance" )._renderItem = function( ul, item ) {
+  	      return $( "<li>" )
+  	      	.attr( "data-value", item)
+  	        .append( "<div>" + item.label + "</div>" )
+  	        .appendTo( ul );
+  	    };
 	  
-	  form.verify({
+	  $( "#companyName" ).autocomplete({
+  		minLength: 1,
+  	    source: [],
+  	    focus: function( event, ui ) {
+  	        $( this ).val( ui.item.label );
+  	        return false;
+  	    },
+  	    select: function (event, ui) {
+  	    	event.preventDefault();
+  	    	$(this).val(ui.item.label);
+  	    	$("#companyId").val(ui.item.companyId);
+  	    	$("#companyContact").val(ui.item.contact);
+	    	$("#companyPhone").val(ui.item.phone);
+	    	$("#companyEmail").val(ui.item.email);
+	    	$("#companyAddress").val(ui.item.companyAddress);
+	    	
+	    	$.ajax({
+		        type: "POST",
+			    data: "companyId="+ui.item.companyId,
+			    dataType: "json",
+		        url: "/website/user/getDevices",
+		        async: false,
+		        success:function(responseData){
+		        	if(responseData.code == 0){
+		        		$("#deviceName").autocomplete( "option", "source", responseData.data );
+		        	}
+		     	},
+		     	error: function () {}
+		    });
+				
+  	        return false;
+  	    }
+  	  }).autocomplete( "instance" )._renderItem = function( ul, item ) {
+  	      return $( "<li>" )
+  	      	.attr( "data-value", item)
+  	        .append( "<div>" + item.label + "</div>" )
+  	        .appendTo( ul );
+  	    };
+  	    
+  	  $.ajax({
+	        type: "POST",
+		    data: "",
+		    dataType: "json",
+	        url: "/website/user/getCompanies",
+	        async: false,
+	        contentType: "application/json",
+	        success:function(responseData){
+	        	if(responseData.code == 0){
+	        		$( "#companyName" ).autocomplete( "option", "source", responseData.data );
+	        	}
+	     	},
+	     	error: function () {}
 	  });
+  });
+    layui.use(['form','layer'], function(){
+	  var form = layui.form
+	  ,layer = layui.layer;
 	  
 	  //监听提交
 	  form.on('submit(repairApplicationForm)', function(data){
@@ -125,25 +229,16 @@
 		        contentType: "application/json",
 		        success:function(data){
 		        	if(data.code == 0){
-		        		layer.msg(result.msg, {icon: 1});
+		        		layer.alert(data.msg, {icon: 1});
 		        		window.location.href="/website/user/toRepairApplication";
 		        	}else{
-		        		showError(result.msg);
+		        		layer.alert(data.msg, {icon: 2});
 		        	}
 		     	},
 		     	error: function () {
-		     		layer.msg("维修申请失败", {icon: 2});
+		     		layer.alert("维修申请失败", {icon: 2});
 			 	}
 		    });
-		/* $.post('/website/user/repairApplicationSave', data.field, function (result) {
-			if(result.code === 0){
-				layer.msg(result.msg, {icon: 1});
-				window.location.href = "/website/user/toRepairApplication";
-			}else{
-				showError(result.msg);
-			}
-		}); */
-	    return false;
 	  });
 	});
   </script>

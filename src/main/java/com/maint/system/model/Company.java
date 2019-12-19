@@ -1,8 +1,14 @@
 package com.maint.system.model;
 
-public class Company {
+import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@SuppressWarnings("serial")
+public class Company implements Serializable{
     private String companyId;
 
+    @JsonProperty("label")
     private String companyName;
 
     private String companyAddress;
@@ -70,4 +76,11 @@ public class Company {
     public void setDeptId(Integer deptId) {
         this.deptId = deptId;
     }
+
+	@Override
+	public String toString() {
+		return "Company [companyId=" + companyId + ", companyName=" + companyName + ", companyAddress=" + companyAddress
+				+ ", contact=" + contact + ", phone=" + phone + ", email=" + email + ", deptId=" + deptId + "]";
+	}
+    
 }

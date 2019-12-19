@@ -148,6 +148,7 @@
     	d.years,
     	d.address,
     	d.last_maintenance_time,
+    	d.brand_id,
     	b.brand_name
     from tbl_device d left join tbl_device_brand b on d.brand_id = b.brand_id
     where d.company_id = #{companyId,jdbcType=VARCHAR}
