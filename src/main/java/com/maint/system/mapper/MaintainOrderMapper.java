@@ -42,6 +42,8 @@ public interface MaintainOrderMapper {
      * @return
      */
     List<MaintainOrder> selectAllWithQuery(MaintainOrder maintQuery);
+    
+    int countByState(@Param("state") String state);
 
     int updateByPrimaryKeySelective(MaintainOrder record);
 

@@ -46,6 +46,10 @@ public class MaintService {
 		return maints;
 	}
 	
+	public int countByState(MaintainOrderStatusEnum status) {
+		return maintMapper.countByState(status.getValue());
+	}
+	
 	public MaintainOrder selectByMaintId(String maintId) {
 		return maintMapper.selectByPrimaryKey(maintId);
 	}

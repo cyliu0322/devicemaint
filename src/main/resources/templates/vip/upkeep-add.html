@@ -25,15 +25,15 @@
 						th:value="${vip.companyName}" lay-verify="required"
 						lay-vertype="tips" autocomplete="off" class="layui-input" style="border-style: solid solid none solid;" readonly>
 				</div>	
-				<label for="companyContact" class="layui-form-label" style="border-style: solid solid none solid;">联系人</label>
+				<label for="contact" class="layui-form-label" style="border-style: solid solid none solid;">联系人</label>
 				<div class="layui-input-block">
-					<input type="text" id="companyContact" name="companyContact"
+					<input type="text" id="contact" name="contact"
 						th:value="${vip.contact}" lay-verify="required"
 						lay-vertype="tips" autocomplete="off" class="layui-input" style="border-style: solid solid none solid;" readonly>
 				</div>
-				<label for="companyPhone" class="layui-form-label" style="border-style: solid solid none solid;">联系电话</label>
+				<label for="phone" class="layui-form-label" style="border-style: solid solid none solid;">联系电话</label>
 					<div class="layui-input-block">
-						<input type="text" id="companyPhone" name="companyPhone"
+						<input type="text" id="phone" name="phone"
 							th:value="${vip.phone}" lay-verify="required"
 							lay-vertype="tips" autocomplete="off" class="layui-input" style="border-style: solid solid none solid;" readonly>
 					</div>
@@ -45,8 +45,7 @@
 				</div>
 				<label for="deviceBrand" class="layui-form-label" style="border-style: solid solid none solid;">设备品牌</label>
 				<div class="layui-input-block">
-					<input type="text" id="deviceBrand" name="deviceBrand"
-						th:value="${brand.brandName}" lay-verify="required"
+					<input type="text" th:value="${brand.brandName}" lay-verify="required"
 						lay-vertype="tips" autocomplete="off" class="layui-input" style="border-style: solid solid none solid;" readonly>
 				</div>
 				<label for="deviceCode" class="layui-form-label" style="border-style: solid solid none solid;">设备型号</label>
@@ -55,9 +54,9 @@
 						th:value="${device.code}" lay-verify="required"
 						lay-vertype="tips" autocomplete="off" class="layui-input" style="border-style: solid solid none solid;" readonly>
 				</div>
-				<label for="deviceAddr" class="layui-form-label">设备地址</label>
+				<label for="address" class="layui-form-label">设备地址</label>
 				<div class="layui-input-block">
-					<input type="text" id="deviceAddr" name="deviceAddr"
+					<input type="text" id="address" name="address"
 						th:value="${device.address}" lay-verify="required"
 						lay-vertype="tips" autocomplete="off" class="layui-input" readonly>
 				</div>
@@ -76,6 +75,7 @@
 					style="margin-left: 0; text-align: center;">
 					<input type="hidden" id="companyId" name="companyId" th:value="${vip.companyId}">
 					<input type="hidden" id="deviceId" name="deviceId" th:value="${device.deviceId}">
+					<input type="hidden" id="deviceBrand" name="deviceBrand" th:value="${device.brandId}">
 					<button th:text='增加' class="layui-btn layui-btn-normal btn-w100" lay-submit=""
 						data-th-lay-filter='add'></button>
 				</div>

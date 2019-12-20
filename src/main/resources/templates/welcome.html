@@ -49,22 +49,32 @@
                                                 </p>
                                             </a>
                                         </li>
-                                        <li class="layui-col-xs2">
+                                        <!-- <li class="layui-col-xs2">
                                             <a href="#" onclick="openTab('登录日志', '/log/login/index')" class="z-admin-backlog-body">
                                                 <h3>登录日志</h3>
                                                 <p>
                                                     <cite th:text="${loginLogCount}"></cite>
                                                 </p>
                                             </a>
-                                        </li>
-                                        <li class="layui-col-xs2">
+                                        </li> -->
+                                        <!-- <li class="layui-col-xs2">
                                             <a href="#" onclick="openTab('操作日志', '/log/sys/index')" class="z-admin-backlog-body">
                                                 <h3>操作日志</h3>
                                                 <p>
                                                     <cite th:text="${sysLogCount}"></cite>
                                                 </p>
                                             </a>
-                                        </li>
+                                        </li> -->
+                                        <shiro:hasRole name="首检人">
+	                                        <li class="layui-col-xs2">
+	                                            <a href="#" onclick="openTab('维修单管理', '/maint/index')" class="z-admin-backlog-body">
+	                                                <h3>维修申请</h3>
+	                                                <p>
+	                                                    <cite th:text="${maintCount}"></cite>
+	                                                </p>
+	                                            </a>
+	                                        </li>
+                                        </shiro:hasRole>
                                         <li class="layui-col-xs2">
                                             <a href="#" onclick="openTab('在线人数', '/online/index')" class="z-admin-backlog-body">
                                                 <h3>在线人数</h3>

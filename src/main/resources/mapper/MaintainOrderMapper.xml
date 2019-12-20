@@ -263,4 +263,10 @@
 	</where>
   </select>
   
+  <select id="countByState" resultType="java.lang.Integer">
+        select count(*)
+        from tbl_maintain_order
+        where state = #{state}
+  </select>
+  
 </mapper>

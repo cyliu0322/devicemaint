@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.maint.common.annotation.OperationLog;
+import com.maint.system.enums.MaintainOrderStatusEnum;
 import com.maint.system.model.Menu;
 import com.maint.system.service.*;
 
@@ -33,6 +34,9 @@ public class IndexController {
 	@Resource
 	private UserOnlineService userOnlineService;
 	
+	@Resource
+	private MaintService maintService;
+	
 	// 后台管理登录成功后跳转
 	@GetMapping(value = { "/", "/main" })
 	public String index(Model model) {
@@ -50,7 +54,6 @@ public class IndexController {
 	}
 	
 	// 门户网站登录成功后跳转
-	
 	@OperationLog("访问我的桌面")
 	@GetMapping("/welcome")
 	public String welcome(Model model) {
@@ -60,6 +63,9 @@ public class IndexController {
 		int loginLogCount = loginLogService.count();
 		int sysLogCount = sysLogService.count();
 		int userOnlineCount = userOnlineService.count();
+		
+		int maintCount = maintService.countByState(MaintainOrderStatusEnum.WXSQ);
+		model.addAttribute("maintCount", maintCount);
 		
 		model.addAttribute("userCount", userCount);
 		model.addAttribute("roleCount", roleCount);

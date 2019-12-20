@@ -87,8 +87,8 @@
 			</shiro:hasPermission>
 		{{# } }}
 		<shiro:hasPermission name="maint:score">
-			<a lay-event="star">
-				<i class="layui-icon layui-icon-rate-half zadmin-blue" title="评分"></i>
+			<a lay-event="grade">
+				<i class="layui-icon layui-icon-rate zadmin-blue" title="评分"></i>
 			</a>
 		</shiro:hasPermission>
 	</script>
@@ -190,8 +190,8 @@
 					} else if (data.state == '2') {
 						appointMp(data.maintainOrderId);
 					}
-				} else if (event === 'star') {
-					star();
+				} else if (event === 'grade') {
+					grade();
 				} else if (event === 'del') {
 					del(data.maintainOrderId);
 				}
@@ -239,9 +239,9 @@
                 });
 			}
 			
-			function star() {
+			function grade() {
 				layer.open({
-                    content: '/maint/star/',
+                    content: '/maint/grade',
                     title: "评分",
                     area: ['40%', '85%'],
                     type: 2,

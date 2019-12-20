@@ -43,9 +43,9 @@ public class MaintController {
 		return "maint/maint-list";
 	}
 	
-	@GetMapping("/star")
-	public String star() {
-		return "maint/star";
+	@GetMapping("/grade")
+	public String grade() {
+		return "maint/maint-grade";
 	}
 	
 	@OperationLog("获取维修单列表")
