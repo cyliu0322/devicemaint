@@ -48,7 +48,7 @@ public class MobileLoginController {
 	
 	@GetMapping(value = "test")
 	public String test() {
-		return "mobile/jquery-file-upload";
+		return "mobile/testUploadByLayui";
 	}
 	
 	@GetMapping(value = "toLogin")
@@ -164,21 +164,22 @@ public class MobileLoginController {
 	
 	@PostMapping(value = "uploadFile")
 	@ResponseBody
-	public String uploadFile(HttpServletRequest resquest,
+	public ResultBean uploadFile(HttpServletRequest resquest,
 			@RequestParam("file") MultipartFile file) {
 		
 		Map<String, String[]> resquestMap = resquest.getParameterMap();
 		
+		ResultBean resultBean = null;
 		try {
 			
 			String fileName = mobileService.uploadFile(file, resquestMap);
 			
-			return fileName;
+			resultBean = ResultBean.success(fileName);
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return e.getMessage();
+			resultBean = ResultBean.error(e.getMessage());
 		}
-		
+		return resultBean;
 	}
 	
 	@PostMapping(value = "getMetrials")

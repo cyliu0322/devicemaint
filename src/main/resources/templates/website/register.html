@@ -50,7 +50,7 @@
 	      	  <div class="site-title">账号注册</div>
 		      <form class="layui-form">
 		      	<div class="layui-form-item">
-		          <label class="layui-form-label label-style"><i class="layui-icon layui-icon-cellphone"></i></label>
+		          <label class="layui-form-label label-style"><i class="layui-icon layui-icon-username"></i></label>
 		          <div class="layui-input-block input-div">
 		            <input type="text" name="username" required lay-verify="required" placeholder="请输入账号" autocomplete="off" class="layui-input">
 		          </div>
@@ -70,7 +70,7 @@
 		        <div class="layui-form-item">
 		          <label class="layui-form-label label-style"><i class="layui-icon layui-icon-password"></i></label>
 		          <div class="layui-input-block input-div">
-		            <input type="password" name="password" required lay-verify="password" lay-vertype="tips" placeholder="密码为6-20位的字母、符号和数字组合" autocomplete="off" class="layui-input">
+		            <input type="password" name="password" required lay-verify="password" lay-vertype="tips" placeholder="密码必须为6-20位" autocomplete="off" class="layui-input">
 		          </div>
 		        </div>
 		        <div class="layui-form-item">
@@ -179,9 +179,6 @@
 			setTeltime(obj)}
 	    ,1000) 
 	}
-  /* layui.config({
-    base: '/js/' 
-  }).use('firm'); */
   </script>
 
 </body>

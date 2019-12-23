@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+  <title>upload模块快速使用</title>
+  <link rel="stylesheet" th:href="@{/lib/layui/css/layui.css}" media="all">
+</head>
+<body>
+ 
+<div class="layui-upload">
+  <div class="layui-upload-list" style="width:100%;padding:8px 10px;border:1px solid #CECECE;">
+      <button type="button" id="test1" class="layui-btn layui-btn-primary" style="margin-right:15px;height:100px;width:100px;border:1px solid #CECECE;">
+	  	<i class="layui-icon">&#xe654;</i>选择图片
+	  </button>
+	  <img id="pic" style="width:100px;height:100px;">
+  </div>
+  
+  <div class="layui-upload-list" style="width:100%;padding:8px 10px;border:1px solid #CECECE;">
+      <button type="button" id="test2" class="layui-btn layui-btn-primary" style="margin-right:15px;height:100px;width:100px;border:1px solid #CECECE;">
+	  	<i class="layui-icon">&#xe654;</i>选择视频
+	  </button>
+	  <span id="videoSpan"></span>
+  </div>
+</div>
+<script th:src="@{/js/jquery.js}"></script>
+<script th:src="@{/lib/layui/layui.js}"></script>
+<script>
+layui.use('upload', function(){
+  var upload = layui.upload;
+  
+  //上传视频
+  var uploadInst = upload.render({
+    elem: '#test2' //绑定元素
+    ,url: '/mobile/uploadFile' //上传接口
+    ,auto: true
+    ,accept: 'video'
+    ,acceptMime: 'video/*'
+    ,data: {
+    	fileType: 'video'
+    }
+  	,size: 10240
+  	,number: 1
+  	,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+  		//预读本地文件，如果是多文件，则会遍历。(不支持ie8/9)
+  	    obj.preview(function(index, file, result){
+  	    	$('#videoSpan').text(beautySub(file.name, 13)); //视频文件名
+  	    });
+  	    layer.load(); //上传loading
+    }
+    ,done: function(res, index, upload){
+    	layer.closeAll('loading'); //关闭loading
+    	if(res.code == 0){
+    		layer.alert(res.msg, {icon: 1});
+    	}else{
+    		layer.alert(data.msg, {icon: 2});
+    	}
+    }
+    ,error: function(){
+    	layer.closeAll('loading'); //关闭loading
+    }
+  });
+  
+  //上传图片
+  var uploadInst = upload.render({
+    elem: '#test1' //绑定元素
+    ,url: '/mobile/uploadFile' //上传接口
+    ,auto: true
+    ,accept: 'images'
+    ,acceptMime: 'image/*'
+    ,data: {
+    	fileType: 'picture'
+    }
+  	,size: 10240
+  	,number: 1
+  	,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+  		//预读本地文件，如果是多文件，则会遍历。(不支持ie8/9)
+  	    obj.preview(function(index, file, result){
+  	    	$('#pic').attr('src', result); //图片链接（base64）
+  	    });
+  	    layer.load(); //上传loading
+    }
+    ,done: function(res, index, upload){
+    	layer.closeAll('loading'); //关闭loading
+    	if(res.code == 0){
+    		layer.alert(res.msg, {icon: 1});
+    	}else{
+    		layer.alert(data.msg, {icon: 2});
+    	}
+    }
+    ,error: function(){
+    	layer.closeAll('loading'); //关闭loading
+    }
+  });
+  
+  /* * 
+  用途：js中字符串超长作固定长度加省略号（...）处理
+  参数说明：
+     str:需要进行处理的字符串，可含汉字
+     len:需要显示多少个汉字，两个英文字母相当于一个汉字。
+  */
+  function beautySub(str, len) {
+    var reg = /[\u4e00-\u9fa5]/g,    //专业匹配中文
+        slice = str.substring(0, len),
+        chineseCharNum = (~~(slice.match(reg) && slice.match(reg).length)),
+        realen = slice.length*2 - chineseCharNum;
+    return str.substr(0, realen) + (realen < str.length ? "..." : "");
+  }
+});
+</script>
+</body>
+</html>

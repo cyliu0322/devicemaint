@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
   <title>网络公司-个人中心</title>
   <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet">
-  <link th:href="@{/css/index.css}" rel="stylesheet">
   
   <script th:src="@{/js/jquery.js}"></script>
   <script th:src="@{/lib/layui/layui.js}"></script>
@@ -26,34 +25,29 @@
 </head>
 <body class="layui-layout-body">
 	<div class="layui-layout layui-layout-admin">
-	  <div class="layui-header">
-	    <div class="layui-logo">个人中心</div>
+	  <div class="layui-header layui-bg-red">
+	    <div class="layui-logo" style="color:#fff;">个人中心</div>
 	    <ul class="layui-nav layui-layout-right">
+	      <li class="layui-nav-item"><a href="/website/view/index">首页</a></li>
 	      <li class="layui-nav-item"><a href="/website/user/logout">退了</a></li>
 	    </ul>
 	  </div>
 	  
-	  <div class="layui-side layui-bg-black">
-	    <div class="layui-side-scroll">
-	      <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-	      <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+	  <div class="layui-side" style="background-color:#fff; border-right:1px solid #eee;">
+	      <ul class="layui-nav layui-nav-tree" style="background-color:#fff;">
 	        <li class="layui-nav-item">
-	          <a class="" href="javascript:;">账号管理</a>
-	          <dl class="layui-nav-child">
-	            <dd><a href="/website/user/toPersonInfo" target="bodyIframe">个人资料</a></dd>
-	            <dd><a href="/website/user/toUpdPwd" target="bodyIframe">密码修改</a></dd>
-	          </dl>
+	          <a href="/website/user/toPersonInfo" style="color:#FF5722;" target="bodyIframe">个人资料</a>
 	        </li>
 	        <li class="layui-nav-item">
-	          <a class="" href="javascript:;">订单管理</a>
-	          <dl class="layui-nav-child">
-	            <dd><a href="/website/user/toOrderManage" target="bodyIframe">订单查看</a></dd>
-	            <!-- <dd><a href="/website/user/toOrderTrace" target="bodyIframe">订单跟踪</a></dd> -->
-	          </dl>
+	          <a href="/website/user/toUpdPwd" style="color:#FF5722;" target="bodyIframe">密码修改</a>
 	        </li>
-	        <li class="layui-nav-item"><a href="/website/user/toRepairApplication" target="bodyIframe">维修申请</a></li>
+	        <li class="layui-nav-item">
+	          <a href="/website/user/toOrderManage" style="color:#FF5722;" target="bodyIframe">订单查看</a>
+	        </li>
+	        <li class="layui-nav-item">
+	          <a href="/website/user/toRepairApplication" style="color:#FF5722;" target="bodyIframe">维修申请</a>
+	        </li>
 	      </ul>
-	    </div>
 	  </div>
 	  
 	  <div class="layui-body">
@@ -67,7 +61,16 @@
   </div>
   
   <script th:inline="javascript">
-  	
+	 /*  $(".layui-nav-item a").on({
+	      mouseover : function(){
+	    	  $(this).css("background-color","#fff");
+	          $(this).css("color","#FF5722");
+	      } ,  
+	      mouseout : function(){  
+	      	  $(this).css("background-color","#fff");
+	          $(this).css("color","#000");
+	      }   
+	  }); */
   </script>
 </body>
 </html>

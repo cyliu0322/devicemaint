@@ -11,6 +11,7 @@
     <link th:href="@{/css/datatables.min.css}" rel="stylesheet">
     <link th:href="@{/css/jquery-ui.css}" rel="stylesheet">
     <link th:href="@{/lib/zui/lib/uploader/zui.uploader.min.css}" rel="stylesheet">
+    <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet" >
     
     <style>
   	.ui-autocomplete {
@@ -41,7 +42,7 @@
     	<b style="color:#fff;font-size:15px;">首检</b>
     </header>
     <article>
-    	<hr class="divider" style="height:15px;background-color:#eee;margin-right:-10px;">
+    	<hr class="divider" style="height:10px;background-color:#eee;margin-right:-10px;">
     	<!-- 耗材 -->
     	<div id="consumablesDiv" style="height:200px;margin-left:8px;margin-right:8px;">
     		<div class="row" style="margin-top:8px;margin-bottom:8px;">
@@ -56,74 +57,88 @@
 		    </div>
     	</div>
     	
-    	<hr class="divider" style="height:15px;background-color:#eee;margin-right:-10px;">
-    	
-    	<!-- 图片上传 -->
-    	<div id="uploadPictureDiv" style="height:140px;margin-left:8px;margin-right:8px;">
-    		<div class="row" style="margin-top:8px;margin-bottom:8px;">
-    			<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10"><b>上传图片</b></div>
-    		</div>
-		    <hr class="divider" style="margin-bottom:4px;">
-		    <div id='pictureUploader' class="uploader">
-			  <div class="uploader-message text-center">
-			    <div class="content"></div>
-			    <button type="button" class="close">×</button>
-			  </div>
-			  <div class="uploader-files file-list file-list-lg"></div>
-			  <div>
-			    <hr class="divider">
-			    <!-- <div class="uploader-status pull-right text-muted"></div> -->
-			    <button type="button" class="btn btn-link uploader-btn-browse"><i class="icon icon-plus"></i> 选择图片</button>
-			    <button type="button" class="btn btn-link uploader-btn-start"><i class="icon icon-cloud-upload"></i> 开始上传</button>
-			  </div>
-			</div>
-    	</div>
-    	
-    	<hr class="divider" style="height:15px;background-color:#eee;margin-right:-10px;">
-    	
-    	<!-- 视频上传 -->
-    	<div id="uploadVideoDiv" style="height:140px;margin-left:8px;margin-right:8px;">
-    		<div class="row" style="margin-top:8px;margin-bottom:8px;">
-    			<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10"><b>上传视频</b></div>
-    		</div>
-		    <hr class="divider" style="margin-bottom:4px;">
-		    <div id='videoUploader' class="uploader">
-			  <div class="uploader-message text-center">
-			    <div class="content"></div>
-			    <button type="button" class="close">×</button>
-			  </div>
-			  <div class="uploader-files file-list file-list-lg"></div>
-			  <div>
-			    <hr class="divider">
-			    <!-- <div class="uploader-status pull-right text-muted"></div> -->
-			    <button type="button" class="btn btn-link uploader-btn-browse"><i class="icon icon-plus"></i> 选择视频</button>
-			    <button type="button" class="btn btn-link uploader-btn-start"><i class="icon icon-cloud-upload"></i> 开始上传</button>
-			  </div>
-			</div>
-    	</div>
-    	
     	<div id="accordion">
 		  <div style="text-align:center;background-color:#eee;">
 		    <a href="#collapseExample1" data-toggle="collapse" data-parent="#accordion" class="btn btn-link"><span class="caret"></span></a>
 		  </div>
 		  <div class="collapse" id="collapseExample1">
 		    <div class="">
-		      	<!-- 故障描述 -->
-		    	<div id="faultDescriptionDiv" style="height:120px;margin-left:8px;margin-right:8px;">
+		      	<!-- 图片上传 -->
+		    	<div id="uploadPictureDiv" style="height:140px;margin-left:8px;margin-right:8px;">
 		    		<div class="row" style="margin-top:8px;margin-bottom:8px;">
-		    			<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10"><b>故障描述</b></div>
+		    			<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10"><b>上传图片</b></div>
 		    		</div>
-				    <hr class="divider" style="margin-bottom:8px;">
-				    <div>
-					  <textarea class="form-control" rows="3" id="faultDescription" name="faultDescription" placeholder="故障描述"></textarea>
+				    <hr class="divider" style="margin-bottom:4px;">
+				    <div class="layui-upload">
+						<div class="layui-upload-list" style="width:100%;padding:8px 10px;border:1px solid #CECECE;">
+						    <button type="button" id="uploadPictureBtn" class="layui-btn layui-btn-primary" style="margin-right:15px;height:80px;width:80px;border:1px solid #CECECE;">
+							  	<i class="layui-icon">&#xe654;</i>图片
+							</button>
+							<img id="pic" style="width:80px;height:80px;">
+						</div>
 					</div>
+				    <!-- <div id='pictureUploader' class="uploader">
+					  <div class="uploader-message text-center">
+					    <div class="content"></div>
+					    <button type="button" class="close">×</button>
+					  </div>
+					  <div class="uploader-files file-list file-list-lg"></div>
+					  <div>
+					    <hr class="divider">
+					    <div class="uploader-status pull-right text-muted"></div>
+					    <button type="button" class="btn btn-link uploader-btn-browse"><i class="icon icon-plus"></i> 选择图片</button>
+					    <button type="button" class="btn btn-link uploader-btn-start"><i class="icon icon-cloud-upload"></i> 开始上传</button>
+					  </div>
+					</div> -->
 		    	</div>
+		    	
+		    	<hr class="divider" style="height:10px;background-color:#eee;margin-left:-12px;margin-right:-12px;">
+		    	<!-- 视频上传 -->
+		    	<div id="uploadVideoDiv" style="height:140px;margin-left:8px;margin-right:8px;">
+		    		<div class="row" style="margin-top:8px;margin-bottom:8px;">
+		    			<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10"><b>上传视频</b></div>
+		    		</div>
+				    <hr class="divider" style="margin-bottom:4px;">
+				    <div class="layui-upload">
+						<div class="layui-upload-list" style="width:100%;padding:8px 10px;border:1px solid #CECECE;">
+						    <button type="button" id="uploadVedioBtn" class="layui-btn layui-btn-primary" style="margin-right:15px;height:80px;width:80px;border:1px solid #CECECE;">
+							  	<i class="layui-icon">&#xe654;</i>视频
+							</button>
+							<span id="videoSpan"></span>
+						</div>
+					</div>
+				    <!-- <div id='videoUploader' class="uploader">
+					  <div class="uploader-message text-center">
+					    <div class="content"></div>
+					    <button type="button" class="close">×</button>
+					  </div>
+					  <div class="uploader-files file-list file-list-lg"></div>
+					  <div>
+					    <hr class="divider">
+					    <div class="uploader-status pull-right text-muted"></div>
+					    <button type="button" class="btn btn-link uploader-btn-browse"><i class="icon icon-plus"></i> 选择视频</button>
+					    <button type="button" class="btn btn-link uploader-btn-start"><i class="icon icon-cloud-upload"></i> 开始上传</button>
+					  </div>
+					</div> -->
+		    	</div>
+		    	
+		    	<hr class="divider" style="height:10px;background-color:#eee;margin-left:-12px;margin-right:-12px;">
 		    </div>
 		  </div>
 		 </div>
 		 
-		<hr class="divider" style="height:15px;background-color:#eee;margin-right:-10px;">
-    	
+		 <!-- 故障描述 -->
+		 <div id="faultDescriptionDiv" style="height:120px;margin-left:8px;margin-right:8px;">
+		    <div class="row" style="margin-top:8px;margin-bottom:8px;">
+		    	<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10"><b>故障描述</b></div>
+		    </div>
+			<hr class="divider" style="margin-bottom:8px;">
+			<div>
+				<textarea class="form-control" rows="3" id="faultDescription" name="faultDescription" placeholder="故障描述"></textarea>
+			</div>
+		</div>
+		 
+		<hr class="divider" style="height:10px;background-color:#eee;margin-right:-10px;">
     	<!-- 提交 -->
     	<div id="submitDiv">
     		<button id="submitBtn" class="btn btn-primary btn-block " type="button" th:onclick="'firstInspectionSubmit();'">提交</button>
@@ -172,8 +187,81 @@
     <script th:src="@{/js/bootstrapValidator.min.js}"></script>
     <script th:src="@{/js/datatables.min.js}"></script>
     <script th:src="@{/lib/zui/lib/uploader/zui.uploader.min.js}"></script>
+    <script th:src="@{/lib/layui/layui.js}"></script>
     <script th:inline="javascript">
+    var uploadedPictureName=""; //已上传的图片名
+    var uploadedVideoName = ""; //已上传的视频名
     $(document).ready(function() {
+    	
+    	layui.use(['upload'], function(){
+  		  upload = layui.upload;
+  		  
+  		  //上传视频
+  		  var uploadInst = upload.render({
+  		    elem: '#uploadVedioBtn' //绑定元素
+  		    ,url: '/mobile/uploadFile' //上传接口
+  		    ,auto: true
+  		    ,accept: 'video'
+  		    ,acceptMime: 'video/*'
+  		    ,data: {
+  		    	fileType: 'video'
+  		    }
+  		  	,size: 10240
+  		  	,number: 1
+  		  	,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+  		  		//预读本地文件，如果是多文件，则会遍历。(不支持ie8/9)
+  		  	    obj.preview(function(index, file, result){
+  		  	    	$('#videoSpan').text(beautySub(file.name, 13)); //视频文件名
+  		  	    });
+  		  	    layer.load(); //上传loading
+  		    }
+  		    ,done: function(res, index, upload){
+  		    	layer.closeAll('loading'); //关闭loading
+  		    	if(res.code == 0){
+  		    		uploadedVideoName = res.msg;
+  		    		layer.msg('视频上传成功', {icon: 1});
+  		    	}else{
+  		    		layer.alert(res.msg, {icon: 2});
+  		    	}
+  		    }
+  		    ,error: function(){
+  		    	layer.closeAll('loading'); //关闭loading
+  		    }
+  		  });
+  		  
+  		  //上传图片
+  		  var uploadInst = upload.render({
+  		    elem: '#uploadPictureBtn' //绑定元素
+  		    ,url: '/mobile/uploadFile' //上传接口
+  		    ,auto: true
+  		    ,accept: 'images'
+  		    ,acceptMime: 'image/*'
+  		    ,data: {
+  		    	fileType: 'picture'
+  		    }
+  		  	,size: 10240
+  		  	,number: 1
+  		  	,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+  		  		//预读本地文件，如果是多文件，则会遍历。(不支持ie8/9)
+  		  	    obj.preview(function(index, file, result){
+  		  	    	$('#pic').attr('src', result); //图片链接（base64）
+  		  	    });
+  		  	    layer.load(); //上传loading
+  		    }
+  		    ,done: function(res, index, upload){
+  		    	layer.closeAll('loading'); //关闭loading
+  		    	if(res.code == 0){
+  		    		uploadedPictureName = res.msg;
+  		    		layer.msg('图片上传成功', {icon: 1});
+  		    	}else{
+  		    		layer.alert(res.msg, {icon: 2});
+  		    	}
+  		    }
+  		    ,error: function(){
+  		    	layer.closeAll('loading'); //关闭loading
+  		    }
+  		  });
+  		});
 
     	$('#addMaterialModal').modal({
     		backdrop : 'static',
@@ -253,10 +341,8 @@
         } );
     } );
     
-    var uploadedPictureName="";
-    
     /*上传图片*/
-    $('#pictureUploader').uploader({
+    /* $('#pictureUploader').uploader({
 	  	autoUpload: false,             // 当选择文件后立即自动进行上传操作
 		url: '/mobile/uploadFile',  // 文件上传提交地址
 		multipart_params:{ fileType: 'picture'},
@@ -292,12 +378,10 @@
 			alert("已上传的文件不可删除");
 			console.log("fileId:"+file.id+",fileName:"+file.name);
 		}
-    });
-    
-    var uploadedVideoName = "";
+    });*/
     
     /*上传视频*/
-    $('#videoUploader').uploader({
+    /* $('#videoUploader').uploader({
 	  	autoUpload: false,             // 当选择文件后立即自动进行上传操作
 		url: '/mobile/uploadFile',  // 文件上传提交地址
 		multipart_params:{ fileType: 'video'},
@@ -334,7 +418,7 @@
 			console.log("fileId:"+file.id+",fileName:"+file.name);
 			
 		}
-    });
+    }); */
     
     /*增加材料*/
     function addMaterialSubmit(){
@@ -391,7 +475,21 @@
         .row( $(delCol).parents('tr') )
         .remove()
         .draw();
-    } 
+    }
+    
+     /* * 
+     用途：js中字符串超长作固定长度加省略号（...）处理
+     参数说明：
+        str:需要进行处理的字符串，可含汉字
+        len:需要显示多少个汉字，两个英文字母相当于一个汉字。
+     */
+     function beautySub(str, len) {
+       var reg = /[\u4e00-\u9fa5]/g,    //专业匹配中文
+           slice = str.substring(0, len),
+           chineseCharNum = (~~(slice.match(reg) && slice.match(reg).length)),
+           realen = slice.length*2 - chineseCharNum;
+       return str.substr(0, realen) + (realen < str.length ? "..." : "");
+     }
     </script>
   </body>
 </html>

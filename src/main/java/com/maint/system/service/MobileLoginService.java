@@ -327,8 +327,10 @@ public class MobileLoginService {
 			fileSaveURL = videoSaveUrl;
 		}
 		try {
+//			String newFileName = FileUtil.updateFileName(
+//					file.getOriginalFilename(), resquestMap.get("uuid")[0]);
 			String newFileName = FileUtil.updateFileName(
-					file.getOriginalFilename(), resquestMap.get("uuid")[0]);
+					file.getOriginalFilename(), UUID19.uuid());
 			
 			file.transferTo(
 					new File(

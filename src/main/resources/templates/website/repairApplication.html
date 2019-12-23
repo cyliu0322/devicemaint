@@ -13,6 +13,21 @@
   <script th:src="@{/lib/layui/layui.js}"></script>
   <script th:src="@{/js/common.js}"></script>
   
+  <style>
+  	.ui-autocomplete {
+	    max-height: 200px;
+	    overflow-y: auto;
+	    /* prevent horizontal scrollbar */
+	    overflow-x: hidden;
+	}
+  /* IE 6 doesn't support max-height
+   * we use height instead, but this forces the menu to always be this tall
+   */
+  	html .ui-autocomplete {
+	    height: 200px;
+	}
+  </style>
+  
 </head>
 <body>
   <div class="layui-container" style="padding-top:40px;">
@@ -76,7 +91,7 @@
 		    <div class="layui-inline">
 		      <label class="layui-form-label">设备编号</label>
 		      <div class="layui-input-inline">
-		        <input type="text" id="deviceCode" name="deviceCode" lay-verify="required" autocomplete="off" placeholder="设备编码" class="layui-input">
+		        <input type="text" id="deviceCode" name="deviceCode" lay-verify="required" autocomplete="off" placeholder="设备编号" class="layui-input">
 		      </div>
 		    </div>
 		    <div class="layui-inline">
@@ -100,19 +115,19 @@
 		  <div class="layui-form-item">
 		      <label class="layui-form-label">联系人</label>
 		      <div class="layui-input-block">
-		        <input type="text" name="contact" lay-verify="required" autocomplete="off" placeholder="维修地点" class="layui-input">
+		        <input type="text" id="contact" name="contact" lay-verify="required" autocomplete="off" placeholder="联系人" class="layui-input">
 		      </div>
 		  </div>
 		  <div class="layui-form-item">
 		      <label class="layui-form-label">联系电话</label>
 		      <div class="layui-input-block">
-		        <input type="text" name="phone" lay-verify="required" autocomplete="off" placeholder="维修地点" class="layui-input">
+		        <input type="text" id="phone" name="phone" lay-verify="required" autocomplete="off" placeholder="联系电话" class="layui-input">
 		      </div>
 		  </div>
 		  <div class="layui-form-item">
 		      <label class="layui-form-label">维修地点</label>
 		      <div class="layui-input-block">
-		        <input type="text" name="address" lay-verify="required" autocomplete="off" placeholder="维修地点" class="layui-input">
+		        <input type="text" id="address" name="address" lay-verify="required" autocomplete="off" placeholder="维修地点" class="layui-input">
 		      </div>
 		  </div>
 		  
@@ -133,6 +148,7 @@
   </div>
   
   <script th:inline="javascript">
+  var form;
   $(document).ready(function() {
 	  $( "#deviceName" ).autocomplete({
   		minLength: 1,
@@ -147,9 +163,10 @@
   	    	$("#deviceId").val(ui.item.deviceId);
   	    	$("#serialNumber").val(ui.item.serialNumber);
   	    	$("#deviceCode").val(ui.item.code);
-    	    //$("#deviceBrand option[value="+ui.item.brandId+"]").prop("selected", true);
+    	    $("#deviceBrand").find("option[value="+ui.item.brandId+"]").prop("selected",true);
     	    $("#deviceYears").val(ui.item.years);
     	    $("#address").val(ui.item.address);
+    	    form.render(); //必须要重新渲染，下拉列表（select）才可以显示选中值
 			
   	        return false;
   	    }
@@ -215,7 +232,7 @@
 	  });
   });
     layui.use(['form','layer'], function(){
-	  var form = layui.form
+	  form = layui.form
 	  ,layer = layui.layer;
 	  
 	  //监听提交
