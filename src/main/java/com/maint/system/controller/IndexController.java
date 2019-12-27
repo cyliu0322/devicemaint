@@ -7,10 +7,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.maint.common.annotation.OperationLog;
 import com.maint.system.enums.MaintainOrderStatusEnum;
+import com.maint.system.model.DateAndNum;
 import com.maint.system.model.Menu;
 import com.maint.system.service.*;
 
 import javax.annotation.Resource;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -36,6 +39,9 @@ public class IndexController {
 	
 	@Resource
 	private MaintService maintService;
+	
+	@Resource
+	private MaintenanceService maintenanceService;
 	
 	// 后台管理登录成功后跳转
 	@GetMapping(value = { "/", "/main" })
@@ -82,4 +88,21 @@ public class IndexController {
 	public List<Integer> recentlyWeekLoginCount() {
 		return loginLogService.recentlyWeekLoginCount();
 	}
+	
+	@OperationLog("查看近七日维修保养统计图")
+	@GetMapping("/weekMaintCount")
+    @ResponseBody
+    public List<Object> getWeek() {
+    	List<Object> result = new ArrayList<Object>();
+    	List<DateAndNum> maintApply = maintService.selectCountForApply();
+    	List<DateAndNum> fitApply = maintenanceService.selectCountForApply();
+    	List<DateAndNum> maintComplete = maintService.selectCountForComplete();
+    	List<DateAndNum> fitComplete = maintenanceService.selectCountForComplete();
+    	
+    	result.add(maintApply);
+    	result.add(fitApply);
+    	result.add(maintComplete);
+    	result.add(fitComplete);
+    	return result;
+    }
 }

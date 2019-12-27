@@ -61,10 +61,10 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label">首检人</label>
 				<div class="layui-input-block">
-					<select name="userId" xm-select="role-select" lay-vertype="tips">
+					<select name="userId" xm-select="role-select" lay-vertype="tips" lay-verify="required">
 						<option value="">请选择首检人</option>
 						<option th:each="user:${users}" th:value="${user.userId}"
-							th:text="${user.username}"></option>
+							th:text="${user.nickname}"></option>
 					</select>
 				</div>
 			</div>
@@ -93,7 +93,7 @@
 			//监听提交
 			form.on('submit(appoint)', function (form) {
 				form.field._method = 'PUT';
-				$.post('/maint/appoint/prior', form.field, function (result) {
+				$.post('/maint/appoint', form.field, function (result) {
 					handlerResult(result, addDone);
 				});
 				return false;

@@ -18,4 +18,5 @@ public class SystemController {
         model.addAttribute("server", server);
         return "system/index";
     }
+
 }

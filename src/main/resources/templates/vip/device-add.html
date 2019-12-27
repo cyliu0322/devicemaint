@@ -19,22 +19,22 @@
 	<div class="z-body animated fadeIn">
 		<form action="" method="post" class="layui-form layui-form-pane">
 			<div class="layui-form-item">
-				<label for="serialNumber" class="layui-form-label" style="border-style: solid solid none solid;">设备编号</label>
-				<div class="layui-input-block">
-					<input type="text" id="serialNumber" name="serialNumber"
-						th:value="${device?.serialNumber}" lay-verify="required"
-						lay-vertype="tips" autocomplete="off" class="layui-input border-no-bottom">
-				</div>
 				<label for="deviceName" class="layui-form-label" style="border-style: solid solid none solid;">设备名称</label>
 				<div class="layui-input-block">
 					<input type="text" id="deviceName" name="deviceName"
 						th:value="${device?.deviceName}" lay-verify="required"
 						lay-vertype="tips" autocomplete="off" class="layui-input border-no-bottom">
 				</div>
-				<label for="code" class="layui-form-label" style="border-style: solid solid none solid;">设备型号</label>
+				<label for="code" class="layui-form-label" style="border-style: solid solid none solid;">设备编号</label>
 				<div class="layui-input-block">
 					<input type="text" id="code" name="code"
 						th:value="${device?.code}" lay-verify="required"
+						lay-vertype="tips" autocomplete="off" class="layui-input border-no-bottom">
+				</div>
+				<label for="serialNumber" class="layui-form-label" style="border-style: solid solid none solid;">型号</label>
+				<div class="layui-input-block">
+					<input type="text" id="serialNumber" name="serialNumber"
+						th:value="${device?.serialNumber}" lay-verify="required"
 						lay-vertype="tips" autocomplete="off" class="layui-input border-no-bottom">
 				</div>
 				<label for="firstTime" class="layui-form-label" style="border-style: solid solid none solid;">初装时间</label>
@@ -43,7 +43,7 @@
 						th:value="${#dates.format(device?.firstTime, 'yyyy-MM-dd HH:mm:ss')}" lay-verify="required"
 						lay-vertype="tips" autocomplete="off" class="layui-input custom-date border-no-bottom">
 				</div>
-				<label for="code" class="layui-form-label" style="border-style: solid solid none solid;">使用年数</label>
+				<label for="years" class="layui-form-label" style="border-style: solid solid none solid;">使用年数</label>
 				<div class="layui-input-block">
 					<input type="number" id="years" name="years"
 						th:value="${device?.years}" lay-verify="required|number"

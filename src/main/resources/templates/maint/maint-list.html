@@ -75,10 +75,20 @@
 		{{# if(d.state == 0 || d.state == 2) { }}
 			<shiro:hasPermission name="maint:appoint">
 				<a lay-event="appoint">
-					<i class="layui-icon layui-icon-release zadmin-oper-area zadmin-blue" title="派单"></i>
+					<i class="layui-icon layui-icon-form zadmin-oper-area zadmin-blue" title="派单"></i>
 				</a>
 			</shiro:hasPermission>
 		{{# } }}
+		{{# if(d.state == 6) { }}
+			<shiro:hasPermission name="maint:score">
+				<a lay-event="grade">
+					<i class="layui-icon layui-icon-rate zadmin-blue" title="评分"></i>
+				</a>
+			</shiro:hasPermission>
+		{{# } }}
+	</script>
+	
+	<!-- 
 		{{# if(d.state == 0) { }}
 			<shiro:hasPermission name="maint:delete">
 				<a lay-event="del">
@@ -86,12 +96,7 @@
 				</a>
 			</shiro:hasPermission>
 		{{# } }}
-		<shiro:hasPermission name="maint:score">
-			<a lay-event="grade">
-				<i class="layui-icon layui-icon-rate zadmin-blue" title="评分"></i>
-			</a>
-		</shiro:hasPermission>
-	</script>
+	 -->
 	
 	<script th:src="@{/lib/jquery/jquery.min.js}"></script>
 	<script th:src="@{/lib/layui/layui.js}"></script>
@@ -239,6 +244,27 @@
                 });
 			}
 			
+			function zdtc(data) {
+				var result = [];
+				var date = getWeekList();
+				if (data.length == 7) {
+					for (var i = 0; i < 7; i++) {
+						result[i] = data[i].num; 
+					}
+				} else {
+					for (var i = 0; i < 7; i++) {
+						for (var j = 0; j < data.length; j++) {
+							if (data[j].date == date[i]) {
+								result[i] = data[j].num;
+								break;
+							}
+							result[i] = 0;
+						}
+					}
+				}
+            	return result;
+            }
+			
 			function grade() {
 				layer.open({
                     content: '/maint/grade',
@@ -254,7 +280,7 @@
 			}
 			
 			function del(id) {
-				layer.confirm("确定删除用户吗?", {icon: 3, title: '提示'},
+				layer.confirm("确定删除记录吗?", {icon: 3, title: '提示'},
 					function (index) {//确定回调
 						$.post('/maint/' + id, {_method: "DELETE"}, function (data) {
 							layer.close(index);

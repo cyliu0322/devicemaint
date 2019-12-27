@@ -32,8 +32,8 @@ public class Device implements Serializable{
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date lastMaintenanceTime;
     
-    private String brandName;
-
+    private String brandName = "";
+    
     public String getDeviceId() {
         return deviceId;
     }

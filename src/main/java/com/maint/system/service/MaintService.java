@@ -8,9 +8,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.github.pagehelper.PageHelper;
 import com.maint.common.util.StringUtil;
 import com.maint.system.enums.MaintainOrderStatusEnum;
+import com.maint.system.mapper.DeptMapper;
 import com.maint.system.mapper.MaintainOrderMapper;
 import com.maint.system.mapper.MaintainTraceMapper;
+import com.maint.system.mapper.UserMapper;
 import com.maint.system.model.Company;
+import com.maint.system.model.DateAndNum;
 import com.maint.system.model.Device;
 import com.maint.system.model.MaintainOrder;
 import com.maint.system.model.MaintainTrace;
@@ -19,6 +22,7 @@ import com.maint.system.model.vo.MaintVO;
 
 import javax.annotation.Resource;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -32,10 +36,24 @@ public class MaintService {
 	private MaintainTraceMapper traceMapper;
 	
 	@Resource
+	private UserMapper userMapper;
+	
+	@Resource
+	private DeptMapper deptMapper;
+	
+	@Resource
 	private VipService vipService;
 	
 	@Resource
 	private DeviceService deviceService;
+	
+	public List<DateAndNum> selectCountForApply() {
+		return traceMapper.selectCountForApply();
+	}
+	
+	public List<DateAndNum> selectCountForComplete() {
+		return traceMapper.selectCountForComplete();
+	}
 	
 	public List<MaintainOrder> selectAllWithQuery(int page, int rows, MaintainOrder maintQuery) {
 		PageHelper.startPage(page, rows);
@@ -66,12 +84,15 @@ public class MaintService {
 	public int add(MaintVO maintVO) {
 		String companyId = maintVO.getCompanyId();
 		String deviceId = maintVO.getDeviceId();
+		
 		if (companyId.equals("")) {	//新客户
 			Company company = new Company();
 			company.setCompanyName(maintVO.getCompanyName());
 			company.setContact(maintVO.getCompanyContact());
 			company.setPhone(maintVO.getCompanyPhone());
 			company.setCompanyAddress(maintVO.getCompanyAddress());
+			company.setDeptId(maintVO.getDeptId());
+			company.setEmail(maintVO.getEmail());
 			
 			companyId = vipService.insert(company);
 		}
@@ -80,8 +101,11 @@ public class MaintService {
 			Device device = new Device();
 			device.setDeviceName(maintVO.getDeviceName());
 			device.setCode(maintVO.getDeviceCode());
-			device.setFirstTime(maintVO.getFirstTime());
-			device.setAddress(maintVO.getCompanyAddress());
+			device.setSerialNumber(maintVO.getDeviceModel());
+			device.setFirstTime(maintVO.getFirstTime() == null ? new Date() : maintVO.getFirstTime());
+			device.setYears(maintVO.getYears());
+			device.setLastMaintenanceTime(maintVO.getMaintTime() == null ? new Date() : maintVO.getMaintTime());
+			device.setAddress(maintVO.getMaintAddress());
 			device.setCompanyId(companyId);
 			device.setBrandId(maintVO.getBrandId());
 			
@@ -99,6 +123,7 @@ public class MaintService {
 		trace.setMaintainOrderId(maintOrderId);
 		trace.setOrderStatus(MaintainOrderStatusEnum.WXSQ.getValue());
 		trace.setUserId(currentUser.getUserId());
+		trace.setFaultCause("维修单申请。");
 		
 		traceMapper.insert(trace);
 		
@@ -116,7 +141,7 @@ public class MaintService {
 		maintainOrder.setState(MaintainOrderStatusEnum.WXSQ.getValue());
 		maintainOrder.setDeptId(maintVO.getDeptId());
 		maintainOrder.setFaultDescription(maintVO.getMaintDesc());
-//		maintainOrder.setUserId(userId);
+		maintainOrder.setUserId(1);
 		
 		int result = maintMapper.insert(maintainOrder);
 		
@@ -134,6 +159,11 @@ public class MaintService {
 		trace.setMaintainOrderId(maint.getMaintainOrderId());
 		trace.setOrderStatus(maint.getState());
 		trace.setUserId(currentUser.getUserId());
+		if (maint.getState().equals(MaintainOrderStatusEnum.DSJ.getValue())) {
+			trace.setFaultCause("首检派单，首检人：" + userMapper.selectByPrimaryKey(maint.getUserId()).getNickname());
+		} else {
+			trace.setFaultCause("维修派单，维修点：" + deptMapper.selectByPrimaryKey(maint.getDeptId()).getDeptName());
+		}
 		
 		traceMapper.insert(trace);
 		

@@ -144,4 +144,29 @@
     delete from tbl_maintenance_trace
     where maintenance_order_id = #{maintenanceId,jdbcType=VARCHAR}
   </delete>
+  
+  <select id="selectCountForApply" resultType="com.maint.system.model.DateAndNum">
+    SELECT 
+    	DATE_FORMAT(maintenance_date, '%Y-%m-%d') date,
+    	SUM(order_status = '1') AS num
+	FROM
+  		tbl_maintenance_trace
+	WHERE
+		<![CDATA[ DATE_FORMAT(maintenance_date, '%Y-%m-%d') < (CURDATE() + 1) ]]> AND DATE_FORMAT(maintenance_date, '%Y-%m-%d') >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+	GROUP BY
+		DATE_FORMAT(maintenance_date, '%Y-%m-%d') ASC
+  </select>
+  
+  <select id="selectCountForComplete" resultType="com.maint.system.model.DateAndNum">
+    SELECT 
+    	DATE_FORMAT(maintenance_date, '%Y-%m-%d') date,
+    	SUM(order_status = '3') AS num
+	FROM
+  		tbl_maintenance_trace
+	WHERE
+		<![CDATA[ DATE_FORMAT(maintenance_date, '%Y-%m-%d') < (CURDATE() + 1) ]]> AND DATE_FORMAT(maintenance_date, '%Y-%m-%d') >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+	GROUP BY
+		DATE_FORMAT(maintenance_date, '%Y-%m-%d') ASC
+  </select>
+  
 </mapper>

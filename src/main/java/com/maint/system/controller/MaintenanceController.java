@@ -48,6 +48,11 @@ public class MaintenanceController {
 		return "maintenance/maintenance-list";
 	}
 	
+	@GetMapping("/grade")
+	public String grade() {
+		return "maintenance/maintenance-grade";
+	}
+	
 	@OperationLog("获取保养单列表")
 	@GetMapping("/list")
 	@ResponseBody

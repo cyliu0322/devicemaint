@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import com.maint.system.model.DateAndNum;
 import com.maint.system.model.MaintenanceTrace;
 
 public interface MaintenanceTraceMapper {
@@ -22,6 +23,10 @@ public interface MaintenanceTraceMapper {
     MaintenanceTrace selectByPrimaryKey(String maintenanceTraceId);
     
     List<MaintenanceTrace> selectByMaintenanceId(@Param("maintenanceId") String maintenanceId);
+    
+    List<DateAndNum> selectCountForApply();
+    
+    List<DateAndNum> selectCountForComplete();
 
     int updateByPrimaryKeySelective(MaintenanceTrace record);
 

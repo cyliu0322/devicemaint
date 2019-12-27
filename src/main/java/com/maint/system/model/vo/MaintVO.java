@@ -10,18 +10,26 @@ import org.springframework.format.annotation.DateTimeFormat;
  *
  */
 public class MaintVO {
+	// 客户信息
 	private String companyId;
 	private String companyName;
 	private String companyContact;
 	private String companyPhone;
 	private String companyAddress;
+	private String email;
 	private int deptId;
+	// 设备信息
 	private String deviceId;
 	private String deviceName;
 	private String deviceCode;
+	private String deviceModel;
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date firstTime;
+	private int years;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date maintTime;
 	private String brandId;
+	// 故障及联系信息
 	private String maintDesc;
 	private String maintContact;
 	private String maintPhone;
@@ -67,6 +75,14 @@ public class MaintVO {
 		this.companyAddress = companyAddress;
 	}
 	
+	public String getEmail() {
+		return email;
+	}
+	
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
 	public int getDeptId() {
 		return deptId;
 	}
@@ -99,12 +115,36 @@ public class MaintVO {
 		this.deviceCode = deviceCode;
 	}
 	
+	public String getDeviceModel() {
+		return deviceModel;
+	}
+	
+	public void setDeviceModel(String deviceModel) {
+		this.deviceModel = deviceModel;
+	}
+	
 	public Date getFirstTime() {
 		return firstTime;
 	}
 	
 	public void setFirstTime(Date firstTime) {
 		this.firstTime = firstTime;
+	}
+	
+	public int getYears() {
+		return years;
+	}
+	
+	public void setYears(int years) {
+		this.years = years;
+	}
+	
+	public Date getMaintTime() {
+		return maintTime;
+	}
+	
+	public void setMaintTime(Date maintTime) {
+		this.maintTime = maintTime;
 	}
 	
 	public String getBrandId() {

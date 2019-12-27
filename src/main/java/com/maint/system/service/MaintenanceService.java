@@ -7,8 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.pagehelper.PageHelper;
 import com.maint.common.util.StringUtil;
 import com.maint.system.enums.MaintenanceOrderStatusEnum;
+import com.maint.system.mapper.DeptMapper;
 import com.maint.system.mapper.MaintenanceOrderMapper;
 import com.maint.system.mapper.MaintenanceTraceMapper;
+import com.maint.system.model.DateAndNum;
 import com.maint.system.model.MaintenanceOrder;
 import com.maint.system.model.MaintenanceTrace;
 import com.maint.system.model.User;
@@ -25,6 +27,17 @@ public class MaintenanceService {
 	
 	@Resource
 	private MaintenanceTraceMapper traceMapper;
+	
+	@Resource
+	private DeptMapper deptMapper;
+	
+	public List<DateAndNum> selectCountForApply() {
+		return traceMapper.selectCountForApply();
+	}
+	
+	public List<DateAndNum> selectCountForComplete() {
+		return traceMapper.selectCountForComplete();
+	}
 	
 	public List<MaintenanceOrder> selectAllWithQuery(int page, int rows, MaintenanceOrder maintenanceQuery) {
 		PageHelper.startPage(page, rows);
@@ -50,6 +63,7 @@ public class MaintenanceService {
 		trace.setMaintenanceOrderId(maintenanceId);
 		trace.setUserId(currentUser.getUserId());
 		trace.setOrderStatus(MaintenanceOrderStatusEnum.BYDSC.getValue());
+		trace.setFaultCause("新增保养单。");
 		
 		traceMapper.insert(trace);
 		
@@ -79,6 +93,7 @@ public class MaintenanceService {
 		trace.setMaintenanceOrderId(maintenance.getMaintenanceOrderId());
 		trace.setOrderStatus(maintenance.getState());
 		trace.setUserId(currentUser.getUserId());
+		trace.setFaultCause("保养派单，维修点：" + deptMapper.selectByPrimaryKey(maintenance.getDeptId()).getDeptName());
 		
 		traceMapper.insert(trace);
 		

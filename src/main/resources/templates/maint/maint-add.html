@@ -43,6 +43,13 @@
 						lay-vertype="tips" autocomplete="off" class="layui-input">
 				</div>
 			</div>
+			<div class="layui-form-item">
+				<label for="companyEmail" class="layui-form-label">邮箱</label>
+				<div class="layui-input-block">
+					<input type="text" id="email" name="email" lay-verify="customEmail"
+						lay-vertype="tips" autocomplete="off" class="layui-input">
+				</div>
+			</div>
 			<div class="layui-form-item" pane="">
 				<label for="companyAddress" class="layui-form-label">客户地址</label>
 				<div class="layui-input-block">
@@ -70,7 +77,7 @@
                 </div>
 			</div>
 			<div class="layui-form-item">
-				<label for="deviceCode" class="layui-form-label">设备型号</label>
+				<label for="deviceCode" class="layui-form-label">设备编号</label>
 				<div class="layui-input-block">
                     <input type="text" id="deviceCode" name="deviceCode"
                     lay-verify="required" lay-vertype="tips"
@@ -78,9 +85,30 @@
 				</div>
 			</div>
 			<div class="layui-form-item">
+				<label for="deviceModel" class="layui-form-label">型号</label>
+				<div class="layui-input-block">
+                    <input type="text" id="deviceModel" name="deviceModel" lay-vertype="tips"
+                           autocomplete="off" class="layui-input" placeholder="">
+				</div>
+			</div>
+			<div class="layui-form-item">
 				<label for="firstTime" class="layui-form-label">初装时间</label>
 				<div class="layui-input-block">
-					<input type="text" id="firstTime" name="firstTime" lay-verify="required"
+					<input type="text" id="firstTime" name="firstTime"
+						lay-vertype="tips" autocomplete="off" class="layui-input custom-date">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label for="years" class="layui-form-label">使用年数</label>
+				<div class="layui-input-block">
+					<input type="number" id="years" name="years" value="0"
+						lay-vertype="tips" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label for="maintTime" class="layui-form-label">上次维护</label>
+				<div class="layui-input-block">
+					<input type="text" id="maintTime" name="maintTime"
 						lay-vertype="tips" autocomplete="off" class="layui-input custom-date">
 				</div>
 			</div>
@@ -94,7 +122,7 @@
 							th:text="${brand.brandName}"></option>
 					</select>
 				</div>
-			<div class="layui-form-item">	
+			</div>
 				
 			<div class="site-title">
 				<fieldset><legend><a name="config">故障及联系信息</a></legend></fieldset>
@@ -132,7 +160,7 @@
 				<div class="layui-input-block"
 					style="margin-left: 0; text-align: center;">
 					<input type="hidden" id="companyId" name="companyId">
-					<input type="hidden" id="deptId" name="deptId">
+					<input type="hidden" id="deptId" name="deptId" lay-verify="customDept">
 					<input type="hidden" id="deviceId" name="deviceId">
 					<button th:text="增加"
 						class="layui-btn layui-btn-normal btn-w100" lay-submit=""
@@ -167,8 +195,8 @@
 			autocomplete.render({
 				elem: $('#companyName'),
 				url: '/vip/companies',
-				template_val: '{{d.companyName}}',
-				template_txt: '{{d.companyName}}',
+				template_val: '{{d.label}}',
+				template_txt: '{{d.label}}',
                 onselect: function (result) {
                 	dtree.dataInit("deptTree", result.deptId);
 					dtree.setSelectValue("deptTree");
@@ -178,7 +206,8 @@
                     	companyId: result.companyId,
                     	companyContact: result.contact,
                     	companyPhone: result.phone,
-                    	companyAddress: result.companyAddress
+                    	companyAddress: result.companyAddress,
+                    	email: result.email
                     })
                 }
 			});
@@ -187,15 +216,18 @@
 				autocomplete.render({
 					elem: $('#deviceName'),
 					url: '/device/' + id + '/keyword',
-					template_val: '{{d.deviceName}}',
-					template_txt: '{{d.deviceName}}',
+					template_val: '{{d.label}}',
+					template_txt: '{{d.label}}',
 	                onselect: function (result) {
 	                    layui.form.val('form', {
 	                    	deviceId: result.deviceId,
 	                    	brandId: result.brandId,
 	                    	deviceCode: result.code,
+	                    	deviceModel: result.serialNumber,
 	                    	firstTime: result.firstTime,
-	                    	deviceAddress: result.address
+	                    	years: result.years,
+	                    	maintTime: result.lastMaintenanceTime,
+	                    	maintAddress: result.address
 	                    })
 	                }
 				});
@@ -216,16 +248,33 @@
 					treeId: "id",
 					parentId: "parentId",
 					title: "name"
-					},
+				},
 				done: function() {
-					/* var deptId = [[${vip?.deptId + ''}]] ;
-					dtree.dataInit("deptTree", deptId);
-					dtree.setSelectValue("deptTree"); */
+					
 				}
 			});
 			
 			dtree.on("node('deptTree')" ,function(obj){
 				$("#deptId").val(obj.param.nodeId);
+			});
+			
+			form.verify({
+				//自定义非必填邮箱校验
+				customEmail: function(value) {
+					if(value == '') {
+						return;
+					} else {
+						var regex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+						if(!regex.test(value)) {
+							return '邮箱格式不正确';
+						}
+					}
+				},
+				customDept: function(value) {
+					if(value == '') {
+						return '请选择所属区域';
+					}
+				}
 			});
 			
 			form.on('submit(add)', function (form) {

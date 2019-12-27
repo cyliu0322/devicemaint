@@ -262,7 +262,7 @@
     
     <select id="selectByRole" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
-        u.user_id, u.username, u.tel
+        u.user_id, u.username, u.nickname, u.tel
         from user u, user_role ur
         where u.user_id = ur.user_id and u.status = 1 and ur.role_id = #{roleId}
     </select>
