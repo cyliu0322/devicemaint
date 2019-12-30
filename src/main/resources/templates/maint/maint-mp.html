@@ -115,7 +115,7 @@
 			//监听提交
 			form.on('submit(appoint)', function (form) {
 				form.field._method = 'PUT';
-				$.post('/maint/appoint/mp', form.field, function (result) {
+				$.post('/maint/appoint', form.field, function (result) {
 					handlerResult(result, addDone);
 				});
 				return false;
