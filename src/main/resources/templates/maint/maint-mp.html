@@ -19,44 +19,44 @@
 	<div class="z-body animated fadeIn">
 		<form action="" method="post" class="layui-form layui-form-pane">
 			<div class="layui-form-item" style="display: none;">
-				<label for="" class="layui-form-label">维修单ID</label>
+				<label for="maintainOrderId" class="layui-form-label">维修单ID</label>
 				<div class="layui-input-block">
 					<input type="text" id="maintainOrderId" name="maintainOrderId"
 						th:value="${maint.maintainOrderId}" class="layui-input">
 				</div>
 			</div>
 			<div class="layui-form-item" style="display: none;">
-				<label for="" class="layui-form-label">维修单状态</label>
+				<label for="state" class="layui-form-label">维修单状态</label>
 				<div class="layui-input-block">
 					<input type="text" id="state" name="state"
 						th:value="${nextState}" class="layui-input">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label for="" class="layui-form-label" style="border-style: solid solid none solid;">客户名称</label>
+				<label for="companyName" class="layui-form-label" style="border-style: solid solid none solid;">客户名称</label>
 				<div class="layui-input-block">
 					<input type="text" id="companyName" name="companyName"
 						th:value="${maint.companyName}" class="layui-input" style="border-style: solid solid none solid;" readonly>
 				</div>
-				<label for="" class="layui-form-label" style="border-style: solid solid none solid;">设备名称</label>
+				<label for="deviceName" class="layui-form-label" style="border-style: solid solid none solid;">设备名称</label>
 				<div class="layui-input-block">
 					<input type="text" id="deviceName" name="deviceName"
 						th:value="${maint.deviceName}" class="layui-input" style="border-style: solid solid none solid;" readonly>
 				</div>
-				<label for="" class="layui-form-label" style="border-style: solid solid none solid;">设备型号</label>
+				<label for="deviceCode" class="layui-form-label" style="border-style: solid solid none solid;">设备型号</label>
 				<div class="layui-input-block">
 					<input type="text" id="deviceCode" name="deviceCode"
 						th:value="${maint.deviceCode}" class="layui-input" style="border-style: solid solid none solid;" readonly>
 				</div>
-				<label for="" class="layui-form-label" style="border-style: solid solid none solid;">设备品牌</label>
+				<label for="deviceBrand" class="layui-form-label" style="border-style: solid solid none solid;">设备品牌</label>
 				<div class="layui-input-block">
 					<input type="text" id="deviceBrand" name="deviceBrand"
 						th:value="${maint.deviceBrand}" class="layui-input" style="border-style: solid solid none solid;" readonly>
 				</div>
-				<label for="" class="layui-form-label">设备地址</label>
+				<label for="address" class="layui-form-label">设备地址</label>
 				<div class="layui-input-block">
-					<input type="text" id="deviceAddr" name="deviceAddr"
-						th:value="${maint.deviceAddr}" class="layui-input" readonly>
+					<input type="text" id="address" name="address"
+						th:value="${maint.address}" class="layui-input" readonly>
 				</div>
 			</div>
 			<div class="layui-form-item">
