@@ -48,7 +48,7 @@
 					<select name="userId" xm-select="role-select" lay-vertype="tips">
 						<option value="">请选择负责人</option>
 						<option th:each="user:${users}" th:value="${user.userId}"
-							th:text="${user.username}" th:selected="${dept} == null ? false : ${user.userId} eq ${dept.userId}"></option>
+							th:text="${user.nickname}" th:selected="${dept} == null ? false : ${user.userId} eq ${dept.userId}"></option>
 					</select>
 				</div>
 			</div>

@@ -33,7 +33,8 @@
     
     <sql id="Unassign_Column_List">
             u.user_id,
-            u.username
+            u.username,
+            u.nickname
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -46,7 +47,7 @@
     <select id="selectUnassignCharger" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="Unassign_Column_List"/>
-        from user u, role r,user_role ur
+        from user u, role r, user_role ur
         <where>
         	<choose>
         		<when test="deptId == -1024">
