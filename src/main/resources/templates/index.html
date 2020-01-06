@@ -11,6 +11,7 @@
 	<link rel="stylesheet" th:href="@{/lib/layui/css/layui.css}">
 	<link rel="stylesheet" th:href="@{/css/zadmin.css}">
 	<link rel="stylesheet" th:href="@{/css/common.css}">
+	<link rel="stylesheet" th:href="@{/lib/layui/extend/font-awesome-4.7.0/css/font-awesome.min.css}">
 	<link rel="stylesheet" href="//at.alicdn.com/t/font_1179208_6sxekl4z8m7.css">
 </head>
 <body class="layui-layout-body">
@@ -36,21 +37,21 @@
 			</ul>
 			
 			<!-- 头像区域 -->
-			<ul class="layui-nav layui-layout-right">
+			<!-- <ul class="layui-nav layui-layout-right">
 				<li class="layui-nav-item">
 					<a lay-event="#"><i class="layui-icon layui-icon-notice"></i></a>
 				</li>
 				
 				<li class="layui-nav-item">
 					<a lay-event="clear" title="清理标签缓存">
-						<!-- <img th:src="@{/images/clear.png}" alt="" style="height: 18px;"/> -->
+						<img th:src="@{/images/clear.png}" alt="" style="height: 18px;"/>
 						<i class="layui-icon layui-icon-refresh-1"></i>
 					</a>
 				</li>
 				
 				<li class="layui-nav-item">
 					<a>
-						<!-- <img th:src="@{/images/avatar.png}" class="layui-nav-img" alt="头像"> -->
+						<img th:src="@{/images/avatar.png}" class="layui-nav-img" alt="头像">
 						<i class="layui-icon layui-icon-user"></i>
 						<cite><shiro:principal property="nickname"/></cite>
 						<span class="layui-nav-more"></span>
@@ -60,7 +61,7 @@
 							<a href="#">个人中心</a>
 						</dd>
 						<dd lay-unselect>
-							<a href="#">修改密码</a>
+							<a href="/user/1/reset">修改密码</a>
 						</dd>
 						<hr>
 						<dd lay-unselect>
@@ -68,7 +69,55 @@
 						</dd>
 					</dl>
 				</li>
-			</ul>
+			</ul> -->
+			
+			<ul class="layui-nav layui-layout-right">
+	            <!--<li class="layui-nav-item timo-search">
+	              <input class="timo-search-input" type="search" placeholder="搜索">
+	              <button class="timo-search-button"><i class="fa fa-search"></i></button>
+	            </li>-->
+	            <!-- <li class="layui-nav-item">
+	                <a href="#">
+	                    <i class="fa fa-bell-o fa-lg"></i>
+	                </a>
+	            </li>
+	            <li class="layui-nav-item">
+	                <a class="timo-screen-full" href="#">
+	                    <i class="fa layui-icon layui-icon-screen-full"></i>
+	                </a>
+	            </li> -->
+	            <li class="layui-nav-item timo-nav-user">
+	                <a class="timo-header-nickname">
+	                	<cite><shiro:principal property="nickname"/></cite>
+	                	<!-- <span class="layui-nav-more layui-nav-mored"></span> -->
+	                </a>
+	                <div class="layui-nav-child">
+	                    <div class="timo-nav-child-box">
+							<div>
+	                        	<!-- <a class="open-popup" data-title="个人信息" th:attr="data-url=@{/user/userInfo}" data-size="680,464">
+									<i class="fa fa-user-o"></i>个人信息
+								</a> -->
+								<a class="open-popup" data-title="个人信息" href="#" data-size="none">
+									<i class="fa fa-user-o"></i>
+										个人信息
+								</a>
+							</div>
+							<div>
+								<a class="open-popup" data-title="修改密码" th:attr="data-url=@{/user/editPwd}" data-size="456,319">
+									<i class="fa fa-lock" style="font-size:17px;width:12px;"></i>
+										修改密码
+								</a>
+							</div>
+	                        <div>
+	                        	<a th:href="@{/logout}">
+	                        		<i class="fa fa-power-off"></i>
+	                        			退出登录
+	                        	</a>
+	                        </div>
+	                    </div>
+	                </div>
+	            </li>
+	        </ul>
 		</div>
 		
 		<!-- 左侧导航区域 -->
@@ -128,19 +177,50 @@
 	<script th:src="@{/lib/jquery/jquery.min.js}"></script>
 	<script th:src="@{/js/common.js}"></script>
 	<script>
-		var _hmt = _hmt || [];
-		(function() {
-			var hm = document.createElement("script");
-			hm.src = "https://hm.baidu.com/hm.js?407751f44c2fb9c2e7b5b5d3b856fbc1";
-			var s = document.getElementsByTagName("script")[0];
-			s.parentNode.insertBefore(hm, s);
-		})();
-		
-		function logout() {
-			sessionStorage.removeItem("tabs");
-			sessionStorage.removeItem("currentTabId");
-			window.location = "logout";
-		}
+		layui.config({
+			base: '/lib/layui/extend/'
+		}).use(['form'], function () {
+			var $ = layui.$;
+			var form = layui.form;
+			
+			var _hmt = _hmt || [];
+			(function() {
+				var hm = document.createElement("script");
+				hm.src = "https://hm.baidu.com/hm.js?407751f44c2fb9c2e7b5b5d3b856fbc1";
+				var s = document.getElementsByTagName("script")[0];
+				s.parentNode.insertBefore(hm, s);
+			})();
+			
+			$(document).on("click", ".open-popup, .open-popup-param", function () {
+				var title = $(this).data("title");
+				var url = $(this).attr("data-url");
+				var size = $(this).attr("data-size");
+				if (size === undefined || size === "auto") {
+					size = ['50%', '80%'];
+				} else if (size === "max") {
+					size = ['100%', '100%'];
+				} else if (size.indexOf(',') !== -1) {
+					var split = size.split(",");
+					size = [split[0] + 'px', split[1] + 'px'];
+				} else {
+					return false;
+				}
+				window.layerIndex = layer.open({
+					type: 2,
+					title: title,
+					shadeClose: true,
+					maxmin: true,
+					area: size,
+					content: [url, 'on']
+				});
+			});
+			
+			function logout() {
+				sessionStorage.removeItem("tabs");
+				sessionStorage.removeItem("currentTabId");
+				window.location = "logout";
+			}
+		});
 	</script>
 </body>
 </html>

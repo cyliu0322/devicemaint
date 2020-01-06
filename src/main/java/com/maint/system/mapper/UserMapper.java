@@ -57,8 +57,17 @@ public interface UserMapper {
 
     /**
      * 获取所有用户
+     * @param userQuery
+     * @return
      */
     List<User> selectAllWithDept(User userQuery);
+    
+    /**
+     * 获取除超级管理员及系统管理员之外的所有用户
+     * @param userQuery
+     * @return
+     */
+    List<User> selectAllWithDeptExceptAdmin(User userQuery);
     
     /**
      * 获取未分配的负责人

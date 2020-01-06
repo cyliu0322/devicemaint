@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
-import com.maint.common.exception.DuplicateNameException;
+import com.maint.common.exception.ResultException;
 import com.maint.common.util.StringUtil;
 import com.maint.system.mapper.DeviceBrandMapper;
 import com.maint.system.mapper.StepMapper;
@@ -184,13 +184,13 @@ public class BrandService {
 	 */
 	public void checkBrandNameExistOnCreate(String brandName) {
 		if (brandMapper.countByBrandName(brandName) > 0) {
-			throw new DuplicateNameException("品牌名称已存在");
+			throw new ResultException("品牌名称已存在");
 		}
 	}
 	
 	public void checkMaterialNameExistOnUpdate(DeviceBrand brand) {
 		if (brandMapper.countByBrandNameNotIncludeBrandId(brand.getBrandName(), brand.getBrandId()) > 0) {
-			throw new DuplicateNameException("品牌名称已存在");
+			throw new ResultException("品牌名称已存在");
 		}
 	}
 	

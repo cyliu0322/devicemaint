@@ -1,7 +1,7 @@
 package com.maint.system.service;
 
 import com.github.pagehelper.PageHelper;
-import com.maint.common.exception.DuplicateNameException;
+import com.maint.common.exception.ResultException;
 import com.maint.common.util.StringUtil;
 import com.maint.system.mapper.MaterialMapper;
 import com.maint.system.model.Material;
@@ -58,13 +58,13 @@ public class MaterialService {
 	 */
 	public void checkMaterialNameExistOnCreate(String materialName) {
 		if (materialMapper.countByMaterialName(materialName) > 0) {
-			throw new DuplicateNameException("材料名称已存在");
+			throw new ResultException("材料名称已存在");
 		}
 	}
 	
 	public void checkMaterialNameExistOnUpdate(Material material) {
 		if (materialMapper.countByMaterialNameNotIncludeMaterialId(material.getMaterialName(), material.getMaterialId()) > 0) {
-			throw new DuplicateNameException("材料名称已存在");
+			throw new ResultException("材料名称已存在");
 		}
 	}
 	

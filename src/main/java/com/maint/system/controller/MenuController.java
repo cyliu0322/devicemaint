@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.maint.common.annotation.OperationLog;
 import com.maint.common.annotation.RefreshFilterChain;
+import com.maint.common.shiro.ShiroActionProperties;
 import com.maint.common.util.ResultBean;
 import com.maint.system.model.Menu;
 import com.maint.system.service.MenuService;
@@ -42,6 +43,12 @@ public class MenuController {
     @ResponseBody
     public ResultBean tree() {
         return ResultBean.success(menuService.getALLTree());
+    }
+    
+    @GetMapping("/tree/discriminateRole")
+    @ResponseBody
+    public ResultBean treeByRole() {
+        return ResultBean.success(menuService.selectAllByRole());
     }
 
     @GetMapping("/tree/root")

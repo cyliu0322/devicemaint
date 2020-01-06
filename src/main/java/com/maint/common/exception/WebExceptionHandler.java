@@ -107,7 +107,7 @@ public class WebExceptionHandler {
 	}
 	
 	@ExceptionHandler
-	public String lockedAccount(DuplicateNameException e) {
+	public String lockedAccount(ResultException e) {
 		if (log.isDebugEnabled()) {
 			log.debug(e.getMessage());
 		}
