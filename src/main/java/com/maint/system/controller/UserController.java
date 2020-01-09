@@ -47,7 +47,7 @@ public class UserController {
 	
 	@GetMapping
 	public String add(Model model) {
-		model.addAttribute("roles", roleService.selectAll());
+		model.addAttribute("roles", roleService.selectAllByRole());
 		return "user/user-add";
 	}
 	
@@ -55,7 +55,7 @@ public class UserController {
 	public String update(@PathVariable("userId") Integer userId, Model model) {
 		model.addAttribute("roleIds", userService.selectRoleIdsById(userId));
 		model.addAttribute("user", userService.selectOne(userId));
-		model.addAttribute("roles", roleService.selectAll());
+		model.addAttribute("roles", roleService.selectAllByRole());
 		return "user/user-add";
 	}
 	
