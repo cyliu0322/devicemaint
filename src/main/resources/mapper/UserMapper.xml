@@ -277,7 +277,7 @@
             <if test="tel != null and tel != ''">
                 AND u.tel = #{tel}
             </if>
-            AND u.username not in ('root', 'admin')
+            AND u.username not in ('aisino', 'admin')
         </where>
     </select>
 
