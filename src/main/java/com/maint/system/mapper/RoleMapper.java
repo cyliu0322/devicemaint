@@ -17,8 +17,22 @@ public interface RoleMapper {
     int updateByPrimaryKey(Role role);
 
     List<Role> selectAll();
+    
+    /**
+     * 获取除系统角色外的所有角色
+     * @param roleQuery
+     * @return
+     */
+    List<Role> selectAllExceptSysRole();
 
     List<Role> selectAllByQuery(Role roleQuery);
+    
+    /**
+     * 根据查询条件获取除系统角色外的所有角色
+     * @param roleQuery
+     * @return
+     */
+    List<Role> selectAllByQueryExceptSysRole(Role roleQuery);
 
     int count();
 }

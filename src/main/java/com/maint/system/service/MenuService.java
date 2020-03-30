@@ -1,5 +1,6 @@
 package com.maint.system.service;
 
+import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +35,7 @@ public class MenuService {
     public Menu selectByPrimaryKey(Integer id) {
         return menuMapper.selectByPrimaryKey(id);
     }
-
+    
     /**
      * 获取所有菜单
      */
@@ -53,7 +54,20 @@ public class MenuService {
      * 获取所有菜单 (树形结构)
      */
     public List<Menu> getALLTree() {
-        return menuMapper.selectAllTree();
+    	return menuMapper.selectAllTree();
+    }
+    
+    /**
+     * 根据角色获取所有菜单 (树形结构)
+     * 仅超级管理员（用户root）获取所有菜单进行授权
+     */
+    public List<Menu> selectAllByRole() {
+    	//当前用户
+    	User currentUser = (User) SecurityUtils.getSubject().getPrincipal();
+		if (currentUser.getUsername().equals(shiroActionProperties.getSuperAdminUsername())) {
+			return menuMapper.selectAllTree();
+		}
+    	return menuMapper.selectAllTreeExceptSuperMenu();
     }
 
     /**

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
-import com.maint.common.exception.DuplicateNameException;
+import com.maint.common.exception.ResultException;
 import com.maint.common.util.StringUtil;
 import com.maint.system.mapper.CompanyMapper;
 import com.maint.system.mapper.DeviceMapper;
@@ -84,13 +84,13 @@ public class VipService {
 	 */
 	public void checkCompanyNameExistOnCreate(String companyName) {
 		if (companyMapper.countByCompanyName(companyName) > 0) {
-			throw new DuplicateNameException("大客户名称已存在");
+			throw new ResultException("大客户名称已存在");
 		}
 	}
 	
 	public void checkCompanyNameExistOnUpdate(Company company) {
 		if (companyMapper.countByCompanyNameNotIncludeCompanyId(company.getCompanyName(), company.getCompanyId()) > 0) {
-			throw new DuplicateNameException("大客户名称已存在");
+			throw new ResultException("大客户名称已存在");
 		}
 	}
 	

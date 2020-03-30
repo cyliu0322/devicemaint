@@ -50,7 +50,13 @@
 		<shiro:hasPermission name="user:add">
 			<button type="button" class="layui-btn layui-btn-xs layui-btn-normal" lay-event="add">
 				<i class="zadmin-icon zadmin-icon-xinzeng zadmin-oper-area"></i>
-					新增
+					新增用户
+			</button>
+		</shiro:hasPermission>
+		<shiro:hasPermission name="user:reset">
+			<button type="button" class="layui-btn layui-btn-xs layui-btn-normal" lay-event="reset">
+				<i class="layui-icon layui-icon-refresh-1 zadmin-oper-area"></i>
+					密码重置
 			</button>
 		</shiro:hasPermission>
 	</script>
@@ -66,10 +72,6 @@
 				<i class="zadmin-icon zadmin-icon-delete zadmin-oper-area zadmin-red" title="删除"></i>
 			</a>
 		</shiro:hasPermission>
-		
-		<shiro:lacksPermission  name="user:update,user:delete">
-			<i class="zadmin-icon zadmin-icon-wuquanxian zadmin-oper-area zadmin-red"></i>无权限
-			</shiro:lacksPermission>
 	</script>
 	
 	<script type="text/html" id="statusTpl">
@@ -98,35 +100,6 @@
 			var tablePlug = layui.tablePlug;
 			
             tablePlug.smartReload.enable(true);
-            
-			/* dtree.renderSelect({
-				elem: "#deptTree",
-				url: "/dept/tree",
-				dataStyle: "layuiStyle",
-				width: "100%",
-				method: "GET",
-				dot: false,
-				menubar: true,
-				response: {
-					statusCode: 0,
-					message: "msg",
- 					treeId: "id",
-					parentId: "parentId",
-					title: "name"
-				}
-			});
-			
-			dtree.on("node('deptTree')" ,function(obj) {
-				var typeDom = layui.$('#deptId');
-				console.log(typeDom.val() , obj.param.nodeId);
-				console.log(typeDom.val() === obj.param.nodeId);
-				if (typeDom.val() === obj.param.nodeId) {
-					typeDom.val('');
-					layui.$("input[dtree-id='deptTree']").val('请选择');
-				} else {
-					typeDom.val(obj.param.nodeId)
-				}
-			}); */
 			
 			table.render({
 				elem: '#user-table',
@@ -136,12 +109,12 @@
 				smartReloadModel: true,
 				cols: [
 					[
-						{type: 'numbers', title: '序号', width: "5%"},
+						{type: 'checkbox', fixed: 'left'},
 						{field: 'userId', title: 'ID', hide: true},
 						{field: 'username', title: '账号', width: "10%"},
 						{field: 'nickname', title: '姓名', width: "10%"},
 						{field: 'tel', title: '手机', width: "12%"},
-						{field: 'roleNames', title: '角色', width: "18%",
+						{field: 'roleNames', title: '角色', width: "16%",
 							templet: function(d) {
 								var name = "";
 								d.roleNames.forEach(function(e){
@@ -152,7 +125,7 @@
 						},
 						{field: 'deptName', title: '维修点', width: "25%"},
 						{field: 'status', title: '状态', templet: "#statusTpl", width: "10%"},
-						{title: '操作', fixed: 'right', align: 'center', toolbar: '#column-toolbar', width: "10%"}
+						{title: '操作', fixed: 'right', align: 'center', toolbar: '#column-toolbar', width: "13%"}
 					]
 				]
 			});
@@ -172,11 +145,24 @@
 			
 			// 工具条点击事件
 			table.on('toolbar', function (obj) {
-				var data = obj.data;
 				var event = obj.event;
-				
-				if (event === 'add') {
-					add();
+				switch (event) {
+					case 'add':
+						add();
+						break;
+					case 'reset':
+						var checkStatus = table.checkStatus(obj.config.id);
+						var checkData = checkStatus.data;
+						if (checkData.length === 0) {
+							layer.alert('请选择重置用户');
+						} else if (checkData.length > 1) {
+							layer.alert('只能同时重置一个用户');
+						} else {
+							reset(checkData[0].userId);
+						}
+						break;
+					default:
+						break;
 				}
 			});
 			
@@ -186,18 +172,6 @@
 				var event = obj.event;
 				if (event === 'edit') {
 					edit(data.userId);
-				} else if (event === 'reset') {
-					layer.open({
-						content: '/user/' + data.userId + "/reset",
-						title: "重置密码",
-						area: ['500px', '200px'],
-						type: 2,
-						maxmin: true,
-						shadeClose: true,
-						end: function () {
-							table.reload('user-table');
-						}
-					});
 				} else if (event === 'del') {
 					del(obj);
 				}
@@ -256,6 +230,21 @@
 						table.reload('user-table');
 					}
 				});
+			}
+			
+			function reset(id) {
+				console.log(id);
+				layer.open({
+					content: '/user/' + id + "/reset",
+					title: "重置密码",
+					area: ['500px', '300px'],
+					type: 2,
+					maxmin: true,
+					shadeClose: true,
+					end: function () {
+						table.reload('user-table');
+					}
+                });
 			}
 			
 			form.on('submit(search)', function (form) {

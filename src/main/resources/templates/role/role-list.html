@@ -15,13 +15,10 @@
 </head>
 
 <body>
-
     <div class="page-loading">
         <div class="rubik-loader"></div>
     </div>
-
     <div class="z-body animated fadeIn">
-
         <form class="layui-form zadmin-search-area input">
             <div class="layui-form-item">
                 <div class="layui-inline">
@@ -30,17 +27,16 @@
                         <input type="text" name="roleName" autocomplete="off"
                                id="roleName" class="layui-input">
                     </div>
-
                     <button lay-submit="" lay-filter="search" class="layui-btn layui-btn-sm layui-btn-primary table-action">
                         <i class="zadmin-icon zadmin-icon-search"></i>
                     </button>
                 </div>
             </div>
         </form>
-
+        
         <table class="layui-hide" id="role-table"></table>
     </div>
-
+    
     <script type="text/html" id="toolbar">
         <shiro:hasPermission name="role:add">
             <button type="button" class="layui-btn layui-btn-xs layui-btn-normal" lay-event="add">
@@ -153,7 +149,7 @@
                         success: function(layero, index){
                             dtree.render({
                                 obj: $(layero).find("#menuTree"),
-                                url: "/menu/tree",
+                                url: "/menu/tree/discriminateRole",
                                 dataStyle: "layuiStyle",
                                 method: "GET",
                                 dot: false,

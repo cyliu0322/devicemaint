@@ -1,14 +1,16 @@
 package com.maint.system.service;
 
 import com.github.pagehelper.PageHelper;
-import com.maint.common.exception.DuplicateNameException;
+import com.maint.common.exception.ResultException;
 import com.maint.common.shiro.ShiroActionProperties;
 import com.maint.common.util.TreeUtil;
 import com.maint.system.mapper.UserMapper;
 import com.maint.system.mapper.UserRoleMapper;
 import com.maint.system.model.Menu;
 import com.maint.system.model.User;
+import com.maint.system.model.vo.PwdVO;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.session.Session;
@@ -21,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -54,7 +58,16 @@ public class UserService {
 	
 	public List<User> selectAllWithDept(int page, int rows, User userQuery) {
 		PageHelper.startPage(page, rows);
-		List<User> users = userMapper.selectAllWithDept(userQuery);
+		List<User> users = new ArrayList<User>();
+		
+		// 当前用户
+    	User currentUser = (User) SecurityUtils.getSubject().getPrincipal();
+    	if (!currentUser.getUsername().equals(shiroActionProperties.getSuperAdminUsername())) {
+			// 非超级管理员用户无法查询得到超级管理员及系统管理员用户
+    		users = userMapper.selectAllWithDeptExceptAdmin(userQuery);
+		} else {
+			users = userMapper.selectAllWithDept(userQuery);
+		}
 		
 		for (User user : users) {
 			List<String> roleNames = roleService.getRoleNameByUserId(user.getUserId());
@@ -125,6 +138,23 @@ public class UserService {
 		return userMapper.selectByPrimaryKey(id);
 	}
 	
+	public boolean editPassword(PwdVO pwdVO) {
+		// 当前用户
+    	User currentUser = (User) SecurityUtils.getSubject().getPrincipal();
+    	// 密码比对
+    	String oldPassword = new Md5Hash(pwdVO.getOriginal(), currentUser.getSalt()).toString();
+    	if (!oldPassword.equals(currentUser.getPassword())) {
+			throw new ResultException("旧密码不正确");
+		}
+		
+    	// 修改密码，对密码进行加密
+    	String salt = generateSalt();
+    	String password = new Md5Hash(pwdVO.getPassword(), salt).toString();
+    	
+    	//密码修改
+    	return userMapper.updatePasswordByUserId(currentUser.getUserId(), password, salt) == 1 ? true : false;
+	}
+	
 	/**
 	 * 新增时校验用户名是否重复
 	 * 
@@ -133,13 +163,13 @@ public class UserService {
 	 */
 	public void checkUserNameExistOnCreate(String username) {
 		if (userMapper.countByUserName(username) > 0) {
-			throw new DuplicateNameException("用户名已存在");
+			throw new ResultException("用户名已存在");
 		}
 	}
 	
 	public void checkUserNameExistOnUpdate(User user) {
 		if (userMapper.countByUserNameNotIncludeUserId(user.getUsername(), user.getUserId()) > 0) {
-			throw new DuplicateNameException("用户名已存在");
+			throw new ResultException("用户名已存在");
 		}
 	}
 	

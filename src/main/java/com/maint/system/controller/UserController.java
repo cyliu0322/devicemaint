@@ -6,9 +6,11 @@ import com.maint.common.util.PageResultBean;
 import com.maint.common.util.ResultBean;
 import com.maint.common.validate.groups.Create;
 import com.maint.system.model.User;
+import com.maint.system.model.vo.PwdVO;
 import com.maint.system.service.RoleService;
 import com.maint.system.service.UserService;
 
+import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -45,7 +47,7 @@ public class UserController {
 	
 	@GetMapping
 	public String add(Model model) {
-		model.addAttribute("roles", roleService.selectAll());
+		model.addAttribute("roles", roleService.selectAllByRole());
 		return "user/user-add";
 	}
 	
@@ -53,11 +55,11 @@ public class UserController {
 	public String update(@PathVariable("userId") Integer userId, Model model) {
 		model.addAttribute("roleIds", userService.selectRoleIdsById(userId));
 		model.addAttribute("user", userService.selectOne(userId));
-		model.addAttribute("roles", roleService.selectAll());
+		model.addAttribute("roles", roleService.selectAllByRole());
 		return "user/user-add";
 	}
 	
-	@OperationLog("编辑角色")
+	@OperationLog("编辑用户")
 	@PutMapping
 	@ResponseBody
 	public ResultBean update(@Valid User user, @RequestParam(value = "role[]", required = false) Integer[] roleIds) {
@@ -101,11 +103,39 @@ public class UserController {
 		return "user/user-reset-pwd";
 	}
 	
+	/**
+	 * 重置密码
+	 * @return
+	 */
+	@GetMapping("/reset")
+	public String resetPassword2() {
+		return "user/user-reset-pwd";
+	}
+	
 	@OperationLog("重置密码")
 	@PostMapping("/{userId}/reset")
 	@ResponseBody
 	public ResultBean resetPassword(@PathVariable("userId") Integer userId, String password) {
 		userService.updatePasswordByUserId(userId, password);
 		return ResultBean.success();
+	}
+	
+	@GetMapping("/userInfo")
+	public String userInfo(Model model) {
+		//当前用户
+    	User currentUser = (User) SecurityUtils.getSubject().getPrincipal();
+    	model.addAttribute("user", currentUser);
+		return "userInfo";
+	}
+	
+	@GetMapping("/editPwd")
+	public String editPwd() {
+		return "editPwd";
+	}
+	
+	@PutMapping("/editPwd")
+	@ResponseBody
+	public ResultBean editPassword(PwdVO pwdVO) {
+		return ResultBean.success(userService.editPassword(pwdVO));
 	}
 }

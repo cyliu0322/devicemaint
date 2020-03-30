@@ -43,6 +43,12 @@
         <include refid="Base_Column_List"/>
         from role
     </select>
+    
+    <select id="selectAllExceptSysRole" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from role where role_id not in (1, 2)
+    </select>
 
     <select id="selectAllByQuery" resultMap="BaseResultMap">
         select
@@ -52,6 +58,18 @@
             <if test="roleName != null and roleName != ''">
                 AND role_name like concat('%', #{roleName}, '%')
             </if>
+        </where>
+    </select>
+    
+    <select id="selectAllByQueryExceptSysRole" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from role
+        <where>
+            <if test="roleName != null and roleName != ''">
+                AND role_name like concat('%', #{roleName}, '%')
+            </if>
+            AND role_id not in (1, 2)
         </where>
     </select>
 

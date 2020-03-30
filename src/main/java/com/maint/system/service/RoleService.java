@@ -1,13 +1,16 @@
 package com.maint.system.service;
 
 import com.github.pagehelper.PageHelper;
+import com.maint.common.shiro.ShiroActionProperties;
 import com.maint.common.shiro.realm.ManageRealm;
 import com.maint.system.mapper.RoleMapper;
 import com.maint.system.mapper.RoleMenuMapper;
 import com.maint.system.mapper.RoleOperatorMapper;
 import com.maint.system.mapper.UserRoleMapper;
 import com.maint.system.model.Role;
+import com.maint.system.model.User;
 
+import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,21 +37,31 @@ public class RoleService {
 	@Resource
 	private RoleOperatorMapper roleOperatorMapper;
 	
+	@Resource
+    private ShiroActionProperties shiroActionProperties;
+	
 	public Role selectOne(Integer roleId) {
 		return roleMapper.selectByPrimaryKey(roleId);
 	}
 	
-	public List<Role> selectAll(int page, int limit, Role roleQuery) {
+	public List<Role> selectAllByRole(int page, int limit, Role roleQuery) {
 		PageHelper.startPage(page, limit);
-		return selectAllByQuery(roleQuery);
+		
+		//当前用户
+    	User currentUser = (User) SecurityUtils.getSubject().getPrincipal();
+		if (currentUser.getUsername().equals(shiroActionProperties.getSuperAdminUsername())) {
+			return roleMapper.selectAllByQuery(roleQuery);
+		}
+		return roleMapper.selectAllByQueryExceptSysRole(roleQuery);
 	}
 	
-	public List<Role> selectAll() {
-		return roleMapper.selectAll();
-	}
-	
-	public List<Role> selectAllByQuery(Role roleQuery) {
-		return roleMapper.selectAllByQuery(roleQuery);
+	public List<Role> selectAllByRole() {
+		//当前用户
+    	User currentUser = (User) SecurityUtils.getSubject().getPrincipal();
+		if (currentUser.getUsername().equals(shiroActionProperties.getSuperAdminUsername())) {
+			return roleMapper.selectAll();
+		}
+		return roleMapper.selectAllExceptSysRole();
 	}
 	
 	@Transactional

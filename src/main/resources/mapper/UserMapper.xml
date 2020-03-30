@@ -228,7 +228,6 @@
         where user_id = #{userId}
     </update>
 
-
     <select id="selectAllWithDept" resultMap="BaseResultMap">
         select u.user_id,
                u.username,
@@ -252,6 +251,33 @@
             <if test="tel != null and tel != ''">
                 AND u.tel = #{tel}
             </if>
+        </where>
+    </select>
+    
+    <select id="selectAllWithDeptExceptAdmin" resultMap="BaseResultMap">
+        select u.user_id,
+               u.username,
+               u.password,
+               u.nickname,
+               u.salt,
+               u.tel,
+               u.status,
+               u.last_login_time,
+               u.create_time,
+               u.modify_time,
+               u.active_code,
+               u.dept_id,
+               d.dept_name
+        from user u
+                 left join dept d on u.dept_id = d.dept_id
+        <where>
+            <if test="nickname != null and nickname != ''">
+                AND u.nickname like CONCAT('%', #{nickname, jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="tel != null and tel != ''">
+                AND u.tel = #{tel}
+            </if>
+            AND u.username not in ('aisino', 'admin')
         </where>
     </select>
 
