@@ -73,7 +73,7 @@ public class ShiroConfig {
 	public RestShiroFilterFactoryBean restShiroFilterFactoryBean(SecurityManager securityManager) {
 		RestShiroFilterFactoryBean shiroFilterFactoryBean = new RestShiroFilterFactoryBean();
 		shiroFilterFactoryBean.setSecurityManager(securityManager);
-		
+//		shiroFilterFactoryBean.setLoginUrl("/login");
 		Map<String, Filter> filters = shiroFilterFactoryBean.getFilters();
 		filters.put("kickout", kickoutSessionFilter());
 		filters.put("authc", new RestFormAuthenticationFilter());

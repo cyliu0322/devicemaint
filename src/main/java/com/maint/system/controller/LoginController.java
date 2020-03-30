@@ -47,6 +47,13 @@ public class LoginController {
 	@Resource
 	private ShiroActionProperties shiroActionProperties;
 	
+	// 后台管理注销
+//	@OperationLog("注销")
+//	@GetMapping("/login.jsp")
+//	public String loginJsp() {
+//		return "redirect:login";
+//	}
+	
 	// 后台管理登录
 	@GetMapping("/login")
 	public String login(Model model) {

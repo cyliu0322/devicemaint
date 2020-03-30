@@ -96,4 +96,10 @@ public class RestAuthorizationFilter extends PermissionsAuthorizationFilter {
         }
         return false;
     }
+    
+	@Override
+	protected void saveRequestAndRedirectToLogin(ServletRequest request, ServletResponse response) throws IOException {
+		WebUtils.saveRequest(request);
+		WebUtils.issueRedirect(request, response, "/login");
+	}
 }

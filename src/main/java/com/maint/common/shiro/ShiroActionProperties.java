@@ -25,6 +25,7 @@ public class ShiroActionProperties {
 	private Integer retryTimeout;
 	private Integer sessionTimeout;
 	private Integer permsCacheTimeout;
+	private Integer pFirstRole;
 	
 	public String getSuperAdminUsername() {
 		return superAdminUsername;
@@ -82,6 +83,14 @@ public class ShiroActionProperties {
 	
 	public void setPermsCacheTimeout(Integer permsCacheTimeout) {
 		this.permsCacheTimeout = permsCacheTimeout;
+	}
+	
+	public Integer getpFirstRole() {
+		return pFirstRole;
+	}
+	
+	public void setpFirstRole(Integer pFirstRole) {
+		this.pFirstRole = pFirstRole;
 	}
 	
 	@PostConstruct

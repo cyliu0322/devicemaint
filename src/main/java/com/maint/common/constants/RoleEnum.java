@@ -8,7 +8,7 @@ package com.maint.common.constants;
 public enum RoleEnum {
 	GLY(1),	//管理员
 	FZR(2),	//维修点负责人
-	SJY(3),	//首检原
+	SJY(3),	//首检人员
 	KF(4);	//客服
 	
 	private int roleId;

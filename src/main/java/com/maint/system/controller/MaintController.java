@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import com.github.pagehelper.PageInfo;
 import com.maint.common.annotation.OperationLog;
 import com.maint.common.constants.RoleEnum;
+import com.maint.common.shiro.ShiroActionProperties;
 import com.maint.common.util.PageResultBean;
 import com.maint.common.util.ResultBean;
 import com.maint.system.enums.MaintainOrderStatusEnum;
@@ -37,6 +38,9 @@ public class MaintController {
 	
 	@Resource
 	private BrandService brandService;
+	
+	@Resource
+	private ShiroActionProperties shiroActionProperties;
 	
 	@GetMapping("/index")
 	public String index() {
@@ -72,7 +76,7 @@ public class MaintController {
 	
 	@GetMapping("/prior/{maintId}")
 	public String appointPrior(@PathVariable("maintId") String maintId, Model model) {
-		List<User> users = userService.selectByRole(RoleEnum.SJY.getRoleId());
+		List<User> users = userService.selectByRole(shiroActionProperties.getpFirstRole());
 		MaintainOrder maint = maintService.selectByMaintId(maintId);
 		model.addAttribute("users", users);
 		model.addAttribute("maint", maint);

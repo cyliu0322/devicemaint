@@ -23,49 +23,48 @@
 					<div class="layui-card">
 						<div class="layui-card-body">
 							<div class="layui-carousel z-admin-carousel z-admin-backlog" lay-anim="" lay-indicator="inside" lay-arrow="none" style="width: 100%; height: 90px;">
-								<div carousel-item="">
-									<ul class="layui-row layui-col-space10 layui-this">
-										<li class="layui-col-xs2">
-											<a href="#" onclick="openTab('用户管理', '/user/index')" class="z-admin-backlog-body">
-												<h3>用户数</h3>
-												<p>
-													<cite th:text="${userCount}"></cite>
-												</p>
-											</a>
-										</li>
-										<li class="layui-col-xs2">
-											<a href="#" onclick="openTab('角色管理', '/role/index')" class="z-admin-backlog-body">
-												<h3>角色数</h3>
-												<p>
-													<cite th:text="${roleCount}"></cite>
-												</p>
-											</a>
-										</li>
-										<li class="layui-col-xs2">
-											<a href="#" onclick="openTab('菜单管理', '/menu/index')" class="z-admin-backlog-body">
-												<h3>菜单数</h3>
-												<p>
-													<cite th:text="${menuCount}"></cite>
-												</p>
-											</a>
-										</li>
-                                        <!-- <li class="layui-col-xs2">
-                                            <a href="#" onclick="openTab('登录日志', '/log/login/index')" class="z-admin-backlog-body">
-                                                <h3>登录日志</h3>
-                                                <p>
-                                                    <cite th:text="${loginLogCount}"></cite>
-                                                </p>
-                                            </a>
-                                        </li> -->
-                                        <!-- <li class="layui-col-xs2">
-                                            <a href="#" onclick="openTab('操作日志', '/log/sys/index')" class="z-admin-backlog-body">
-                                                <h3>操作日志</h3>
-                                                <p>
-                                                    <cite th:text="${sysLogCount}"></cite>
-                                                </p>
-                                            </a>
-                                        </li> -->
-										<shiro:hasRole name="首检人">
+									<div carousel-item="">
+										<ul class="layui-row layui-col-space10 layui-this">
+											<li class="layui-col-xs2">
+												<a href="#" onclick="openTab('用户管理', '/user/index')" class="z-admin-backlog-body">
+													<h3>用户数</h3>
+													<p>
+														<cite th:text="${userCount}"></cite>
+													</p>
+												</a>
+											</li>
+											<li class="layui-col-xs2">
+												<a href="#" onclick="openTab('角色管理', '/role/index')" class="z-admin-backlog-body">
+													<h3>角色数</h3>
+													<p>
+														<cite th:text="${roleCount}"></cite>
+													</p>
+												</a>
+											</li>
+											<li class="layui-col-xs2">
+												<a href="#" onclick="openTab('菜单管理', '/menu/index')" class="z-admin-backlog-body">
+													<h3>菜单数</h3>
+													<p>
+														<cite th:text="${menuCount}"></cite>
+													</p>
+												</a>
+											</li>
+	                                        <!-- <li class="layui-col-xs2">
+	                                            <a href="#" onclick="openTab('登录日志', '/log/login/index')" class="z-admin-backlog-body">
+	                                                <h3>登录日志</h3>
+	                                                <p>
+	                                                    <cite th:text="${loginLogCount}"></cite>
+	                                                </p>
+	                                            </a>
+	                                        </li> -->
+	                                        <!-- <li class="layui-col-xs2">
+	                                            <a href="#" onclick="openTab('操作日志', '/log/sys/index')" class="z-admin-backlog-body">
+	                                                <h3>操作日志</h3>
+	                                                <p>
+	                                                    <cite th:text="${sysLogCount}"></cite>
+	                                                </p>
+	                                            </a>
+	                                        </li> -->
 											<li class="layui-col-xs2">
 												<a href="#" onclick="openTab('维修单管理', '/maint/index')" class="z-admin-backlog-body">
 													<h3>维修申请</h3>
@@ -74,17 +73,16 @@
 													</p>
 												</a>
 											</li>
-										</shiro:hasRole>
-										<li class="layui-col-xs2">
-											<a href="#" onclick="openTab('在线人数', '/online/index')" class="z-admin-backlog-body">
-												<h3>在线人数</h3>
-												<p>
-													<cite th:text="${userOnlineCount}"></cite>
-												</p>
-											</a>
-										</li>
-									</ul>
-								</div>
+											<li class="layui-col-xs2">
+												<a href="#" onclick="openTab('在线人数', '/online/index')" class="z-admin-backlog-body">
+													<h3>在线人数</h3>
+													<p>
+														<cite th:text="${userOnlineCount}"></cite>
+													</p>
+												</a>
+											</li>
+										</ul>
+									</div>
 							</div>
 						</div>
 					</div>
@@ -160,7 +158,7 @@
 				}]
 			};
 			
-			layui.$.get('/weekMaintCount', function (data) {
+			/* layui.$.get('/weekMaintCount', function (data) {
 				var maintApply = autoPadding(data[0]);		//维修申请
 				var fitApply = autoPadding(data[1]);		//保养申请
 				var maintComplete = autoPadding(data[2]); 	//维修完成
@@ -171,7 +169,7 @@
 				option.series[3].data = fitComplete;
 				// 使用刚指定的配置项和数据显示图表。
 				myChart.setOption(option);
-			});
+			}); */
             
             //遍历数组，对未出现的日期进行数量为0的填充
             function autoPadding(data) {
