@@ -26,6 +26,7 @@ import com.maint.system.mapper.DeviceMapper;
 import com.maint.system.mapper.MaintStepTraceMapper;
 import com.maint.system.mapper.MaintainOrderMapper;
 import com.maint.system.mapper.MaintainTraceMapper;
+import com.maint.system.mapper.ValidateCodeMapper;
 import com.maint.system.mapper.WebUserMapper;
 import com.maint.system.model.Company;
 import com.maint.system.model.Device;
@@ -34,6 +35,7 @@ import com.maint.system.model.MaintStepTrace;
 import com.maint.system.model.MaintainOrder;
 import com.maint.system.model.MaintainTrace;
 import com.maint.system.model.OrderStatusBean;
+import com.maint.system.model.ValidateCode;
 import com.maint.system.model.WebUser;
 
 @Service
@@ -54,6 +56,8 @@ public class WebUserService {
 	private CompanyMapper companyMapper;
 	@Autowired
 	private DeviceMapper deviceMapper;
+	@Autowired
+	private ValidateCodeMapper validateCodeMapper;
 	
 	public WebUser getWebUserByUserNameOrPhone(String userNameOrPhone) {
 		return webUserMapper.selectWebUserByUserNameOrPhone(userNameOrPhone);
@@ -98,6 +102,15 @@ public class WebUserService {
 		webUserMapper.updatePwd(webUser.getWebUserId(), encryptPassword, salt);
 		
 		return "密码修改成功";
+	}
+	
+	public String resetPwd(Map<String, String[]> dataMap) throws Exception {
+		
+		String salt = String.valueOf(System.currentTimeMillis());
+		String encryptPassword = new Md5Hash(dataMap.get("password")[0], salt).toString();
+		webUserMapper.updatePwdByTel(dataMap.get("tel")[0], encryptPassword, salt);
+		
+		return "密码重置成功";
 	}
 	
 	public String updPersonInfo(Map<String, String[]> dataMap) throws Exception {
@@ -249,6 +262,22 @@ public class WebUserService {
 		});
 		
 		return orderStatuss;
+	}
+	
+	public String checkCode(Map<String, String[]> dataMap) throws Exception {
+		String phoneFlag = webUserMapper.isExistPhone(dataMap.get("phone")[0]);
+		if (!"1".equals(phoneFlag)) {
+			throw new Exception("手机号未注册");
+		}
+		
+		String yzmFlag = validateCodeMapper.selectByTelAndYzm(dataMap.get("phone")[0], dataMap.get("checkCode")[0]);
+		if ("1".equals(yzmFlag)) {
+			validateCodeMapper.deleteByTel(dataMap.get("tel")[0]);
+		}else {
+			throw new Exception("验证码错误");
+		}
+		
+		return "校验码校验成功";
 	}
 
 }

@@ -84,6 +84,11 @@ public class WebsiteController {
 		return "website/userCenter";
 	}
 	
+	@GetMapping(value = "/view/forgotPassword")
+	public String forgotPassword() {
+		return "website/forgotPassword";
+	}
+	
 	@PostMapping(value="/view/isLogin")
 	@ResponseBody
 	public ResultBean isLogin() {
@@ -309,6 +314,44 @@ public class WebsiteController {
 			
 			resultBean = ResultBean.success(devices);
 			log.info(devices.toString());
+		}catch (Exception e) {
+			log.error(e.getMessage());
+			resultBean = ResultBean.error(e.getMessage());
+		}
+		
+		return resultBean;
+	}
+	
+	@PostMapping(value="/view/resetPwd")
+	@ResponseBody
+	public ResultBean resetPwd(HttpServletRequest request) {
+		
+		Map<String, String[]> dataMap = request.getParameterMap();
+		
+		ResultBean resultBean = null;
+		try {
+			String updMsg = webUserService.resetPwd(dataMap);
+			resultBean = ResultBean.success(updMsg);
+			log.info(updMsg);
+		}catch (Exception e) {
+			log.error(e.getMessage());
+			resultBean = ResultBean.error(e.getMessage());
+		}
+		
+		return resultBean;
+	}
+	
+	@PostMapping(value="/view/checkCode")
+	@ResponseBody
+	public ResultBean checkCode(HttpServletRequest request) {
+		
+		Map<String, String[]> dataMap = request.getParameterMap();
+		
+		ResultBean resultBean = null;
+		try {
+			String checkCodeMsg = webUserService.checkCode(dataMap);
+			resultBean = ResultBean.success(checkCodeMsg);
+			log.info(checkCodeMsg);
 		}catch (Exception e) {
 			log.error(e.getMessage());
 			resultBean = ResultBean.error(e.getMessage());

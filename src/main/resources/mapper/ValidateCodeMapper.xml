@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maint.system.mapper.ValidateCodeMapper" >
+  <resultMap id="BaseResultMap" type="com.maint.system.model.ValidateCode" >
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="tel_email" property="telEmail" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="yzm" property="yzm" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insert" parameterType="com.maint.system.model.ValidateCode" >
+    insert into tbl_validate_code (id, tel_email, create_date, 
+      yzm)
+    values (#{id,jdbcType=INTEGER}, #{telEmail,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{yzm,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maint.system.model.ValidateCode" >
+    insert into tbl_validate_code
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="telEmail != null" >
+        tel_email,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="yzm != null" >
+        yzm,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="telEmail != null" >
+        #{telEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yzm != null" >
+        #{yzm,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

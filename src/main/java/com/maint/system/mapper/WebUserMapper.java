@@ -9,6 +9,9 @@ import org.apache.ibatis.annotations.Update;
 import com.maint.system.model.WebUser;
 
 public interface WebUserMapper {
+	@Update("UPDATE tbl_web_user SET password=#{newPwd}, salt=#{salt} WHERE tel=#{tel}")
+	int updatePwdByTel(@Param("tel") String tel, @Param("newPwd") String newPwd, @Param("salt") String salt);
+	
 	@Update("UPDATE tbl_web_user SET password=#{newPwd}, salt=#{salt} WHERE web_user_id=#{webUserId}")
 	int updatePwd(@Param("webUserId") int webUserId, @Param("newPwd") String newPwd, @Param("salt") String salt);
 	
