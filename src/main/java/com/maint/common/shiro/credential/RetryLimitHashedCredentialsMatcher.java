@@ -22,11 +22,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RetryLimitHashedCredentialsMatcher extends
 		HashedCredentialsMatcher {
 
-	@Resource
-	private RedisTemplate<String, AtomicInteger> redisTemplate;
-
-	@Resource
-	private ShiroActionProperties shiroActionProperties;
+//	@Resource
+//	private RedisTemplate<String, AtomicInteger> redisTemplate;
+//
+//	@Resource
+//	private ShiroActionProperties shiroActionProperties;
 
 	public RetryLimitHashedCredentialsMatcher(String hashAlgorithmName) {
 		super(hashAlgorithmName);
@@ -36,32 +36,32 @@ public class RetryLimitHashedCredentialsMatcher extends
 	public boolean doCredentialsMatch(AuthenticationToken token,
 			AuthenticationInfo info) {
 
-		ValueOperations<String, AtomicInteger> opsForValue = redisTemplate.opsForValue();
-
-		String username = (String) token.getPrincipal();
-
-		String key = username + IPUtils.getIpAddr();
-
-		// 超级管理员不进行登录次数校验.
-		if (!shiroActionProperties.getSuperAdminUsername().equals(key)) {
-
-			AtomicInteger retryCount = opsForValue.get(key);
-			if (retryCount == null) {
-				retryCount = new AtomicInteger(0);
-			}
-
-			if (retryCount.incrementAndGet() > shiroActionProperties.getRetryCount()) {
-				throw new ExcessiveAttemptsException();
-			}
-
-			Integer retryTimeout = shiroActionProperties.getRetryTimeout() == null ? 300 : shiroActionProperties.getRetryTimeout();
-			opsForValue.set(key, retryCount, retryTimeout, TimeUnit.SECONDS);
-		}
+//		ValueOperations<String, AtomicInteger> opsForValue = redisTemplate.opsForValue();
+//
+//		String username = (String) token.getPrincipal();
+//
+//		String key = username + IPUtils.getIpAddr();
+//
+//		// 超级管理员不进行登录次数校验.
+//		if (!shiroActionProperties.getSuperAdminUsername().equals(key)) {
+//
+//			AtomicInteger retryCount = opsForValue.get(key);
+//			if (retryCount == null) {
+//				retryCount = new AtomicInteger(0);
+//			}
+//
+//			if (retryCount.incrementAndGet() > shiroActionProperties.getRetryCount()) {
+//				throw new ExcessiveAttemptsException();
+//			}
+//
+//			Integer retryTimeout = shiroActionProperties.getRetryTimeout() == null ? 300 : shiroActionProperties.getRetryTimeout();
+//			opsForValue.set(key, retryCount, retryTimeout, TimeUnit.SECONDS);
+//		}
 
 		boolean matches = super.doCredentialsMatch(token, info);
-		if (matches) {
-			redisTemplate.delete(key);
-		}
+//		if (matches) {
+//			redisTemplate.delete(key);
+//		}
 
 		return matches;
 	}
