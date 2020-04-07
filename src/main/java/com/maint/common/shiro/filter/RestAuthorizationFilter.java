@@ -22,8 +22,7 @@ import java.io.IOException;
  */
 public class RestAuthorizationFilter extends PermissionsAuthorizationFilter {
 
-    private static final Logger log = LoggerFactory
-            .getLogger(RestAuthorizationFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(RestAuthorizationFilter.class);
 
     @Override
     protected boolean pathsMatch(String path, ServletRequest request) {

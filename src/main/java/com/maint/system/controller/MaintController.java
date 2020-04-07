@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.github.pagehelper.PageInfo;
 import com.maint.common.annotation.OperationLog;
-import com.maint.common.constants.RoleEnum;
 import com.maint.common.shiro.ShiroActionProperties;
 import com.maint.common.util.PageResultBean;
 import com.maint.common.util.ResultBean;
@@ -57,6 +56,9 @@ public class MaintController {
 	@ResponseBody
 	public PageResultBean<MaintainOrder> getMaintList(@RequestParam(value = "page", defaultValue = "1") int page,
 			@RequestParam(value = "limit", defaultValue = "10") int limit, MaintainOrder maintQuery) {
+		// 1、超级管理员，系统管理员、客服人员可查询范围：全部
+		// 2、管理员可查询范围：状态是维修申请的订单 + 当前负责人=user_id + 经手操作过的订单
+		// 3、首检人员、维修点负责人可查询范围：当前负责人=user_id + 经手操作过的订单
 		List<MaintainOrder> maints = maintService.selectAllWithQuery(page, limit, maintQuery);
 		PageInfo<MaintainOrder> maintPageInfo = new PageInfo<>(maints);
 		return new PageResultBean<>(maintPageInfo.getTotal(), maintPageInfo.getList());
