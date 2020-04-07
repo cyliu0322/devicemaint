@@ -8,8 +8,6 @@ import com.maint.common.constants.AuthcTypeEnum;
 
 import javax.annotation.PostConstruct;
 
-import static org.assertj.core.api.Assertions.useDefaultDateFormatsOnly;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
