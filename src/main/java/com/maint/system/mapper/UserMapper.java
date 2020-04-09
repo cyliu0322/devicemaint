@@ -44,6 +44,11 @@ public interface UserMapper {
      * 获取用户所拥有的所有角色
      */
     Set<String> selectRoleNameByUserName(@Param("username") String username);
+    
+    /**
+     * 获取用户所拥有的所有角色id
+     */
+    Set<String> selectRoleIdByUserName(@Param("username") String username);
 
     /**
      * 根据用户名获取用户

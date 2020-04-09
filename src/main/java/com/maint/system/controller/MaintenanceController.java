@@ -58,7 +58,8 @@ public class MaintenanceController {
 	@ResponseBody
 	public PageResultBean<MaintenanceOrder> getMaintenanceList(@RequestParam(value = "page", defaultValue = "1") int page,
 			@RequestParam(value = "limit", defaultValue = "10") int limit, MaintenanceOrder maintenanceQuery) {
-		List<MaintenanceOrder> maintenances = maintenanceService.selectAllWithQuery(page, limit, maintenanceQuery);
+//		List<MaintenanceOrder> maintenances = maintenanceService.selectAllWithQuery(page, limit, maintenanceQuery);
+		List<MaintenanceOrder> maintenances = maintenanceService.selectWithQueryAndRole(page, limit, maintenanceQuery);
 		PageInfo<MaintenanceOrder> pageInfo = new PageInfo<>(maintenances);
 		return new PageResultBean<>(pageInfo.getTotal(), pageInfo.getList());
 	}
@@ -108,6 +109,13 @@ public class MaintenanceController {
 	@ResponseBody
 	public ResultBean delete(@PathVariable("maintenanceId") String maintenanceId) {
 		maintenanceService.delete(maintenanceId);
+		return ResultBean.success();
+	}
+	
+	@PutMapping("/impl/{orderId}")
+	@ResponseBody
+	public ResultBean implement(@PathVariable("orderId") String orderId) {
+		maintenanceService.implement(orderId);
 		return ResultBean.success();
 	}
 }

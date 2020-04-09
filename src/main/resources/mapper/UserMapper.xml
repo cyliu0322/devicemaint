@@ -150,6 +150,16 @@
           and role.role_id = user_role.role_id
           and user.username = #{username,jdbcType=VARCHAR}
     </select>
+    
+    <select id="selectRoleIdByUserName" resultType="String" parameterType="String">
+        select role.role_id
+        from user,
+             role,
+             user_role
+        where user.user_id = user_role.user_id
+          and role.role_id = user_role.role_id
+          and user.username = #{username,jdbcType=VARCHAR}
+    </select>
 
     <select id="selectOneByUserName" resultMap="BaseResultMap">
         select

@@ -41,7 +41,24 @@ public interface MaintainOrderMapper {
      * @param maintQuery
      * @return
      */
-    List<MaintainOrder> selectAllWithQuery(MaintainOrder maintQuery);
+	List<MaintainOrder> selectAllWithQuery(MaintainOrder maintQuery);
+    
+	List<MaintainOrder> selectWithQueryAndIds(@Param("query") MaintainOrder maintQuery,
+			@Param("list") List<String> ids);
+	
+    /**
+     * 根据订单状态获取订单id
+     * @param state
+     * @return
+     */
+    List<String> selectWithState(String state);
+    
+    /**
+     * 根据userId获取订单id
+     * @param userId
+     * @return
+     */
+    List<String> selectWithUserId(int userId);
     
     int countByState(@Param("state") String state);
 

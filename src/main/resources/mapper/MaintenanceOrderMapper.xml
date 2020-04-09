@@ -260,4 +260,53 @@
 		</if>
 	</where>
   </select>
+  
+  <select id="selectWithQueryAndIds" resultMap="BaseResultMap">
+    select 
+    	mo.maintenance_order_id,
+    	mo.company_name,
+    	mo.company_id,
+    	mo.device_name,
+    	mo.state,
+    	mo.create_date,
+    	mo.maintenance_time,
+    	u.nickname,
+    	d.dept_name
+    from tbl_maintenance_order mo left join user u on mo.user_id = u.user_id left join dept d on mo.dept_id = d.dept_id
+    <where>
+    	<if test="query.maintenanceOrderId != null and query.maintenanceOrderId != ''">
+			AND mo.maintenance_order_id = #{query.maintenanceOrderId, jdbcType=VARCHAR}
+		</if>
+		<if test="query.companyName != null and query.companyName != ''">
+			AND mo.company_name like CONCAT('%', #{query.companyName, jdbcType=VARCHAR}, '%')
+		</if>
+		<if test="query.state != null and query.state != ''">
+			AND mo.state = #{query.state}
+		</if>
+		<choose>
+			<when test="list != null and list.size() > 0">
+				AND mo.maintenance_order_id in 
+				<foreach  item="item" collection="list" index="index"  open="(" separator="," close=")">
+					#{item}
+				</foreach>	
+			</when>
+			<otherwise>
+				<!-- list为空时，使其恒不等，即查询结果为空 -->
+				AND 1 = 2
+			</otherwise>
+		</choose>
+	</where>
+  </select>
+  
+  <select id="selectWithState" resultType="java.lang.String">
+    select 
+    	maintenance_order_id
+    from tbl_maintenance_order where state = #{state, jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectWithUserId" resultType="java.lang.String">
+    select 
+    	maintenance_order_id
+    from tbl_maintenance_order where user_id = #{userId, jdbcType=INTEGER}
+  </select>
 </mapper>

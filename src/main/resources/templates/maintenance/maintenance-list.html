@@ -68,6 +68,15 @@
 				</a>
 			</shiro:hasPermission>
 		{{# } }}
+
+		{{# if(d.state == 1) { }}
+			<shiro:hasPermission name="maintenance:impl">
+				<a lay-event="implement">
+					<i class="layui-icon layui-icon-util zadmin-blue" title="实施"></i>
+				</a>
+			</shiro:hasPermission>
+		{{# } }}
+		
 		{{# if(d.state == 4) { }}
 			<shiro:hasPermission name="maintenance:score">
 				<a lay-event="grade">
@@ -150,6 +159,9 @@
 								if (d.state == '1' || d.state == '2') {
 									return d.deptname;
 								} else {
+									if (d.nickname == null) {
+										return "";
+									}
 									return d.nickname;
 								}
 							}	
@@ -168,6 +180,8 @@
 				var event = obj.event;
 				if (event === 'appoint') {
 					appoint(data.maintenanceOrderId);
+				} else if (event === 'implement') {
+					implement(data.maintenanceOrderId);
 				} else if (event === 'grade') {
 					grade();
 				} else if (event === 'del') {
@@ -187,6 +201,19 @@
                         table.reload('maintenance-table');
                     }
                 });
+			}
+			
+			function implement(orderId) {
+				layer.confirm("确定实施保养吗?", {icon: 3, title: '提示'},
+					function (index) {//确定回调
+						$.post('/maintenance/impl/' + orderId, {_method: "PUT"}, function (data) {
+							layer.close(index);
+							handlerResult(data, deleteDone);
+						});
+					}, function (index) {//取消回调
+						layer.close(index);
+					}
+				);
 			}
 			
 			function grade() {

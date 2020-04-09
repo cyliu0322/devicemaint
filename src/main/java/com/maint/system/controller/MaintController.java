@@ -56,10 +56,8 @@ public class MaintController {
 	@ResponseBody
 	public PageResultBean<MaintainOrder> getMaintList(@RequestParam(value = "page", defaultValue = "1") int page,
 			@RequestParam(value = "limit", defaultValue = "10") int limit, MaintainOrder maintQuery) {
-		// 1、超级管理员，系统管理员、客服人员可查询范围：全部
-		// 2、管理员可查询范围：状态是维修申请的订单 + 当前负责人=user_id + 经手操作过的订单
-		// 3、首检人员、维修点负责人可查询范围：当前负责人=user_id + 经手操作过的订单
-		List<MaintainOrder> maints = maintService.selectAllWithQuery(page, limit, maintQuery);
+//		List<MaintainOrder> maints = maintService.selectAllWithQuery(page, limit, maintQuery);
+		List<MaintainOrder> maints = maintService.selectWithQueryAndRole(page, limit, maintQuery);
 		PageInfo<MaintainOrder> maintPageInfo = new PageInfo<>(maints);
 		return new PageResultBean<>(maintPageInfo.getTotal(), maintPageInfo.getList());
 	}
@@ -76,6 +74,7 @@ public class MaintController {
 		return ResultBean.success(maintService.selectTracesByMaintId(maintId));
 	}
 	
+	// 派单至首检人员
 	@GetMapping("/prior/{maintId}")
 	public String appointPrior(@PathVariable("maintId") String maintId, Model model) {
 		List<User> users = userService.selectByRole(shiroActionProperties.getpFirstRole());
@@ -86,6 +85,7 @@ public class MaintController {
 		return "maint/maint-prior";
 	}
 	
+	// 派单至维修点
 	@GetMapping("/mp/{maintId}")
 	public String appointMp(@PathVariable("maintId") String maintId, Model model) {
 		MaintainOrder maint = maintService.selectByMaintId(maintId);
@@ -113,6 +113,13 @@ public class MaintController {
 	@ResponseBody
 	public ResultBean delete(@PathVariable("maintId") String maintId) {
 		maintService.delete(maintId);
+		return ResultBean.success();
+	}
+	
+	@PutMapping("/impl/{orderId}")
+	@ResponseBody
+	public ResultBean implement(@PathVariable("orderId") String orderId) {
+		maintService.implement(orderId);
 		return ResultBean.success();
 	}
 }

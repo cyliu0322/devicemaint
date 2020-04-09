@@ -251,6 +251,10 @@ public class UserService {
 		return userMapper.selectRoleNameByUserName(username);
 	}
 	
+	public Set<String> selectRoleIdByUserName(String username) {
+		return userMapper.selectRoleIdByUserName(username);
+	}
+	
 	public User selectOneByUserName(String username) {
 		return userMapper.selectOneByUserName(username);
 	}

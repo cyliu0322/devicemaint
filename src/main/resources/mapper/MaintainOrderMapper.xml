@@ -224,20 +224,20 @@
   </update>
   
   <select id="selectOrderByConditions" resultMap="BaseResultMap" parameterType="java.util.Map">
-        select 
-        <include refid="Base_Column_List" />
-        from tbl_maintain_order
-        <where>
-        	web_user_id = #{webUserId, jdbcType=INTEGER}
-        	<if test="orderId != null and orderId != ''">
-                AND maintain_order_id = #{orderId, jdbcType=VARCHAR}
-            </if>
-            <if test="deviceName != null and deviceName != ''">
-                AND device_name like CONCAT('%', #{deviceName, jdbcType=VARCHAR}, '%')
-            </if>
-        </where>
-    </select>
-    
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_maintain_order
+    <where>
+    	web_user_id = #{webUserId, jdbcType=INTEGER}
+    	<if test="orderId != null and orderId != ''">
+            AND maintain_order_id = #{orderId, jdbcType=VARCHAR}
+        </if>
+        <if test="deviceName != null and deviceName != ''">
+            AND device_name like CONCAT('%', #{deviceName, jdbcType=VARCHAR}, '%')
+        </if>
+    </where>
+  </select>
+  
   <select id="selectAllWithQuery" resultMap="BaseResultMap">
     select 
     	mo.maintain_order_id,
@@ -261,6 +261,55 @@
 			AND mo.state = #{state}
 		</if>
 	</where>
+  </select>
+  
+  <select id="selectWithQueryAndIds" resultMap="BaseResultMap">
+    select 
+    	mo.maintain_order_id,
+    	mo.company_name,
+    	mo.company_id,
+    	mo.device_name,
+    	mo.state,
+    	mo.fault_description,
+    	mo.create_date,
+    	u.nickname,
+    	d.dept_name
+    from tbl_maintain_order mo left join user u on mo.user_id = u.user_id left join dept d on mo.dept_id = d.dept_id
+    <where>
+    	<if test="query.maintainOrderId != null and query.maintainOrderId != ''">
+			AND mo.maintain_order_id = #{query.maintainOrderId, jdbcType=VARCHAR}
+		</if>
+		<if test="query.companyName != null and query.companyName != ''">
+			AND mo.company_name like CONCAT('%', #{query.companyName, jdbcType=VARCHAR}, '%')
+		</if>
+		<if test="query.state != null and query.state != ''">
+			AND mo.state = #{query.state}
+		</if>
+		<choose>
+			<when test="list != null and list.size() > 0">
+				AND mo.maintain_order_id in 
+				<foreach  item="item" collection="list" index="index"  open="(" separator="," close=")">
+					#{item}
+				</foreach>	
+			</when>
+			<otherwise>
+				<!-- list为空时，使其恒不等，即查询结果为空 -->
+				AND 1 = 2
+			</otherwise>
+		</choose>
+	</where>
+  </select>
+  
+  <select id="selectWithState" resultType="java.lang.String">
+    select 
+    	maintain_order_id
+    from tbl_maintain_order where state = #{state, jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectWithUserId" resultType="java.lang.String">
+    select 
+    	maintain_order_id
+    from tbl_maintain_order where user_id = #{userId, jdbcType=INTEGER}
   </select>
   
   <select id="countByState" resultType="java.lang.Integer">

@@ -45,7 +45,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label">负责人</label>
 				<div class="layui-input-block">
-					<select name="userId" xm-select="role-select" lay-vertype="tips">
+					<select name="userId" xm-select="role-select" lay-vertype="tips"  lay-verify="required">
 						<option value="">请选择负责人</option>
 						<option th:each="user:${users}" th:value="${user.userId}"
 							th:text="${user.nickname}" th:selected="${dept} == null ? false : ${user.userId} eq ${dept.userId}"></option>
@@ -58,7 +58,7 @@
 					<div class="layui-unselect layui-form-select" id="parentNameDiv">
 						<div class="layui-select-title">
 							<input type="text" id="parentName" placeholder="请选择"
-								class="layui-input layui-unselect" readonly> <input
+								class="layui-input layui-unselect" lay-verify="required" readonly> <input
 								type="hidden" name="parentId" id="parentId"> <i
 								class="layui-edge"></i>
 						</div>

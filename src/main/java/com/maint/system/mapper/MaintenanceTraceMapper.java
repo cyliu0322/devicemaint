@@ -24,6 +24,13 @@ public interface MaintenanceTraceMapper {
     
     List<MaintenanceTrace> selectByMaintenanceId(@Param("maintenanceId") String maintenanceId);
     
+    /**
+     * 根据user查询order
+     * @param userId
+     * @return
+     */
+    List<String> selectOrderIdsByUserId(int userId);
+    
     List<DateAndNum> selectCountForApply();
     
     List<DateAndNum> selectCountForComplete();

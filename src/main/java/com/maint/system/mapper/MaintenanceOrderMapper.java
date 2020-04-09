@@ -36,6 +36,23 @@ public interface MaintenanceOrderMapper {
     MaintenanceOrder selectByPrimaryKey(String maintenanceOrderId);
     
     List<MaintenanceOrder> selectAllWithQuery(MaintenanceOrder query);
+    
+    List<MaintenanceOrder> selectWithQueryAndIds(@Param("query") MaintenanceOrder maintenanceQuery,
+			@Param("list") List<String> ids);
+    
+    /**
+     * 根据订单状态获取订单id
+     * @param state
+     * @return
+     */
+    List<String> selectWithState(String state);
+    
+    /**
+     * 根据userId获取订单id
+     * @param userId
+     * @return
+     */
+    List<String> selectWithUserId(int userId);
 
     int updateByPrimaryKeySelective(MaintenanceOrder record);
 

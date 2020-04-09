@@ -47,20 +47,21 @@ public class ManageRealm extends AuthorizingRealm {
     }
 
     @Override
-    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        log.info("从数据库获取权限信息");
-        User user = (User) principals.getPrimaryPrincipal();
-
-        String username = user.getUsername();
-
-        Set<String> roles = userService.selectRoleNameByUserName(username);
-        Set<String> perms = userService.selectPermsByUsername(username);
-
-        SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-        authorizationInfo.setRoles(roles);
-        authorizationInfo.setStringPermissions(perms);
-        return authorizationInfo;
-    }
+	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+		log.info("从数据库获取权限信息");
+		User user = (User) principals.getPrimaryPrincipal();
+		
+		String username = user.getUsername();
+		
+//		Set<String> roles = userService.selectRoleNameByUserName(username);
+		Set<String> roles = userService.selectRoleIdByUserName(username);
+		Set<String> perms = userService.selectPermsByUsername(username);
+		
+		SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
+		authorizationInfo.setRoles(roles);
+		authorizationInfo.setStringPermissions(perms);
+		return authorizationInfo;
+	}
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {

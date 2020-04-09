@@ -115,6 +115,10 @@
 			//监听提交
 			form.on('submit(appoint)', function (form) {
 				form.field._method = 'PUT';
+				if (form.field.deptId == "") {
+					layer.alert("请选择维修点");
+					return false;
+				}
 				$.post('/maintenance/appoint', form.field, function (result) {
 					handlerResult(result, addDone);
 				});

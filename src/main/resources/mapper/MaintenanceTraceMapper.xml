@@ -21,6 +21,12 @@
     from tbl_maintenance_trace
     where maintenance_trace_id = #{maintenanceTraceId,jdbcType=VARCHAR}
   </select>
+  <select id="selectOrderIdsByUserId" resultType="java.lang.String" parameterType="java.lang.Integer" >
+    select 
+    distinct(maintenance_order_id)
+    from tbl_maintenance_trace
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from tbl_maintenance_trace
     where maintenance_trace_id = #{maintenanceTraceId,jdbcType=VARCHAR}
